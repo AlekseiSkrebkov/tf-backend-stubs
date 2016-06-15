@@ -25,6 +25,8 @@ app.use(function(req, res, next) {
 	// Set to true if you need the website to include cookies in the requests sent
 	// to the API (e.g. in case you use sessions)
 	res.setHeader('Access-Control-Allow-Credentials', true)
+
+	res.setHeader('content-type', 'application/json')
 	// Pass to next layer of middleware
 	next()	
 }) 
@@ -34,22 +36,13 @@ app.get('/', function (req, res) {
 });
 
 app.post('/auth/signin', function (req, res) {
-	console.log("/auth/signin");
-
-	console.log("body", req.body);
-
 	const users = require(static_data_folder + 'users.js');
 	const user_credentials = users.credentials;
 	const user_profiles = users.profiles;
-	
-	console.log("user_profiles", user_profiles);
-	console.log("user_credentials", user_credentials);
 
 	const user = R.find(R.propEq('login', req.body.login), user_credentials);
-	console.log("user", user);
 	if (user && user.password == req.body.password) {
 		const user_profile = R.find(R.propEq('id', user.id), user_profiles);
-		console.log("user_profile", user_profile);
 		res.json(user_profile);
 	} else {
 		res.status(403).send('User with specified login and password is not found');
