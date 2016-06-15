@@ -3,9 +3,11 @@ const random_data_folder = './data/random/';
 const static_data_folder = './data/static/';
 
 const express = require('express');
+const bodyParser = require('body-parser');
 const R = require('ramda');
 
 const app = express()
+app.use(bodyParser.json()); // for parsing application/json
 
 app.set('port', (process.env.PORT || 5000));
 
@@ -32,13 +34,22 @@ app.get('/', function (req, res) {
 });
 
 app.post('/auth/signin', function (req, res) {
+	console.log("/auth/signin");
+
+	console.log("body", req.body);
+
 	const users = require(static_data_folder + 'users.js');
 	const user_credentials = users.credentials;
 	const user_profiles = users.profiles;
 	
-	const user = R.find(R.propEq('login', reg.params.login), user_credentials);
-	if (user && user.password == req.params.password) {
+	console.log("user_profiles", user_profiles);
+	console.log("user_credentials", user_credentials);
+
+	const user = R.find(R.propEq('login', req.body.login), user_credentials);
+	console.log("user", user);
+	if (user && user.password == req.body.password) {
 		const user_profile = R.find(R.propEq('id', user.id), user_profiles);
+		console.log("user_profile", user_profile);
 		res.json(user_profile);
 	} else {
 		res.status(403).send('User with specified login and password is not found');
