@@ -1,0 +1,18 @@
+{
+  "name": "transflo-backend-stubs",
+  "version": "1.0.0",
+  "description": "Stubs for Transflo backend",
+  "main": "stub_server.js",
+  "scripts": {
+    "start": "node stub_server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.13.4",
+    "ramda": "^0.21.0"
+  },
+  "engines": {
+    "node": "0.10.x"
+  }
+}
