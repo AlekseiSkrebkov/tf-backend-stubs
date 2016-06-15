@@ -7,6 +7,9 @@ const R = require('ramda');
 
 const app = express()
 
+app.set('port', (process.env.PORT || 5000));
+
+
 app.use(function(req, res, next) {
 	// Website you wish to allow to connect
 	res.setHeader('Access-Control-Allow-Origin', '*')
