@@ -71,6 +71,6 @@ app.get('/loads/:id', function(req, res){
 		res.status(404).send("Load ID = " + req.params.id + " is not found");
 });
 
-app.listen(3000, function () {
-  console.log('Transflo backend stubs app listening on port 3000!');
+app.listen(app.get('port'), function() {
+  console.log('Node app is running on port', app.get('port'));
 });
