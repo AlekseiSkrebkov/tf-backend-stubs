@@ -21,32 +21,38 @@ module.exports = {
 				{
 					id: 1,
 					name: "Division 1",
-					type: "carrier"
+					type: "carrier",
+					code: "dvscar1"
 				},
 				{
 					id: 3,
 					name: "Division 3",
-					type: "broker"
+					type: "broker",
+					code: "dvsbro3"
 				},
 				{
 					id: 5,
 					name: "Division 5",
-					type: "broker"
+					type: "broker",
+					code: "dvsbro5"
 				},
 				{
 					id: 7,
 					name: "Division 7",
-					type: "carrier"
+					type: "carrier",
+					code: "dvscar7"
 				},
 				{
 					id: 9,
 					name: "Division 9",
-					type: "carrier"
+					type: "carrier",
+					code: "dvscar9"
 				},
 				{
 					id: 4,
 					name: "Division 3",
-					type: "broker"
+					type: "broker",
+					code: "dvsbro3"
 				}
 			]
 		},
@@ -59,32 +65,38 @@ module.exports = {
 				{
 					id: 2,
 					name: "Division 2",
-					type: "carrier"
+					type: "carrier",
+					code: "dvscar2"
 				},
 				{
 					id: 4,
 					name: "Division 3",
-					type: "broker"
+					type: "broker",
+					code: "dvsbro3"
 				},
 				{
 					id: 6,
 					name: "Division 6",
-					type: "broker"
+					type: "broker",
+					code: "dvsbro6"
 				},
 				{
 					id: 8,
 					name: "Division 8",
-					type: "carrier"
+					type: "carrier",
+					code: "dvscar8"
 				},
 				{
 					id: 10,
 					name: "Division 10",
-					type: "carrier"
+					type: "carrier",
+					code: "dvscar10"
 				},
 				{
 					id: 5,
 					name: "Division 5",
-					type: "broker"
+					type: "broker",
+					code: "dvsbro5"
 				}
 			]
 		}

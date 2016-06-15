@@ -3,7 +3,7 @@ const locations = require('../static/locations');
 
 const numberOfStops = 7;
 const numberOfShipments = 10;
-const loadsQuantity = 30;
+const loadsQuantity = 200;
 
 var loads_collection = [];
 for (var i = 0; i < loadsQuantity; i ++) {
@@ -18,7 +18,7 @@ function generateLoad(id) {
 		"id": id + 1,
 		"loadNUmber": common_tools.guid(),
 		"bolNumber": common_tools.guid(),
-		"division": common_tools.randomFrom(100),
+		"division": common_tools.randomFrom(10),
 		"status": randomStatus(),
 		"marks": randomMarks(),
 		"tenderingInfo": [],

@@ -26,7 +26,6 @@ app.use(function(req, res, next) {
 	// to the API (e.g. in case you use sessions)
 	res.setHeader('Access-Control-Allow-Credentials', true)
 
-	res.setHeader('content-type', 'application/json')
 	// Pass to next layer of middleware
 	next()	
 }) 
@@ -51,19 +50,13 @@ app.post('/auth/signin', function (req, res) {
 
 app.get('/loads', function(req, res) {
 	const loads_collection = require(random_data_folder + 'loads_summary.js');
-	
-	const pageNum = req.query.page_num ? req.query.page_num : 1;
-	//if (pageNum === undefined) pageNum = 1;
-	
-	const quantity = req.query.items_per_page ? req.query.items_per_page : default_items_per_page;
-	//if (quantity === undefined) quantity = 10;
-	
-	var res_loads = [];
-	var j = 0;
-	for (var i = quantity*(pageNum-1); i < quantity*(pageNum); i++) {
-		res_loads[j] = loads_collection[i];
-		j++;
-	}
+	const division = req.query.division;
+
+	var res_loads 
+	if (division)
+		res_loads =	res_loads = R.filter(R.propEq('division', parseInt(division)), loads_collection);
+	else
+		res_loads = loads_collection;
 
 	res.json(res_loads);
 });
