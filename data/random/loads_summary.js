@@ -13,7 +13,7 @@ for (var i = 0; i < loads_collection.length; i++) {
 		"firstStop": load.stops[0],
 		"lastStop": load.stops[load.stops.length - 1],
 		"status": load.status,
-		"marks": load.marks,
+		"extended_load_data": [],
 		"numberOfStops": load.stops.length,
 		"tenderingInfo": [],
 		"createdDateTime": load.createdDateTime
