@@ -18,7 +18,7 @@ function generateLoad(id) {
 		"id": id + 1,
 		"loadNumber": common_tools.guid(),
 		"bolNumber": common_tools.guid(),
-		"division": common_tools.randomFrom(9)+1,
+		"divisionId": common_tools.randomFrom(9)+1,
 		"status": randomStatus(),
 		"marks": randomMarks(),
 		"tenderingInfo": [],
@@ -31,7 +31,7 @@ function generateLoad(id) {
 			"be referenced on our payment to you. " +
 			"	2. The signed Bill of Lading." +
 			"	3. Receipts for lumpers or other accessorial charges.",
-		"extLoadData": extendedLoadData(),
+		"loadAttributes": extendedLoadData(),
 		"stops": stops,
 		"shipments": generateShipments(id, stops),
 		"wayPoints": generateWayPoints()
