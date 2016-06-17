@@ -36,10 +36,11 @@ app.get('/', function (req, res) {
  	res.redirect('/loads');
 });
 
+const users = require(static_data_folder + 'users.js');
+const user_profiles = users.profiles;
+
 app.post('/auth/signin', function (req, res) {
-	const users = require(static_data_folder + 'users.js');
 	const user_credentials = users.credentials;
-	const user_profiles = users.profiles;
 
 	const user = R.find(R.propEq('login', req.body.login), user_credentials);
 	if (user && user.password == req.body.password) {
@@ -50,6 +51,19 @@ app.post('/auth/signin', function (req, res) {
 	} else {
 		res.status(403).send('User with specified login and password is not found');
 	}
+})
+
+app.get('/users/:id', function(req, res) {
+	const user_id = parseInt(req.params.id)
+
+	console.log('user_id', user_id)
+
+
+	const user_profile = R.find(R.propEq('id', user_id), user_profiles);
+	if (user_profile)
+		res.json(user_profile)
+	else
+		res.status(404).send('User is not found')
 })
 
 
