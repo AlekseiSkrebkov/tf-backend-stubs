@@ -18,7 +18,7 @@ function generateLoad(id) {
 		"id": id + 1,
 		"loadNUmber": common_tools.guid(),
 		"bolNumber": common_tools.guid(),
-		"division": common_tools.randomFrom(10),
+		"division": common_tools.randomFrom(9)+1,
 		"status": randomStatus(),
 		"marks": randomMarks(),
 		"tenderingInfo": [],

@@ -1,3 +1,5 @@
+const common_tools = require('../common');
+
 module.exports = {
 	credentials: [
 		{
@@ -54,7 +56,8 @@ module.exports = {
 					type: "broker",
 					code: "dvsbro3"
 				}
-			]
+			], 
+			securityToken: common_tools.guid()
 		},
 		{
 			id: 2,
@@ -98,7 +101,8 @@ module.exports = {
 					type: "broker",
 					code: "dvsbro5"
 				}
-			]
+			],
+			securityToken: common_tools.guid()
 		}
 	]
 }
