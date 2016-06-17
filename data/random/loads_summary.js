@@ -7,7 +7,8 @@ for (var i = 0; i < loads_collection.length; i++) {
 	
 	load_summary_collection[i] = {
 		"id": load.id,
-		"loadNumber": load.loadNumber,
+		"carrierLoadNumber": load.carrierLoadNumber,
+		"brokerLoadNumber": load.brokerLoadNumber,
 		"bolNumber": load.bolNumber,
 		"divisionId": load.divisionId,
 		"firstStop": load.stops[0],

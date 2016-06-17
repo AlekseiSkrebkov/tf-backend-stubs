@@ -16,7 +16,8 @@ function generateLoad(id) {
 	var stops = generateStops(id);
 	return {
 		"id": id + 1,
-		"loadNumber": common_tools.guid(),
+		"carrierLoadNumber": common_tools.guid(),
+		"brokerLoadNumber": common_tools.guid(),
 		"bolNumber": common_tools.guid(),
 		"divisionId": common_tools.randomFrom(9)+1,
 		"status": randomStatus(),
