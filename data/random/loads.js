@@ -1,4 +1,4 @@
-const common_tools = require('../common')
++ const common_tools = require('../common')
 const R = require('ramda')
 
 
