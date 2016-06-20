@@ -54,8 +54,13 @@ var carrierDivisions = [
 ]
 
 function randomCarriers() {
-	var numberOfCarriers = tools.randomFrom(carrierDivisions.length)
-	return carrierDivisions.slice(0, numberOfCarriers)
+	var numberOfCarriers = tools.randomFrom(carrierDivisions.length-2) + 2
+	var startOfSubset = tools.randomFrom(carrierDivisions.length)
+	var carriersSubset = []
+	for (var i = 0; i < numberOfCarriers; i++) {
+		carriersSubset.push(carrierDivisions[(startOfSubset + i) % carrierDivisions.length])
+	}
+	return carriersSubset
 }
 
 const brokerDivisions = [
@@ -86,4 +91,7 @@ const brokerDivisions = [
 		}
 	]
 
-module.exports = carrierDivisions.concat(brokerDivisions)
+module.exports = {
+	carriers: carrierDivisions,
+	brokers: brokerDivisions
+}

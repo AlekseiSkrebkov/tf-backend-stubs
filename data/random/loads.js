@@ -7,7 +7,7 @@ const divisions = require('../static/divisions.js')
 
 const numberOfStops = 7
 const numberOfShipments = 10
-const loadsQuantity = 10
+const loadsQuantity = 200
 
 var loads_collection = []
 for (var i = 0; i < loadsQuantity; i++) {
@@ -18,16 +18,19 @@ module.exports = loads_collection
 
 function generateLoad(id) {
 	var stops = generateStops(id)
-	var division = getDivision()
+	var brokerDivision = getBrokerDivision()
+	var carrierDivision = getCarrierDivision()
+
 	return {
 		"id": id + 1,
-		"carrierLoadNumber": common_tools.guid(),
 		"brokerLoadNumber": common_tools.guid(),
+		"carrierLoadNumber": common_tools.guid(),
 		"bolNumber": common_tools.guid(),
-		"division": division,
+		"brokerDivision": brokerDivision,
+		"carrierDivision": carrierDivision,
 		"status": randomStatus(),
-		"marks": randomMarks(),
-		"tenderingInfo": generateTenderingInfo(division.id),
+		"brokerTenderingInfo": generateTenderingInfo(brokerDivision.id),
+		"carrierTenderingInfo": generateTenderingInfo(carrierDivision.id),
 		"createdDateTime": common_tools.randomDate(new Date(2016, 1, 1), new Date()), 
 		"freightTerms": "Test frightTerms",
 		"carrierSpecialInstructions": "The following paperwork is required for each load: "+
@@ -37,30 +40,65 @@ function generateLoad(id) {
 			"be referenced on our payment to you. " +
 			"	2. The signed Bill of Lading." +
 			"	3. Receipts for lumpers or other accessorial charges.",
-		"loadAttributes": extendedLoadData(),
+		"loadAttributes": generateLoadAttributes(),
 		"stops": stops,
 		"shipments": generateShipments(id, stops),
 		"wayPoints": generateWayPoints()
 	}	
 }
 
-function getDivision() {
-	var division = divisions[common_tools.randomFrom(10)]
+function getBrokerDivision() {
+	var numberOfBrokers = divisions.brokers.length
+
+	var division = divisions.brokers[common_tools.randomFrom(numberOfBrokers)]
+	return getDivisionSummary(division)
+}
+
+function getCarrierDivision() {
+	var numberOfCarriers = divisions.carriers.length
+
+	var division = divisions.carriers[common_tools.randomFrom(numberOfCarriers)]
+	return getDivisionSummary(division)	
+}
+
+function getDivisionSummary(division) {
 	return {
 		"id": division.id,
 		"name": division.name,
 		"type": division.type
-	}
-
+	}	
 }
 
-function extendedLoadData() {
+function generateLoadAttributes() {
 	var data = []
-	for (var i = 0; i < common_tools.randomFrom(5); i++) {
+	var i = 0
+	strAttrNumber = common_tools.randomFrom(5)
+	console.log('strAttrNumber', strAttrNumber)
+	while (i < strAttrNumber) {
 		data[i] = {
 			"key": 'key' + i,
-			"value": 'value' + i
+			"value": 'value' + i,
+			"type": "string"
 		}
+		i++
+	}
+	numAttrNumber = common_tools.randomFrom(5)
+	while (i < (strAttrNumber + numAttrNumber)) {
+		data[i] = {
+			"key": 'key' + i,
+			"value": 'value' + i,
+			"type": "number"
+		}
+		i++
+	}
+	booleanAttrNumber = common_tools.randomFrom(3)
+	while (i < (strAttrNumber + numAttrNumber + booleanAttrNumber)){
+		data[i] = {
+			"key": randomMark(),
+			"value": 'true',
+			"type": "boolean"
+		}
+		i++
 	}
 	return data
 }
@@ -158,8 +196,8 @@ function generatePackages(shipmentId) {
 function generateTenderingInfo(divisionId) {
 	const assignmentStatuses = ['Offered', 'Rejected', 'Accepted']
 
-	var division = R.find(R.propEq('id', divisionId), divisions)
-	console.log('>>division: ', division)
+	var division = R.find(R.propEq('id', divisionId), divisions.brokers.concat(divisions.carriers))
+	var divisionType =  division.type
 
 	var subordinates = division.subordinates
 
@@ -168,9 +206,7 @@ function generateTenderingInfo(divisionId) {
 	var numberOfSubordinates = subordinates.length
 	var subsetLength = common_tools.randomFrom(numberOfSubordinates)
 	var startSubsetPosition = common_tools.randomFrom(numberOfSubordinates)
-	console.log('>>numberOfSubordinates', numberOfSubordinates)
-	console.log('>>subsetLength', subsetLength)
-	console.log('>>startSubsetPosition', startSubsetPosition)
+	if (divisionType == 'broker') console.log('>>numberOfSubordinates', numberOfSubordinates)
 	for (var i = 0; i < subsetLength; i++) {
 		var assignmentParty = subordinates[(startSubsetPosition + i) % numberOfSubordinates]
 		tenderingInfo.push({
@@ -180,7 +216,7 @@ function generateTenderingInfo(divisionId) {
 			"assignmentStatus": assignmentStatuses[common_tools.randomFrom(3)]
 		})
 	}	
-	console.log('tenderingInfo', tenderingInfo)
+	if (divisionType == 'broker') console.log('tenderingInfo', tenderingInfo)
 
 	return tenderingInfo
 }
@@ -198,7 +234,7 @@ function randomStatus() {
 	return statuses[common_tools.randomFrom(5)]
 }
 
-function randomMarks() {
+function randomMark() {
 	const marks = [
 		"Hazardous",
 		"Fragile",

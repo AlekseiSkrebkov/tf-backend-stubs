@@ -7,16 +7,18 @@ for (var i = 0; i < loads_collection.length; i++) {
 	
 	load_summary_collection[i] = {
 		"id": load.id,
-		"carrierLoadNumber": load.carrierLoadNumber,
 		"brokerLoadNumber": load.brokerLoadNumber,
+		"carrierLoadNumber": load.carrierLoadNumber,
 		"bolNumber": load.bolNumber,
-		"division": load.division,
+		"brokerDivision": load.brokerDivision,	
+		"carrierDivision": load.carrierDivision,
 		"firstStop": load.stops[0],
 		"lastStop": load.stops[load.stops.length - 1],
 		"status": load.status,
 		"loadAttributes": load.loadAttributes,
 		"numberOfStops": load.stops.length,
-		"tenderingInfo": load.tenderingInfo,
+		"brokerTenderingInfo": load.brokerTenderingInfo,
+		"carrierTenderingInfo": load.carrierTenderingInfo,
 		"createdDateTime": load.createdDateTime
 	}
 } 
