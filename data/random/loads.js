@@ -1,4 +1,4 @@
-+ const common_tools = require('../common')
+const common_tools = require('../common')
 const R = require('ramda')
 
 
@@ -7,7 +7,7 @@ const divisions = require('../static/divisions.js')
 
 const numberOfStops = 7
 const numberOfShipments = 10
-const loadsQuantity = 200
+const loadsQuantity = 20
 
 var loads_collection = []
 for (var i = 0; i < loadsQuantity; i++) {
@@ -73,7 +73,6 @@ function generateLoadAttributes() {
 	var data = []
 	var i = 0
 	strAttrNumber = common_tools.randomFrom(5)
-	console.log('strAttrNumber', strAttrNumber)
 	while (i < strAttrNumber) {
 		data[i] = {
 			"key": 'key' + i,
@@ -206,7 +205,6 @@ function generateTenderingInfo(divisionId) {
 	var numberOfSubordinates = subordinates.length
 	var subsetLength = common_tools.randomFrom(numberOfSubordinates)
 	var startSubsetPosition = common_tools.randomFrom(numberOfSubordinates)
-	if (divisionType == 'broker') console.log('>>numberOfSubordinates', numberOfSubordinates)
 	for (var i = 0; i < subsetLength; i++) {
 		var assignmentParty = subordinates[(startSubsetPosition + i) % numberOfSubordinates]
 		tenderingInfo.push({
@@ -216,7 +214,6 @@ function generateTenderingInfo(divisionId) {
 			"assignmentStatus": assignmentStatuses[common_tools.randomFrom(3)]
 		})
 	}	
-	if (divisionType == 'broker') console.log('tenderingInfo', tenderingInfo)
 
 	return tenderingInfo
 }

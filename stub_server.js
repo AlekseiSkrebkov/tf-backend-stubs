@@ -1,6 +1,9 @@
 const random_data_folder = './data/random/'
 const static_data_folder = './data/static/'
 
+var divisions = require(static_data_folder + 'divisions')
+divisions = divisions.carriers.concat(divisions.brokers)
+
 const express = require('express')
 const bodyParser = require('body-parser')
 const R = require('ramda')
@@ -64,17 +67,25 @@ app.get('/auth', function(req, res) {
 
 app.get('/loads', function(req, res) {
 	const loads_collection = require(random_data_folder + 'loads_summary.js')
-	const division = req.query.division
+	var divisionId = req.query.division
+	var division = divisions.find(function(division){
+		return division.id == parseInt(divisionId)
+	})
+
+	console.log('division', division)
 
 	var res_loads 
 // filter by division
 	if (division)
-		res_loads =	res_loads = R.filter(R.propEq('division', parseInt(division)), loads_collection)
+		res_loads = loads_collection.filter(function (load) {
+			if (division.type == 'carrier')  
+				return load.carrierDivision.id == parseInt(divisionId)
+			else 
+				return load.brokerDivision.id == parseInt(divisionId)
+		});
 	else
 		res_loads = loads_collection
 // filter by status
-	
-
 
 	res.json(res_loads)
 })
