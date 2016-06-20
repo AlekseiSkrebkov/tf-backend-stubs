@@ -10,13 +10,13 @@ for (var i = 0; i < loads_collection.length; i++) {
 		"carrierLoadNumber": load.carrierLoadNumber,
 		"brokerLoadNumber": load.brokerLoadNumber,
 		"bolNumber": load.bolNumber,
-		"divisionId": load.divisionId,
+		"division": load.division,
 		"firstStop": load.stops[0],
 		"lastStop": load.stops[load.stops.length - 1],
 		"status": load.status,
 		"loadAttributes": load.loadAttributes,
 		"numberOfStops": load.stops.length,
-		"tenderingInfo": [],
+		"tenderingInfo": load.tenderingInfo,
 		"createdDateTime": load.createdDateTime
 	}
 } 

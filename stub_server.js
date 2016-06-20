@@ -1,16 +1,15 @@
-const default_items_per_page = 10;
-const random_data_folder = './data/random/';
-const static_data_folder = './data/static/';
+const random_data_folder = './data/random/'
+const static_data_folder = './data/static/'
 
-const express = require('express');
-const bodyParser = require('body-parser');
-const R = require('ramda');
+const express = require('express')
+const bodyParser = require('body-parser')
+const R = require('ramda')
 
 
 const app = express()
-app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.json()) // for parsing application/json
 
-app.set('port', (process.env.PORT || 5000));
+app.set('port', (process.env.PORT || 5000))
 
 
 app.use(function(req, res, next) {
@@ -32,21 +31,21 @@ app.use(function(req, res, next) {
 }) 
 
 app.get('/', function (req, res) {
- 	res.redirect('/loads');
-});
+ 	res.redirect('/loads')
+})
 
-const users = require(static_data_folder + 'users.js');
-const user_profiles = users.profiles;
-const user_credentials = users.credentials;
+const users = require(static_data_folder + 'users.js')
+const user_profiles = users.profiles
+const user_credentials = users.credentials
 
 app.post('/auth/signin', function (req, res) {
-	var user = R.find(R.propEq('login', req.body.login), user_credentials);
+	var user = R.find(R.propEq('login', req.body.login), user_credentials)
 	if (user && user.password == req.body.password) {
-		var user_profile = R.find(R.propEq('id', user.id), user_profiles);
+		var user_profile = R.find(R.propEq('id', user.id), user_profiles)
 
-		res.json(user_profile);
+		res.json(user_profile)
 	} else {
-		res.status(403).send('User with specified login and password is not found');
+		res.status(403).send('User with specified login and password is not found')
 	}
 })
 
@@ -64,32 +63,32 @@ app.get('/auth', function(req, res) {
 
 
 app.get('/loads', function(req, res) {
-	const loads_collection = require(random_data_folder + 'loads_summary.js');
-	const division = req.query.division;
+	const loads_collection = require(random_data_folder + 'loads_summary.js')
+	const division = req.query.division
 
 	var res_loads 
 // filter by division
 	if (division)
-		res_loads =	res_loads = R.filter(R.propEq('division', parseInt(division)), loads_collection);
+		res_loads =	res_loads = R.filter(R.propEq('division', parseInt(division)), loads_collection)
 	else
-		res_loads = loads_collection;
+		res_loads = loads_collection
 // filter by status
 	
 
 
-	res.json(res_loads);
-});
+	res.json(res_loads)
+})
 
 app.get('/loads/:id', function(req, res){
-	const loads_collection = require(random_data_folder + 'loads.js');
-	const load = R.find(R.propEq('id', parseInt(req.params.id)), loads_collection);
+	const loads_collection = require(random_data_folder + 'loads.js')
+	const load = R.find(R.propEq('id', parseInt(req.params.id)), loads_collection)
 	
 	if (load)
-		res.json(load);
+		res.json(load)
 	else 
-		res.status(404).send("Load ID = " + req.params.id + " is not found");
-});
+		res.status(404).send("Load ID = " + req.params.id + " is not found")
+})
 
 app.listen(app.get('port'), function() {
-  console.log('Node app is running on port', app.get('port'));
-});
+  console.log('Node app is running on port', app.get('port'))
+})
