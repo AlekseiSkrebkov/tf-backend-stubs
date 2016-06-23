@@ -30,13 +30,15 @@ module.exports = {
 					id: 3,
 					name: "Division 3",
 					type: "broker",
-					code: "dvsbro3"
+					code: "dvsbro3",
+					"permissions": []
 				},
 				{
 					id: 5,
 					name: "Division 5",
 					type: "broker",
-					code: "dvsbro5"
+					code: "dvsbro5",
+					"permissions": []
 				},
 				{
 					id: 7,
@@ -52,9 +54,10 @@ module.exports = {
 				},
 				{
 					id: 4,
-					name: "Division 3",
+					name: "Division 4",
 					type: "broker",
-					code: "dvsbro3"
+					code: "dvsbro4",
+					"permissions": ['showDrivers']
 				}
 			], 
 			securityToken: common_tools.guid()
@@ -75,13 +78,15 @@ module.exports = {
 					id: 4,
 					name: "Division 3",
 					type: "broker",
-					code: "dvsbro3"
+					code: "dvsbro3",
+					"permissions": []
 				},
 				{
 					id: 6,
 					name: "Division 6",
 					type: "broker",
-					code: "dvsbro6"
+					code: "dvsbro6",
+					"permissions": ['showDrivers']
 				},
 				{
 					id: 8,
@@ -99,7 +104,8 @@ module.exports = {
 					id: 5,
 					name: "Division 5",
 					type: "broker",
-					code: "dvsbro5"
+					code: "dvsbro5",
+					"permissions": []
 				}
 			],
 			securityToken: common_tools.guid()

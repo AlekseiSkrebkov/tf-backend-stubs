@@ -75,21 +75,24 @@ const brokerDivisions = [
 			name: "Division 3",
 			type: "broker",
 			code: "dvsbro3",
-			subordinates: randomCarriers()
+			subordinates: randomCarriers(),
+			"permissions": []
 		},
 		{
 			id: 4,
 			name: "Division 4",
 			type: "broker",
 			code: "dvsbro4",
-			subordinates: randomCarriers()
+			subordinates: randomCarriers(),
+			"permissions": ['showDrivers']
 		},
 		{
 			id: 5,
 			name: "Division 5",
 			type: "broker",
 			code: "dvsbro5",
-			subordinates: randomCarriers()
+			subordinates: randomCarriers(),
+			"permissions": []
 
 		},
 		{
@@ -97,7 +100,8 @@ const brokerDivisions = [
 			name: "Division 6",
 			type: "broker",
 			code: "dvsbro6",
-			subordinates: randomCarriers()
+			subordinates: randomCarriers(),
+			"permissions": ['showDrivers']
 		}
 	]
 
