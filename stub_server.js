@@ -125,8 +125,32 @@ app.get('/loads', function(req, res) {
 		if (destination_city) {
 			if (load.lastStop.city == destination_city) return false
 		}
+		//filter by shipping dates
+		var shipping_dates = req.query.shipping_dates
+		if (shipping_dates) {
+			var startDateInt = new Date(shipping_dates.slice(0, shipping_dates.indexOf('-'))).getTime()
+			var endDateInt = new Date(shipping_dates.slice(shipping_dates.indexOf('-') + 1, shipping_dates.length)).getTime()
+			var loadDateInt = new Date(load.firstStop.date).getTime()
+			if (!isDateInRange(loadDateInt, startDateInt, endDateInt)) return false
+		}
+		//filter by delivery dates
+		var delivery_dates = req.query.delivery_dates
+		if (delivery_dates) {
+			var startDateInt = new Date(delivery_dates.slice(0, delivery_dates.indexOf('-'))).getTime()
+			var endDateInt = new Date(delivery_dates.slice(delivery_dates.indexOf('-') + 1, delivery_dates.length)).getTime()
+			var loadDateInt = new Date(load.lastStop.date).getTime()
+			if (!isDateInRange(loadDateInt, startDateInt, endDateInt)) return false
+		}
 		return true
 	})
+
+	function isDateInRange(targetDate, oneDate, secondDate) {
+		var startDate = oneDate < secondDate ? oneDate : secondDate
+		var endDate = oneDate > secondDate ? oneDate : secondDate
+		console.log("filtering by dates: " + startDate + ' - ' + endDate)
+		console.log ("loadDate", targetDate)
+		return targetDate > startDate && targetDate < endDate
+	}
 
 //sort loads
 	var sort_by = req.query.sort_by
