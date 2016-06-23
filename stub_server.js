@@ -141,16 +141,42 @@ app.get('/loads', function(req, res) {
 			var loadDateInt = new Date(load.lastStop.date).getTime()
 			if (!isDateInRange(loadDateInt, startDateInt, endDateInt)) return false
 		}
+		//filter by Offered To Driver
+		var driver_offered = req.query.driver_offered
+		if (driver_offered) {
+			var drivers = load.carrierTenderingInfo
+			var i = 0;
+			while (i < drivers.length && (drivers[i].id != parseInt(driver_offered) || drivers[i].assignmentStatus != 'Offered')) { 
+				i++ 
+			}
+			if (i == drivers.length) return false
+		}
+		//filter by Assigned To Driver
+		var driver_assignee = req.query.driver_assignee
+		if (driver_assignee) {
+			var drivers = load.carrierTenderingInfo
+			var i = 0;
+			while (i < drivers.length && (drivers[i].id != parseInt(driver_assignee) || drivers[i].assignmentStatus != 'Accepted')) { 
+				i++ 
+			}
+			if (i == drivers.length) return false
+		}
+		//filter by Assigned To Carrier
+		var carrier_assignee = req.query.carrier_assignee
+		if (carrier_assignee) {
+			var carriers = load.brokerTenderingInfo
+			var i = 0;
+			while (i < carriers.length && (carriers[i].id != parseInt(carrier_assignee) || carriers[i].assignmentStatus != 'Accepted')) { 
+				i++ 
+			}
+			if (i == carriers.length) return false
+			console.log("carrier_assignee", carrier_assignee)
+			console.log("condition", (carriers[0].id != parseInt(carrier_assignee) || carriers[0].assignmentStatus != 'Accepted'))
+			console.log('carriers', carriers)
+
+		}
 		return true
 	})
-
-	function isDateInRange(targetDate, oneDate, secondDate) {
-		var startDate = oneDate < secondDate ? oneDate : secondDate
-		var endDate = oneDate > secondDate ? oneDate : secondDate
-		console.log("filtering by dates: " + startDate + ' - ' + endDate)
-		console.log ("loadDate", targetDate)
-		return targetDate > startDate && targetDate < endDate
-	}
 
 //sort loads
 	var sort_by = req.query.sort_by
@@ -196,3 +222,11 @@ app.get('/loads/:id', function(req, res){
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'))
 })
+
+function isDateInRange(targetDate, oneDate, secondDate) {
+	var startDate = oneDate < secondDate ? oneDate : secondDate
+	var endDate = oneDate > secondDate ? oneDate : secondDate
+	console.log("filtering by dates: " + startDate + ' - ' + endDate)
+	console.log ("loadDate", targetDate)
+	return targetDate > startDate && targetDate < endDate
+}
