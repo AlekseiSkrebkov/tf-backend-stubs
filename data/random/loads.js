@@ -65,7 +65,8 @@ function getDivisionSummary(division) {
 	return {
 		"id": division.id,
 		"name": division.name,
-		"type": division.type
+		"type": division.type,
+		"code": division.code
 	}	
 }
 
