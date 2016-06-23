@@ -3,7 +3,7 @@ const static_data_folder = './data/static/'
 
 var divisions = require(static_data_folder + 'divisions')
 divisions = divisions.carriers.concat(divisions.brokers)
-const loads_collection = require(random_data_folder + 'loads_summary.js')
+var loads_collection = require(random_data_folder + 'loads_summary.js')
 
 
 const express = require('express')
@@ -210,13 +210,42 @@ app.get('/loads', function(req, res) {
 })
 
 app.get('/loads/:id', function(req, res){
-	const loads_collection = require(random_data_folder + 'loads.js')
-	const load = R.find(R.propEq('id', parseInt(req.params.id)), loads_collection)
+	var load = R.find(R.propEq('id', parseInt(req.params.id)), loads_collection)
 	
 	if (load)
 		res.json(load)
 	else 
 		res.status(404).send("Load ID = " + req.params.id + " is not found")
+})
+
+app.put('/loads/:id/changeownership', function(req, res) {	
+	var loadId = req.params.id
+	var loadIndex = loads_collection.findIndex(function(load) {
+			return load.id == parseInt(loadId)
+		})
+	var load = loads_collection[loadIndex]
+
+	if (load) {
+		var newDivision = divisions.find(function(division) {
+			return division.id == parseInt(req.body.divisionId)
+		})
+		newDivision.subordinates = undefined
+		if (newDivision) {
+			if (newDivision.type == 'broker') {
+				load.brokerDivision = newDivision
+				load.brokerTenderingInfo = []
+			}
+			else {
+				load.carrierDivision = newDivision
+				load.carrierTenderingInfo = []
+			}
+
+			res.json(load)
+		}
+		else res.status(404).send("Target division ID = " + req.body.divisionId + " is not found")
+	}
+	else res.status(404).send("Load ID = " + req.params.id + " is not found")
+
 })
 
 app.listen(app.get('port'), function() {
