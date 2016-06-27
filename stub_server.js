@@ -248,6 +248,17 @@ app.put('/loads/:id/changeownership', function(req, res) {
 
 })
 
+app.get('/divisions/:id', function(req, res) {
+	var divisionId = req.params.id
+	var division = divisions.find(function(division){
+			return division.id == parseInt(divisionId)
+		})	
+	if (division.type == 'carrier')
+		res.json(division.subordinates)
+	else
+		res.status(403).send('Only Carrier Divisions are supported')
+})
+
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'))
 })
