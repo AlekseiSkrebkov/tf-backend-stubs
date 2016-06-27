@@ -248,7 +248,7 @@ app.put('/loads/:id/changeownership', function(req, res) {
 
 })
 
-app.get('/divisions/:id', function(req, res) {
+app.get('/divisions/:id/drivers', function(req, res) {
 	var divisionId = req.params.id
 	var division = divisions.find(function(division){
 			return division.id == parseInt(divisionId)
