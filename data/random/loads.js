@@ -194,7 +194,7 @@ function generatePackages(shipmentId) {
 }
 
 function generateTenderingInfo(divisionId) {
-	const assignmentStatuses = ['Offered', 'Rejected', 'Accepted']
+	const assignmentStatuses = ['Offered', 'Rejected', 'Assigned']
 
 	var division = R.find(R.propEq('id', divisionId), divisions.brokers.concat(divisions.carriers))
 	var divisionType =  division.type
