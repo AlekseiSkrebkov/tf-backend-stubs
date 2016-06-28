@@ -49,6 +49,7 @@ app.post('/auth/signin', function (req, res) {
 		var user_profile = R.find(R.propEq('id', user.id), user_profiles)
 
 		res.json(user_profile)
+		console.log('Signed In')
 	} else {
 		res.status(403).send('User with specified login and password is not found')
 	}
@@ -66,6 +67,18 @@ app.get('/auth', function(req, res) {
 		res.status(404).send('User is not found')
 })
 
+app.post('/auth/forgot', function(req, res) {
+	var email = req.body.email
+	if (email)
+		res.status(200).send("Restore password instructions sent to " + req.body.email)
+	else
+		res.status(403).send("Email for restore password instructions wasn't specified")
+})
+
+app.get('/auth/signout', function(req, res) {
+	res.status(204).send('Signed out')
+	console.log('Signed Out')
+}) 
 
 app.get('/loads', function(req, res) {
 	var res_loads = loads_collection
