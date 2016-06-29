@@ -114,9 +114,11 @@ app.get('/loads', function(req, res) {
 			if (attrsString.includes(attributes) == false) return false
 		}
 		// filter by broker
-		var broker = req.query.broker
-		if (broker) {
-			if (load.brokerDivision.id != parseInt(broker)) return false
+		var brokerIdsStr = req.query.broker
+		if (brokerIdsStr) {
+			var brokers = brokerIdsStr.split(',')
+			console.log('brokers', brokers)
+			if (brokers.indexOf(load.brokerDivision.id.toString()) == -1) return false
 		}
 		//filter by origin state
 		var origin_state = req.query.origin_state
@@ -155,37 +157,37 @@ app.get('/loads', function(req, res) {
 			if (!isDateInRange(loadDateInt, startDateInt, endDateInt)) return false
 		}
 		//filter by Offered To Driver
-		var driver_offered = req.query.driver_offered
-		if (driver_offered) {
+		var driverOfferedQuery = req.query.driver_offered
+		if (driverOfferedQuery) {
+			driversOffered = driverOfferedQuery.split(',')
 			var drivers = load.carrierTenderingInfo
 			var i = 0;
-			while (i < drivers.length && (drivers[i].id != parseInt(driver_offered) || drivers[i].assignmentStatus != 'Offered')) { 
+			while (i < drivers.length && ((driversOffered.indexOf(drivers[i].id.toString()) == -1) || drivers[i].assignmentStatus != 'Offered')) { 
 				i++ 
 			}
 			if (i == drivers.length) return false
 		}
 		//filter by Assigned To Driver
-		var driver_assignee = req.query.driver_assignee
-		if (driver_assignee) {
+		var driverAssigneeQuery = req.query.driver_assignee
+		if (driverAssigneeQuery) {
+			var driversAssigneed = driverAssigneeQuery.split(',')
 			var drivers = load.carrierTenderingInfo
 			var i = 0;
-			while (i < drivers.length && (drivers[i].id != parseInt(driver_assignee) || drivers[i].assignmentStatus != 'Accepted')) { 
+			while (i < drivers.length && ((driversAssigneed.indexOf(drivers[i].id.toString()) == -1) || drivers[i].assignmentStatus != 'Assigned')) { 
 				i++ 
 			}
 			if (i == drivers.length) return false
 		}
 		//filter by Assigned To Carrier
-		var carrier_assignee = req.query.carrier_assignee
-		if (carrier_assignee) {
+		var carrierAssigneeQuery = req.query.carrier_assignee
+		if (carrierAssigneeQuery) {
+			var carrierAssigned = carrierAssigneeQuery.split(',')
 			var carriers = load.brokerTenderingInfo
 			var i = 0;
-			while (i < carriers.length && (carriers[i].id != parseInt(carrier_assignee) || carriers[i].assignmentStatus != 'Accepted')) { 
+			while (i < carriers.length && ((carrierAssigned.indexOf(carriers[i].id.toString()) == -1) || carriers[i].assignmentStatus != 'Assigned')) { 
 				i++ 
 			}
 			if (i == carriers.length) return false
-			console.log("carrier_assignee", carrier_assignee)
-			console.log("condition", (carriers[0].id != parseInt(carrier_assignee) || carriers[0].assignmentStatus != 'Accepted'))
-			console.log('carriers', carriers)
 
 		}
 		return true
