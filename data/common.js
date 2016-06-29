@@ -4,7 +4,7 @@ module.exports = {
 	        var p = (Math.random().toString(16)+"000000000").substr(2,8)
 	        return s ? "-" + p.substr(0,4) + "-" + p.substr(4,4) : p 
 	    }
-	    return _p8() + _p8(true) + _p8()
+	    return _p8() + _p8(true)
 	}, 
 	randomFrom: function(x) {
 		if (x == 100) 
@@ -17,7 +17,8 @@ module.exports = {
 			return Math.floor(Math.random() * 10) % x
 	},
 	randomDate: function (start, end) {
-	    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
+		var date = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
+	    return date
 	},
 	randomTime: function () {
 		var times = [

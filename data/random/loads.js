@@ -31,7 +31,7 @@ function generateLoad(id) {
 		"status": randomStatus(),
 		"brokerTenderingInfo": generateTenderingInfo(brokerDivision.id),
 		"carrierTenderingInfo": generateTenderingInfo(carrierDivision.id),
-		"createdDateTime": common_tools.randomDate(new Date(2016, 1, 1), new Date()), 
+		"createdDateTime": common_tools.randomDate(new Date(2016, 5, 1), new Date()), 
 		"freightTerms": "Test frightTerms",
 		"carrierSpecialInstructions": "The following paperwork is required for each load: "+
 			"1. Your final signed Carrier Rate Confirmation (all pages required). "+
@@ -148,7 +148,7 @@ function generateStops(loadId) {
 	for (var i = 0; i < stops_quantity; i++) {
 		stop = locations[common_tools.randomFrom(10)]
 		stop.id = loadId * 100 + i
-		stop.date = common_tools.randomDate(new Date(), new Date(2017, 1, 1))
+		stop.date = common_tools.randomDate(new Date(), new Date(2016, 6, 30))
 		stop.time = common_tools.randomTime
 		stops_array[i] = stop
 	}
