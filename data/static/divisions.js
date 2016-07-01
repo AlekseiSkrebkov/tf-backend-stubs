@@ -6,8 +6,8 @@ function generateDrivers(divisionId) {
 	for(var i = 0; i < numberOfDrivers; i++) {
 		drivers[i] = {
 			"id": divisionId * 100 + i,
-			"name": "Driver#" + i,
-			"email": "driver#" + i + "@gmail.com",
+			"name": "DriverName#" + i + " DriverSurname#" + i,
+			"email": "driverFullName#" + i + "@gmail.com",
 			"isNewMessage": false
 		}
 	}
@@ -17,37 +17,37 @@ function generateDrivers(divisionId) {
 var carrierDivisions = [
 	{
 		id: 1,
-		name: "Division 1",
+		name: "Montgomery Logistics",
 		type: "carrier",
-		code: "dvscar1",
+		code: "MGYL",
 		subordinates: generateDrivers(1)
 	},
 	{
 		id: 2,
-		name: "Division 2",
+		name: "JKC Mobile Test Fleet",
 		type: "carrier",
-		code: "dvscar2",
+		code: "JKCFM",
 		subordinates: generateDrivers(2)
 	},
 	{
 		id: 7,
-		name: "Division 7",
+		name: "Syfan Logistics",
 		type: "carrier",
-		code: "dvscar7",
+		code: "SYFNVQP",
 		subordinates: generateDrivers(7)
 	},
 	{
 		id: 8,
-		name: "Division 8",
+		name: "Foodliner - Owner Operator Miscellaneous Document",
 		type: "carrier",
-		code: "dvscar8",
+		code: "FOLWMMIS",
 		subordinates: generateDrivers(8)
 	},
 	{
 		id: 9,
-		name: "Division 9",
+		name: "First Choice OS & D",
 		type: "carrier",
-		code: "dvscar9",
+		code: "FCTICLM",
 		subordinates: generateDrivers(9)
 	},
 	{

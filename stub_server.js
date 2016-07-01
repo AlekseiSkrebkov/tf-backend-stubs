@@ -100,9 +100,10 @@ app.get('/loads', function(req, res) {
 			}
 		}
 		//status
-		var status = req.query.status
-		if (status) {
-			if (load.status != status) return false
+		var statusQuery = req.query.status
+		if (statusQuery) {
+			var statuses = statusQuery.split(',')
+			if (statuses.indexOf(load.status) == -1) return false
 		}
 		// filter by attributes
 		var attributes = req.query.attributes
