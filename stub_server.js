@@ -3,7 +3,7 @@ const static_data_folder = './data/static/'
 
 var divisions = require(static_data_folder + 'divisions')
 divisions = divisions.carriers.concat(divisions.brokers)
-var loads_collection = require(random_data_folder + 'loads_summary.js')
+var loads_collection = require(random_data_folder + 'loads_summary')
 
 
 const express = require('express')
@@ -274,6 +274,17 @@ app.get('/divisions/:id/drivers', function(req, res) {
 	else
 		res.status(403).send('Only Carrier Divisions are supported')
 })
+
+app.get('/divisions/:id/loadattributes', function(req, res) {
+	var attributes = []
+	attributes.push(require(static_data_folder + 'attributes'))
+	attributes.push({
+		name: 'Attr Of Division #' + req.params.id,
+		type: 'string'
+	})
+
+	res.json(attributes)
+})	
 
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'))
