@@ -20,6 +20,9 @@ function generateLoad(id) {
 	var stops = generateStops(id)
 	var brokerDivision = getBrokerDivision()
 	var carrierDivision = getCarrierDivision()
+	while (carrierDivision == null && brokerDivision == null) {
+		carrierDivision = getCarrierDivision()
+	}
 
 	return {
 		"id": id + 1,
@@ -29,8 +32,8 @@ function generateLoad(id) {
 		"brokerDivision": brokerDivision,
 		"carrierDivision": carrierDivision,
 		"status": randomStatus(),
-		"brokerTenderingInfo": generateTenderingInfo(brokerDivision.id),
-		"carrierTenderingInfo": generateTenderingInfo(carrierDivision.id),
+		"brokerTenderingInfo": brokerDivision ? generateTenderingInfo(brokerDivision.id) : [],
+		"carrierTenderingInfo": carrierDivision ? generateTenderingInfo(carrierDivision.id) : [],
 		"createdDateTime": common_tools.randomDate(new Date(2016, 5, 1), new Date()), 
 		"freightTerms": "Test frightTerms",
 		"carrierSpecialInstructions": "The following paperwork is required for each load: "+
@@ -47,6 +50,7 @@ function generateLoad(id) {
 }
 
 function getBrokerDivision() {
+	if (common_tools.randomFrom(2) == 0) return null
 	var numberOfBrokers = divisions.brokers.length
 
 	var division = divisions.brokers[common_tools.randomFrom(numberOfBrokers)]
@@ -54,6 +58,8 @@ function getBrokerDivision() {
 }
 
 function getCarrierDivision() {
+	if (common_tools.randomFrom(2) == 0) return null
+
 	var numberOfCarriers = divisions.carriers.length
 
 	var division = divisions.carriers[common_tools.randomFrom(numberOfCarriers)]
@@ -115,14 +121,6 @@ function generateShipments(loadId, stops) {
 
 		var pickUpStopNum = common_tools.randomFrom(stops_quantity - 1)
 		var dropOffStopNum = common_tools.randomFrom(stops_quantity - pickUpStopNum) + pickUpStopNum
-
-		if (loadId == 1) {
-			console.log("stops_quantity", stops_quantity)
-			console.log("pickUpStopNum=", pickUpStopNum)
-			console.log("pickupStop", stops[pickUpStopNum])			
-			console.log("dropOffStopNum=", dropOffStopNum)
-			console.log("dropOffStop=", stops[pickUpStopNum])
-		}
 
 		var id = loadId * 100 + i
 		shipments[i] = {
@@ -205,6 +203,12 @@ function generateTenderingInfo(divisionId) {
 	var divisionType =  division.type
 
 	var subordinates = division.subordinates
+	var assignmentStatus 
+
+	if (divisionType == 'carrier')
+		assignmentStatus = assignmentStatuses[common_tools.randomFrom(3)]
+	else
+		assignmentStatus = 'Assigned'
 
 	var tenderingInfo = []
 	// getting subset of subordinates
@@ -217,7 +221,7 @@ function generateTenderingInfo(divisionId) {
 			"id": assignmentParty.id,
 			"name": assignmentParty.name,
 			"isNewMessage": assignmentParty.isNewMessage,
-			"assignmentStatus": assignmentStatuses[common_tools.randomFrom(3)]
+			"assignmentStatus": assignmentStatus
 		})
 	}	
 
