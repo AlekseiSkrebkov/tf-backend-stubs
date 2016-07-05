@@ -96,10 +96,10 @@ app.get('/loads', function(req, res) {
 		})
 		if (division) {
 			if (division.type == 'carrier')  {
-				if (load.carrierDivision.id != division.id) return false
+				if (load.carrierDivision && load.carrierDivision.id != division.id) return false
 			}
 			else {
-				if (load.brokerDivision.id != division.id) return false
+				if (load.brokerDivision && load.brokerDivision.id != division.id) return false
 			}
 		}
 		//status
