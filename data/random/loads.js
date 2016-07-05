@@ -42,8 +42,7 @@ function generateLoad(id) {
 			"	3. Receipts for lumpers or other accessorial charges.",
 		"loadAttributes": generateLoadAttributes(),
 		"stops": stops,
-		"shipments": generateShipments(id, stops),
-		"wayPoints": generateWayPoints()
+		"shipments": generateShipments(id, stops)
 	}	
 }
 
@@ -109,19 +108,25 @@ function generateShipments(loadId, stops) {
 	if (shipments_quantity < Math.ceil(stops_quantity/2)) {
 		shipments_quantity = Math.ceil(stops_quantity/2)
 	}
-	
+
+
 	var shipments = []
 	for (var i = 0; i < shipments_quantity; i++) {
-		
-		var pickUpStopNum = common_tools.randomFrom(stops_quantity)
-		var dropOffStopNum = common_tools.randomFrom(stops_quantity)
-		
-		while (dropOffStopNum == pickUpStopNum) { 
-			dropOffStopNum = common_tools.randomFrom(stops_quantity) 
+
+		var pickUpStopNum = common_tools.randomFrom(stops_quantity - 1)
+		var dropOffStopNum = common_tools.randomFrom(stops_quantity - pickUpStopNum) + pickUpStopNum
+
+		if (loadId == 1) {
+			console.log("stops_quantity", stops_quantity)
+			console.log("pickUpStopNum=", pickUpStopNum)
+			console.log("pickupStop", stops[pickUpStopNum])			
+			console.log("dropOffStopNum=", dropOffStopNum)
+			console.log("dropOffStop=", stops[pickUpStopNum])
 		}
-		
+
+		var id = loadId * 100 + i
 		shipments[i] = {
-			"id": loadId * 100 + i,
+			"id": id,
 			"shipmentBOL": common_tools.guid(),
 			"shipmentCarrierSpecInstructions": "The following paperwork is required for each load: "+
 			"1. Your final signed Carrier Rate Confirmation (all pages required). "+
@@ -130,10 +135,10 @@ function generateShipments(loadId, stops) {
 			"be referenced on our payment to you. " +
 			"	2. The signed Bill of Lading." +
 			"	3. Receipts for lumpers or other accessorial charges.",
-			"pickup": stops[pickUpStopNum].id,
+			"pickup": (stops[pickUpStopNum]).id,
 			"dropoff": stops[dropOffStopNum].id,
-			"orders": generateOrders(),
-			"packages": generatePackages()
+			"orders": generateOrders(id),
+			"packages": generatePackages(id)
 		}
 	}
 	

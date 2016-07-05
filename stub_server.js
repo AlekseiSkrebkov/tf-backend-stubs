@@ -1,10 +1,11 @@
 const random_data_folder = './data/random/'
 const static_data_folder = './data/static/'
 
-const divisions = require(static_data_folder + 'divisions')
+var divisions = require(static_data_folder + 'divisions')
 const attributes = require(static_data_folder + 'attributes')
 divisions = divisions.carriers.concat(divisions.brokers)
-var loads_collection = require(random_data_folder + 'loads_summary')
+var loadSummaryCollection = require(random_data_folder + 'loads_summary')
+var loadCollection = require(random_data_folder + 'loads')
 
 
 
@@ -83,11 +84,11 @@ app.get('/auth/signout', function(req, res) {
 }) 
 
 app.get('/loads', function(req, res) {
-	var res_loads = loads_collection
+	var res_loads = loadSummaryCollection
 
 
 //filtering loads
-	res_loads = loads_collection.filter(function(load) {
+	res_loads = loadSummaryCollection.filter(function(load) {
 		//division
 		var divisionId = req.query.division
 		var division = divisions.find(function(division){
@@ -227,8 +228,51 @@ app.get('/loads', function(req, res) {
 	res.json(res_loads)
 })
 
+app.post('/loads', function(req, res) {
+	var load = req.body
+	load.status = 1
+	load.carrierTenderingInfo = []
+	load.brokerTenderingInfo = []
+	load.createdDateTime = new Date
+	load.id = loadSummaryCollection[loadSummaryCollection.length - 1].id + 1
+	loadSummaryCollection.push(load)
+
+	res.json(load)
+})
+
+app.put('/loads/:id', function(req, res) {
+	var loadId = req.params.id
+	var loadNum = loadSummaryCollection.findIndex(function(load) {
+		return load.id == parseInt(loadId)
+	})
+
+	if (loadNum) {
+		var updatedLoad = req.body
+		loadSummaryCollection[loadNum] = updatedLoad		
+		res.json(updatedLoad)
+	}
+	else {
+		res.status(404).send("Load ID=" + loadId + " is not found")
+	}
+})
+
+app.delete('/loads/:id', function(req, res) {
+	var loadId = req.params.id
+	var loadNum = loadSummaryCollection.findIndex(function(load) {
+		return load.id == parseInt(loadId)
+	})
+	console.log('loadnum', loadNum)
+	if (loadNum) {
+		loadSummaryCollection.splice(loadNum, 1)
+		res.status(204).send("Load ID=" + loadId + " was deleted")
+	} 
+	else {
+		res.status(404).send("Load ID=" + loadId + " is not found")
+	}
+})
+
 app.get('/loads/:id', function(req, res){
-	var load = R.find(R.propEq('id', parseInt(req.params.id)), loads_collection)
+	var load = R.find(R.propEq('id', parseInt(req.params.id)), loadCollection)
 	
 	if (load)
 		res.json(load)
@@ -238,10 +282,10 @@ app.get('/loads/:id', function(req, res){
 
 app.put('/loads/:id/changeownership', function(req, res) {	
 	var loadId = req.params.id
-	var loadIndex = loads_collection.findIndex(function(load) {
+	var loadIndex = loadSummaryCollection.findIndex(function(load) {
 			return load.id == parseInt(loadId)
 		})
-	var load = loads_collection[loadIndex]
+	var load = loadSummaryCollection[loadIndex]
 
 	if (load) {
 		var newDivision = divisions.find(function(division) {
