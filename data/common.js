@@ -6,15 +6,15 @@ module.exports = {
 	    }
 	    return _p8() + _p8(true)
 	}, 
-	randomFrom: function(x) {
-		if (x == 100) 
-			return Math.floor(Math.random() * 100)
-		else if (x > 10 && x < 100) 
-			return Math.floor(Math.random() * 100) % x
-		else if (x == 10) 
-			return Math.floor(Math.random() * 10)
-		else (x < 10) 
-			return Math.floor(Math.random() * 10) % x
+	randomFrom: function (x) {
+		return random(x)
+	},
+	randomFromNotZero: function(x) {
+		res = random(x)
+		while (res == 0) {
+			res = random(x)
+		}
+		return res
 	},
 	randomDate: function (start, end) {
 		var date = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
@@ -31,3 +31,14 @@ module.exports = {
 		return times[randomFrom(5)]
 	} 
 }
+
+function random(x) {
+		if (x == 100) 
+			return Math.floor(Math.random() * 100)
+		else if (x > 10 && x < 100) 
+			return Math.floor(Math.random() * 100) % x
+		else if (x == 10) 
+			return Math.floor(Math.random() * 10)
+		else (x < 10) 
+			return Math.floor(Math.random() * 10) % x
+	}

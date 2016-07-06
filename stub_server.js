@@ -230,11 +230,13 @@ app.get('/loads', function(req, res) {
 
 app.post('/loads', function(req, res) {
 	var load = req.body
+	load.id = loadSummaryCollection[loadSummaryCollection.length - 1].id + 1	
 	load.status = 1
+	load.createdDateTime = new Date
+
+
 	load.carrierTenderingInfo = []
 	load.brokerTenderingInfo = []
-	load.createdDateTime = new Date
-	load.id = loadSummaryCollection[loadSummaryCollection.length - 1].id + 1
 	loadSummaryCollection.push(load)
 
 	res.json(load)
@@ -319,6 +321,18 @@ app.get('/divisions/:id/drivers', function(req, res) {
 		res.json(division.subordinates)
 	else
 		res.status(403).send('Only Carrier Divisions are supported')
+})
+
+const addresses_collection = require(random_data_folder + 'addresses')
+app.get('/divisions/:id/addresses', function(req, res) {
+	var addresses = addresses_collection
+
+	var divisionId = req.params.id
+	var address_entry = req.query.address_entry
+	var lastId = req.query.lastId
+	var quantity = req.query.quantity
+
+	res.json(addresses)
 })
 
 app.get('/loadattributes', function(req, res) {

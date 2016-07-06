@@ -7,7 +7,7 @@ const divisions = require('../static/divisions.js')
 
 const numberOfStops = 7
 const numberOfShipments = 10
-const loadsQuantity = 200
+const loadsQuantity = 2
 
 var loads_collection = []
 for (var i = 0; i < loadsQuantity; i++) {
@@ -17,6 +17,8 @@ for (var i = 0; i < loadsQuantity; i++) {
 module.exports = loads_collection
 
 function generateLoad(id) {
+	id += 1
+
 	var stops = generateStops(id)
 	var brokerDivision = getBrokerDivision()
 	var carrierDivision = getCarrierDivision()
@@ -25,7 +27,7 @@ function generateLoad(id) {
 	}
 
 	return {
-		"id": id + 1,
+		"id": id,
 		"brokerLoadNumber": common_tools.guid(),
 		"carrierLoadNumber": common_tools.guid(),
 		"bolNumber": common_tools.guid(),
@@ -119,10 +121,18 @@ function generateShipments(loadId, stops) {
 	var shipments = []
 	for (var i = 0; i < shipments_quantity; i++) {
 
-		var pickUpStopNum = common_tools.randomFrom(stops_quantity - 1)
-		var dropOffStopNum = common_tools.randomFrom(stops_quantity - pickUpStopNum) + pickUpStopNum
-
+		var pickUpStopNum
+		var dropOffStopNum
+		if (stops_quantity > 2) {
+			pickUpStopNum = common_tools.randomFrom(stops_quantity)
+			dropOffStopNum = common_tools.randomFromNotZero(stops_quantity - pickUpStopNum) + pickUpStopNum
+		} else {
+			pickUpStopNum = 0
+			dropOffStopNum = 1
+		}
+		
 		var id = loadId * 100 + i
+		console.log("shipmentId", id)
 		shipments[i] = {
 			"id": id,
 			"shipmentBOL": common_tools.guid(),
@@ -149,6 +159,7 @@ function generateStops(loadId) {
 	var stops_quantity = common_tools.randomFrom(numberOfStops)
 	if (stops_quantity < 2) stops_quantity = 2
 	for (var i = 0; i < stops_quantity; i++) {
+		console.log('stop id', loadId * 100 + i)
 		stop = locations[common_tools.randomFrom(10)]
 		stop.id = loadId * 100 + i
 		stop.date = common_tools.randomDate(new Date(), new Date(2016, 6, 30))
@@ -169,10 +180,11 @@ function generateWayPoints() {
 }
 
 function generateOrders(shipmentId) {
+	console.log('orderId', shipmentId*100 + 1)
 	var orders = []
 	for (var i = 0; i < common_tools.randomFrom(5); i++) {
 		orders[i] = {
-			"id": shipmentId*100 + 1,
+			"id": shipmentId*100 + i,
 			"orderNUmber": common_tools.guid(),
 			"purchaseOrderNumber": common_tools.guid()
 		}
@@ -182,10 +194,11 @@ function generateOrders(shipmentId) {
 
 //ToDo: support list values for Type and FreightClass
 function generatePackages(shipmentId) {
+	console.log('package1', shipmentId*10000 + 1)
 	var packages = []
 	for (var i = 0; i < common_tools.randomFrom(10); i++) {
 		packages[i] = {
-			"id": shipmentId*10000 + 1,
+			"id": shipmentId*10000 + i,
 			"quantity": common_tools.randomFrom(50),
 			"type": "type " + i,
 			"volume": common_tools.randomFrom(10000) / 100,
