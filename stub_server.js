@@ -327,10 +327,20 @@ const addresses_collection = require(random_data_folder + 'addresses')
 app.get('/divisions/:id/addresses', function(req, res) {
 	var addresses = addresses_collection
 
-	var divisionId = req.params.id
 	var address_entry = req.query.address_entry
 	var lastId = req.query.lastId
 	var quantity = req.query.quantity
+
+	console.log('address_entry', address_entry)
+
+	addresses = addresses.filter(function(address) {
+		var addressString = JSON.stringify(address)
+		if (address_entry)
+		{
+			if (addressString.indexOf(address_entry) == -1) return false 			
+		}
+	})
+	console.log('filtered number of addresses', addresses.length)
 
 	res.json(addresses)
 })

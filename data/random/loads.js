@@ -120,17 +120,18 @@ function generateShipments(loadId, stops) {
 
 	var shipments = []
 	for (var i = 0; i < shipments_quantity; i++) {
-
+//ToDo reimplement this part
 		var pickUpStopNum
 		var dropOffStopNum
 		if (stops_quantity > 2) {
-			pickUpStopNum = common_tools.randomFrom(stops_quantity)
-			dropOffStopNum = common_tools.randomFromNotZero(stops_quantity - pickUpStopNum) + pickUpStopNum
+			pickUpStopNum = common_tools.randomFrom(stops_quantity-1)
+			dropOffStopNum = pickUpStopNum + 1 
+				+ common_tools.randomFrom(stops_quantity-1 - (pickUpStopNum == 0 ? 1 : pickUpStopNum) )
 		} else {
 			pickUpStopNum = 0
 			dropOffStopNum = 1
 		}
-		
+//ToDo reimplement this part ^
 		var id = loadId * 100 + i
 		console.log("shipmentId", id)
 		shipments[i] = {
