@@ -1,5 +1,8 @@
 const common_tools = require('../common')
 const R = require('ramda')
+var moment = require('moment')
+moment().format()
+
 
 
 const locations = require('../static/locations')
@@ -158,18 +161,24 @@ function generateStops(loadId) {
 	var stops_array = []
 	var stops_quantity = common_tools.randomFrom(numberOfStops)
 	if (stops_quantity < 2) stops_quantity = 2
+
+	var startLocationNumber	= common_tools.randomFrom(locations.length)
 	for (var i = 0; i < stops_quantity; i++) {
-		stop = locations[common_tools.randomFrom(10)]
+		stop = locations[(startLocationNumber + i) % locations.length]
 		stop.id = loadId * 100 + i
-		stop.date = common_tools.randomDate(new Date(), new Date(2016, 6, 30))
-		stop.time = common_tools.randomTime
+		stop.date = moment().add(common_tools.randomFrom(40), 'd')
+		stop.time = common_tools.randomTime()
 		stops_array[i] = stop
 	}
 	
-	stops_array.sort((stop1, stop2) => {
-		return (stop1.date.getTime() - stop2.date.getTime())
+	stops_array.sort(function(stop1, stop2) {
+		return (moment(stop1.date).valueOf() - stop2.date.valueOf())
 	})
-		
+
+	for (var i = 0; i < stops_array.length; i++) {
+		stops_array[i].date = stops_array[i].date.format('YYYY/MM/DD')
+	}
+
 	return stops_array
 }
 
@@ -195,7 +204,7 @@ function generatePackages(shipmentId) {
 	var packages = []
 	for (var i = 0; i < common_tools.randomFrom(10); i++) {
 		packages[i] = {
-			"id": shipmentId*10000 + i,
+			"id": shipmentId*1000 + i,
 			"quantity": common_tools.randomFrom(50),
 			"type": "type " + i,
 			"volume": common_tools.randomFrom(10000) / 100,

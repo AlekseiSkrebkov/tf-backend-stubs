@@ -11,7 +11,8 @@
   "dependencies": {
     "express": "4.13.4",
     "body-parser": "1.15.1",
-    "ramda": "0.21.0"
+    "ramda": "0.21.0", 
+    "moment": "2.14.1"
   },
   "engines": {
     "node": "4.4.2"

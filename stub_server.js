@@ -12,6 +12,7 @@ var loadCollection = require(random_data_folder + 'loads')
 const express = require('express')
 const bodyParser = require('body-parser')
 const R = require('ramda')
+var moment = require('moment')
 
 
 const app = express()
@@ -230,15 +231,41 @@ app.get('/loads', function(req, res) {
 
 app.post('/loads', function(req, res) {
 	var load = req.body
-	load.id = loadSummaryCollection[loadSummaryCollection.length - 1].id + 1	
-	load.status = 1
-	load.createdDateTime = new Date
+	load.id = loadCollection[loadCollection.length - 1].id + 1	
+	load.status = 'Available'
+	load.createdDateTime = moment()
 
+	for (var i = 0; i < load.stops.length; i++) { 
+		var oldStopId = load.stops[i].id
+		console.log('processing stop id', oldStopId)
+		var newStopId = load.id * 100 + i
+		for (var j = 0; j < load.shipments.length; j++) {
+			if (load.shipments[j].pickup == oldStopId) {
+				load.shipments[j].pickup = newStopId
+			}
+			if (load.shipments[j].dropoff == oldStopId) {
+				load.shipments[j].dropoff = newStopId
+			}
+		}
+		load.stops[i].id = newStopId
+	}
+
+	for (var i = 0; i < load.shipments.length; i++) {
+		load.shipments[i].id = load.id * 100 + i
+		console.log('shipment id', load.shipments[i].id)
+		for (var j = 0; j < load.shipments[i].packages.length; j++) {
+			load.shipments[i].packages[j].id = load.shipments[i].id * 1000 + j
+		}
+		for (var k = 0; k < load.shipments[i].orders.length; k++) {
+			load.shipments[i].orders[k].id = load.shipments[i].id * 100 + k
+		}
+	}
 
 	load.carrierTenderingInfo = []
 	load.brokerTenderingInfo = []
-	loadSummaryCollection.push(load)
-
+	loadCollection.push(load)
+	console.log('new load id', load.id)
+	console.log('updated number of loads', loadCollection.length)
 	res.json(load)
 })
 
@@ -351,7 +378,6 @@ app.get('/divisions/:id/addresses', function(req, res) {
 		}
 	}
 	
-
 	res.json(resAddresses)
 })
 
@@ -364,6 +390,7 @@ app.listen(app.get('port'), function() {
 })
 
 function isDateInRange(targetDate, oneDate, secondDate) {
+	//console.log('isDateInRange ' + targetDate + ' ' + oneDate + ' ' + secondDate)
 	var startDate = oneDate < secondDate ? oneDate : secondDate
 	var endDate = oneDate > secondDate ? oneDate : secondDate
 	
