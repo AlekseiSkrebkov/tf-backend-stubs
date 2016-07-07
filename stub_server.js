@@ -144,7 +144,7 @@ app.get('/loads', function(req, res) {
 		if (brokerIdsStr) {
 			var brokers = brokerIdsStr.split(',')
 			console.log('brokers', brokers)
-			if (brokers.indexOf(load.brokerDivision.id.toString()) == -1) return false
+			if (load.brokerDivision && brokers.indexOf(load.brokerDivision.id.toString()) == -1) return false
 		}
 		//filter by origin state
 		var origin_state = req.query.origin_state
