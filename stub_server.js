@@ -1,10 +1,11 @@
 const random_data_folder = './data/random/'
 const static_data_folder = './data/static/'
 
-var divisions = require(static_data_folder + 'divisions')
 const attributes = require(static_data_folder + 'attributes')
+
+var divisions = require(static_data_folder + 'divisions')
 divisions = divisions.carriers.concat(divisions.brokers)
-var loadSummaryCollection = require(random_data_folder + 'loads_summary')
+
 var loadCollection = require(random_data_folder + 'loads')
 
 
@@ -85,11 +86,31 @@ app.get('/auth/signout', function(req, res) {
 }) 
 
 app.get('/loads', function(req, res) {
-	var res_loads = loadSummaryCollection
+	var res_loads = []
 
+	for (var i = 0; i < loadCollection.length; i++) {
+		var load = loadCollection[i]
+		
+		res_loads[i] = {
+			"id": load.id,
+			"brokerLoadNumber": load.brokerLoadNumber,
+			"carrierLoadNumber": load.carrierLoadNumber,
+			"bolNumber": load.bolNumber,
+			"brokerDivision": load.brokerDivision,	
+			"carrierDivision": load.carrierDivision,
+			"firstStop": load.stops[0],
+			"lastStop": load.stops[load.stops.length - 1],
+			"status": load.status,
+			"loadAttributes": load.loadAttributes,
+			"numberOfStops": load.stops.length,
+			"brokerTenderingInfo": load.brokerTenderingInfo,
+			"carrierTenderingInfo": load.carrierTenderingInfo,
+			"createdDateTime": load.createdDateTime
+		}
+	} 
 
 //filtering loads
-	res_loads = loadSummaryCollection.filter(function(load) {
+	res_loads = res_loads.filter(function(load) {
 		//division
 		var divisionId = req.query.division
 		var division = divisions.find(function(division){
@@ -271,13 +292,13 @@ app.post('/loads', function(req, res) {
 
 app.put('/loads/:id', function(req, res) {
 	var loadId = req.params.id
-	var loadNum = loadSummaryCollection.findIndex(function(load) {
+	var loadNum = loadCollection.findIndex(function(load) {
 		return load.id == parseInt(loadId)
 	})
 
 	if (loadNum) {
 		var updatedLoad = req.body
-		loadSummaryCollection[loadNum] = updatedLoad		
+		loadCollection[loadNum] = updatedLoad		
 		res.json(updatedLoad)
 	}
 	else {
@@ -287,12 +308,12 @@ app.put('/loads/:id', function(req, res) {
 
 app.delete('/loads/:id', function(req, res) {
 	var loadId = req.params.id
-	var loadNum = loadSummaryCollection.findIndex(function(load) {
+	var loadNum = loadCollection.findIndex(function(load) {
 		return load.id == parseInt(loadId)
 	})
 	console.log('loadnum', loadNum)
 	if (loadNum) {
-		loadSummaryCollection.splice(loadNum, 1)
+		loadCollection.splice(loadNum, 1)
 		res.status(204).send("Load ID=" + loadId + " was deleted")
 	} 
 	else {
@@ -311,10 +332,10 @@ app.get('/loads/:id', function(req, res){
 
 app.put('/loads/:id/changeownership', function(req, res) {	
 	var loadId = req.params.id
-	var loadIndex = loadSummaryCollection.findIndex(function(load) {
+	var loadIndex = loadCollection.findIndex(function(load) {
 			return load.id == parseInt(loadId)
 		})
-	var load = loadSummaryCollection[loadIndex]
+	var load = loadCollection[loadIndex]
 
 	if (load) {
 		var newDivision = divisions.find(function(division) {
