@@ -166,7 +166,7 @@ function generateStops(loadId) {
 	for (var i = 0; i < stops_quantity; i++) {
 		stop = locations[(startLocationNumber + i) % locations.length]
 		stop.id = loadId * 100 + i
-		stop.date = moment().add(common_tools.randomFrom(40), 'd')
+		stop.date = moment().add(common_tools.randomFrom(25), 'd')
 		stop.time = common_tools.randomTime()
 		stops_array[i] = stop
 	}
