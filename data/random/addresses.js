@@ -1,8 +1,18 @@
-var addresses_collection = require('../static/locations')
+var addresses_collection = []
 
-for (var i = 0; i < 1; i++) {
+const locations = require('../static/locations')
+
+var i = 0
+for (; i < locations.length; i++) {
+	var address = locations[i]
+	address.id = i
+	addresses_collection.push(address)
+}
+
+for (; i < 500; i++) {
 	addresses_collection.push(
 		{
+			"id": i,
 			"city": "City" + i,
 			"state": "State" + i,
 			"country": "US",

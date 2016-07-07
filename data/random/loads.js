@@ -133,7 +133,6 @@ function generateShipments(loadId, stops) {
 		}
 //ToDo reimplement this part ^
 		var id = loadId * 100 + i
-		console.log("shipmentId", id)
 		shipments[i] = {
 			"id": id,
 			"shipmentBOL": common_tools.guid(),
@@ -160,7 +159,6 @@ function generateStops(loadId) {
 	var stops_quantity = common_tools.randomFrom(numberOfStops)
 	if (stops_quantity < 2) stops_quantity = 2
 	for (var i = 0; i < stops_quantity; i++) {
-		console.log('stop id', loadId * 100 + i)
 		stop = locations[common_tools.randomFrom(10)]
 		stop.id = loadId * 100 + i
 		stop.date = common_tools.randomDate(new Date(), new Date(2016, 6, 30))
@@ -181,7 +179,6 @@ function generateWayPoints() {
 }
 
 function generateOrders(shipmentId) {
-	console.log('orderId', shipmentId*100 + 1)
 	var orders = []
 	for (var i = 0; i < common_tools.randomFrom(5); i++) {
 		orders[i] = {
@@ -195,7 +192,6 @@ function generateOrders(shipmentId) {
 
 //ToDo: support list values for Type and FreightClass
 function generatePackages(shipmentId) {
-	console.log('package1', shipmentId*10000 + 1)
 	var packages = []
 	for (var i = 0; i < common_tools.randomFrom(10); i++) {
 		packages[i] = {

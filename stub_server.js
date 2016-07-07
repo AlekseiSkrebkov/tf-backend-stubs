@@ -328,21 +328,31 @@ app.get('/divisions/:id/addresses', function(req, res) {
 	var addresses = addresses_collection
 
 	var address_entry = req.query.address_entry
-	var lastId = req.query.lastId
-	var quantity = req.query.quantity
+	var lastId = req.query.lastid
+	var quantity = parseInt(req.query.quantity)
 
-	console.log('address_entry', address_entry)
+	if (address_entry) {
+		addresses = addresses.filter(function(address) {
+			var addressString = JSON.stringify(address)
+			return (addressString.toLowerCase().indexOf(address_entry.toLowerCase()) > -1)	
+		})		
+	}
 
-	addresses = addresses.filter(function(address) {
-		var addressString = JSON.stringify(address)
-		if (address_entry)
-		{
-			if (addressString.indexOf(address_entry) == -1) return false 			
+	if (lastId && quantity) {
+		var startAddress = addresses.findIndex(function(address) {
+				return address.id == parseInt(lastId ) + 1
+			})
+		var resAddresses
+		if (startAddress > 0) {
+			resAddresses = addresses.slice(startAddress, 
+				startAddress + quantity > addresses.length ? (addresses.length - startAddress) : quantity)	
+		} else {
+			resAddresses = addresses.slice(0, quantity)	
 		}
-	})
-	console.log('filtered number of addresses', addresses.length)
+	}
+	
 
-	res.json(addresses)
+	res.json(resAddresses)
 })
 
 app.get('/loadattributes', function(req, res) {
@@ -356,7 +366,6 @@ app.listen(app.get('port'), function() {
 function isDateInRange(targetDate, oneDate, secondDate) {
 	var startDate = oneDate < secondDate ? oneDate : secondDate
 	var endDate = oneDate > secondDate ? oneDate : secondDate
-	console.log("filtering by dates: " + startDate + ' - ' + endDate)
-	console.log ("loadDate", targetDate)
+	
 	return targetDate > startDate && targetDate < endDate
 }
