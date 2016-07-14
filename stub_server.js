@@ -144,7 +144,8 @@ app.get('/loads', function(req, res) {
 		if (brokerIdsStr) {
 			var brokers = brokerIdsStr.split(',')
 			console.log('brokers', brokers)
-			if (load.brokerDivision && brokers.indexOf(load.brokerDivision.id.toString()) == -1) return false
+			if (load.brokerDivision == undefined || load.brokerDivision == null) return false
+			if (brokers.indexOf(load.brokerDivision.id.toString()) == -1) return false
 		}
 		//filter by origin state
 		var origin_state = req.query.origin_state
@@ -209,6 +210,7 @@ app.get('/loads', function(req, res) {
 		if (carrierAssigneeQuery) {
 			var carrierAssigned = carrierAssigneeQuery.split(',')
 			var carriers = load.brokerTenderingInfo
+			if (carriers == undefined || carriers == null || carriers == []) return false
 			var i = 0;
 			while (i < carriers.length && ((carrierAssigned.indexOf(carriers[i].id.toString()) == -1) || carriers[i].assignmentStatus != 'Assigned')) { 
 				i++ 
