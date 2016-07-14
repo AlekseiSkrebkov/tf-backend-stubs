@@ -417,5 +417,5 @@ function isDateInRange(targetDate, oneDate, secondDate) {
 	var startDate = oneDate < secondDate ? oneDate : secondDate
 	var endDate = oneDate > secondDate ? oneDate : secondDate
 	
-	return targetDate > startDate && targetDate < endDate
+	return targetDate >= startDate && targetDate <= endDate
 }
