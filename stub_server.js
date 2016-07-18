@@ -343,7 +343,7 @@ app.get('/loads/:id', function(req, res) {
 
 	for (var i = 0; i < load.stops.length; i++) {
 			load.stops[i].id = load.stops[i].stop_id
-			delete load.stops[i].stop_id
+			//delete load.stops[i].stop_id
 	}
 
 	console.log('after WA', load.stops)

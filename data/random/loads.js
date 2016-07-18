@@ -10,18 +10,15 @@ const divisions = require('../static/divisions.js')
 
 const numberOfStops = 7
 const numberOfShipments = 10
-const loadsQuantity = 150
+const loadsQuantity = 200
 
 var loads_collection = []
-
-
 
 for (var i = 0; i < loadsQuantity; i++) {
 	var newLoad = generateLoad(i);
 
 	loads_collection.push(JSON.parse(JSON.stringify(newLoad)));
 }
-
 
 function generateLoad(id) {
 	var idx = id + 1
