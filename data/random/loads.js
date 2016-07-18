@@ -10,7 +10,7 @@ const divisions = require('../static/divisions.js')
 
 const numberOfStops = 7
 const numberOfShipments = 10
-const loadsQuantity = 1
+const loadsQuantity = 200
 
 var loads_collection = []
 for (var i = 0; i < loadsQuantity; i++) {
