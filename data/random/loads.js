@@ -177,9 +177,9 @@ function generateStops(loadId) {
 		stops_array.push(stop)
 	}
 	
-	/*stops_array.sort(function(stop1, stop2) {
+	stops_array.sort(function(stop1, stop2) {
 		return (moment(stop1.date).valueOf() - stop2.date.valueOf())
-	})*/
+	})
 
 	for (var i = 0; i < stops_array.length; i++) {
 		stops_array[i].date = stops_array[i].date.format('YYYY/MM/DD')
