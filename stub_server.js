@@ -249,17 +249,12 @@ app.get('/loads', function(req, res) {
 	res.json(res_loads)
 })
 
-app.post('/loads', function(req, res) {
-	var load = req.body
-	load.id = loadCollection[loadCollection.length - 1].id + 1	
-	load.status = 'Available'
-	load.createdDateTime = moment()
-
+function processNewStops(load) {
 	for (var i = 0; i < load.stops.length; i++) { 
 		var tempStopId = load.stops[i]._id
 		console.log('processing of temp stop id', tempStopId)
 		if (tempStopId) {
-			var newStopId = load.id * 100 + i
+			var newStopId = load.id * 10 + i
 			for (var j = 0; j < load.shipments.length; j++) {
 				if (load.shipments[j].pickup == tempStopId) {
 					load.shipments[j].pickup = newStopId
@@ -284,6 +279,15 @@ app.post('/loads', function(req, res) {
 			load.shipments[i].orders[k].id = load.shipments[i].id * 100 + k
 		}
 	}
+}
+
+app.post('/loads', function(req, res) {
+	var load = req.body
+	load.id = loadCollection[loadCollection.length - 1].id + 1	
+	load.status = 'Available'
+	load.createdDateTime = moment()
+
+	processNewStops(load)
 
 	load.carrierTenderingInfo = []
 	load.brokerTenderingInfo = []
@@ -301,6 +305,9 @@ app.put('/loads/:id', function(req, res) {
 
 	if (loadNum) {
 		var updatedLoad = req.body
+
+		processNewStops(updatedLoad)
+
 		loadCollection[loadNum] = updatedLoad		
 		res.json(updatedLoad)
 	}

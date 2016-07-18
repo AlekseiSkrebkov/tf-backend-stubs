@@ -177,6 +177,7 @@ function generateStops(loadId) {
 
 	for (var i = 0; i < stops_array.length; i++) {
 		stops_array[i].date = stops_array[i].date.format('YYYY/MM/DD')
+		stops_array[i].stopNum = i
 	}
 
 	return stops_array
