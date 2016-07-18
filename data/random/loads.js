@@ -10,7 +10,7 @@ const divisions = require('../static/divisions.js')
 
 const numberOfStops = 7
 const numberOfShipments = 10
-const loadsQuantity = 200
+const loadsQuantity = 1
 
 var loads_collection = []
 for (var i = 0; i < loadsQuantity; i++) {
@@ -165,7 +165,7 @@ function generateStops(loadId) {
 	var startLocationNumber	= common_tools.randomFrom(locations.length)
 	for (var i = 0; i < stops_quantity; i++) {
 		stop = locations[(startLocationNumber + i) % locations.length]
-		stop.id = loadId * 100 + i
+		stop.stop_id = loadId * 10 + i
 		stop.date = moment().add(common_tools.randomFrom(25), 'd')
 		stop.time = common_tools.randomTime()
 		stops_array[i] = stop

@@ -5,10 +5,7 @@ const attributes = require(static_data_folder + 'attributes')
 
 var divisions = require(static_data_folder + 'divisions')
 divisions = divisions.carriers.concat(divisions.brokers)
-
 var loadCollection = require(random_data_folder + 'loads')
-
-
 
 const express = require('express')
 const bodyParser = require('body-parser')
@@ -259,18 +256,22 @@ app.post('/loads', function(req, res) {
 	load.createdDateTime = moment()
 
 	for (var i = 0; i < load.stops.length; i++) { 
-		var oldStopId = load.stops[i].id
-		console.log('processing stop id', oldStopId)
-		var newStopId = load.id * 100 + i
-		for (var j = 0; j < load.shipments.length; j++) {
-			if (load.shipments[j].pickup == oldStopId) {
-				load.shipments[j].pickup = newStopId
+		var tempStopId = load.stops[i]._id
+		console.log('processing of temp stop id', tempStopId)
+		if (tempStopId) {
+			var newStopId = load.id * 100 + i
+			for (var j = 0; j < load.shipments.length; j++) {
+				if (load.shipments[j].pickup == tempStopId) {
+					load.shipments[j].pickup = newStopId
+				}
+				if (load.shipments[j].dropoff == tempStopId) {
+					load.shipments[j].dropoff = newStopId
+				}
 			}
-			if (load.shipments[j].dropoff == oldStopId) {
-				load.shipments[j].dropoff = newStopId
-			}
-		}
-		load.stops[i].id = newStopId
+			load.stops[i].id = newStopId	
+		} else if (!load.stops[i].id) {
+			res.status(403).send('Stop id is missed')
+		} 
 	}
 
 	for (var i = 0; i < load.shipments.length; i++) {
@@ -323,7 +324,18 @@ app.delete('/loads/:id', function(req, res) {
 	}
 })
 
-app.get('/loads/:id', function(req, res){
+
+app.get('/loads/:id', function(req, res) {
+
+	//ToDo: this is WA for problem with unexpectedly generated stop.id
+	for (var i = 0; i < loadCollection.length; i++) {
+		var stops = loadCollection[i].stops
+		for (var j = 0; j < stops.length; j++) {
+			stops[j].id = stops[j].stop_id
+			stops[j].stop_id = undefined
+		}
+	}
+
 	var load = R.find(R.propEq('id', parseInt(req.params.id)), loadCollection)
 	
 	if (load)
