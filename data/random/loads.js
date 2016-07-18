@@ -10,19 +10,24 @@ const divisions = require('../static/divisions.js')
 
 const numberOfStops = 7
 const numberOfShipments = 10
-const loadsQuantity = 200
+const loadsQuantity = 150
 
 var loads_collection = []
+
+
+
 for (var i = 0; i < loadsQuantity; i++) {
-	loads_collection[i] = generateLoad(i)
+	var newLoad = generateLoad(i);
+
+	loads_collection.push(JSON.parse(JSON.stringify(newLoad)));
 }
 
-module.exports = loads_collection
 
 function generateLoad(id) {
-	id += 1
+	var idx = id + 1
 
-	var stops = generateStops(id)
+	var stops = generateStops(idx)
+
 	var brokerDivision = getBrokerDivision()
 	var carrierDivision = getCarrierDivision()
 	while (carrierDivision == null && brokerDivision == null) {
@@ -30,7 +35,7 @@ function generateLoad(id) {
 	}
 
 	return {
-		"id": id,
+		"id": idx,
 		"brokerLoadNumber": common_tools.guid(),
 		"carrierLoadNumber": common_tools.guid(),
 		"bolNumber": common_tools.guid(),
@@ -49,8 +54,8 @@ function generateLoad(id) {
 			"	2. The signed Bill of Lading." +
 			"	3. Receipts for lumpers or other accessorial charges.",
 		"loadAttributes": generateLoadAttributes(),
-		"stops": stops,
-		"shipments": generateShipments(id, stops)
+		"stops": stops.slice(),
+		"shipments": generateShipments(idx, stops)
 	}	
 }
 
@@ -136,6 +141,7 @@ function generateShipments(loadId, stops) {
 		}
 //ToDo reimplement this part ^
 		var id = loadId * 100 + i
+//ToDo stop.stop_id is WA, should be replaced with 'id' 
 		shipments[i] = {
 			"id": id,
 			"shipmentBOL": common_tools.guid(),
@@ -146,8 +152,8 @@ function generateShipments(loadId, stops) {
 			"be referenced on our payment to you. " +
 			"	2. The signed Bill of Lading." +
 			"	3. Receipts for lumpers or other accessorial charges.",
-			"pickup": (stops[pickUpStopNum]).id,
-			"dropoff": stops[dropOffStopNum].id,
+			"pickup": stops[pickUpStopNum].stop_id,
+			"dropoff": stops[dropOffStopNum].stop_id,
 			"orders": generateOrders(id),
 			"packages": generatePackages(id)
 		}
@@ -157,23 +163,26 @@ function generateShipments(loadId, stops) {
 }
 
 function generateStops(loadId) {
-	var stop 
+	var stop = {}
 	var stops_array = []
 	var stops_quantity = common_tools.randomFrom(numberOfStops)
 	if (stops_quantity < 2) stops_quantity = 2
 
 	var startLocationNumber	= common_tools.randomFrom(locations.length)
 	for (var i = 0; i < stops_quantity; i++) {
+		var stopId = loadId * 10 + i
+
 		stop = locations[(startLocationNumber + i) % locations.length]
-		stop.stop_id = loadId * 10 + i
+		stop.stop_id = stopId
 		stop.date = moment().add(common_tools.randomFrom(25), 'd')
 		stop.time = common_tools.randomTime()
-		stops_array[i] = stop
+		
+		stops_array.push(stop)
 	}
 	
-	stops_array.sort(function(stop1, stop2) {
+	/*stops_array.sort(function(stop1, stop2) {
 		return (moment(stop1.date).valueOf() - stop2.date.valueOf())
-	})
+	})*/
 
 	for (var i = 0; i < stops_array.length; i++) {
 		stops_array[i].date = stops_array[i].date.format('YYYY/MM/DD')
@@ -270,3 +279,6 @@ function randomMark() {
 	
 	return marks[common_tools.randomFrom(2)]
 }
+
+
+module.exports = loads_collection

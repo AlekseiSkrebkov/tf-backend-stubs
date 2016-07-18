@@ -5,6 +5,7 @@ const attributes = require(static_data_folder + 'attributes')
 
 var divisions = require(static_data_folder + 'divisions')
 divisions = divisions.carriers.concat(divisions.brokers)
+
 var loadCollection = require(random_data_folder + 'loads')
 
 const express = require('express')
@@ -334,18 +335,20 @@ app.delete('/loads/:id', function(req, res) {
 
 app.get('/loads/:id', function(req, res) {
 
+
 	//ToDo: this is WA for problem with unexpectedly generated stop.id
-	for (var i = 0; i < loadCollection.length; i++) {
-		var stops = loadCollection[i].stops
-		for (var j = 0; j < stops.length; j++) {
-			stops[j].id = stops[j].stop_id
-			//delete stops[j].stop_id
-		}
-
-	}
-
 	var load = R.find(R.propEq('id', parseInt(req.params.id)), loadCollection)
 	
+	console.log('before WA', load.stops)
+
+	for (var i = 0; i < load.stops.length; i++) {
+			load.stops[i].id = load.stops[i].stop_id
+			delete load.stops[i].stop_id
+	}
+
+	console.log('after WA', load.stops)
+
+
 	if (load)
 		res.json(load)
 	else 
