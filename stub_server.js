@@ -339,8 +339,9 @@ app.get('/loads/:id', function(req, res) {
 		var stops = loadCollection[i].stops
 		for (var j = 0; j < stops.length; j++) {
 			stops[j].id = stops[j].stop_id
-			stops[j].stop_id = undefined
+			//delete stops[j].stop_id
 		}
+
 	}
 
 	var load = R.find(R.propEq('id', parseInt(req.params.id)), loadCollection)
