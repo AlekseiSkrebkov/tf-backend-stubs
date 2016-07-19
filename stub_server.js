@@ -420,7 +420,7 @@ app.get('/divisions/:id/addresses', function(req, res) {
 
 	console.log('number of addresses after filtering', resAddresses.length)
 
-
+	var resAddresses1 
 	if (lastId && quantity) {
 		var startAddress = resAddresses.findIndex(function(address) {
 				return address.id == parseInt(lastId ) + 1
@@ -429,7 +429,7 @@ app.get('/divisions/:id/addresses', function(req, res) {
 		console.log('requested quantity', quantity)
 
 		if (startAddress > 0) {
-			var resAddresses1 = resAddresses.slice(startAddress, startAddress + quantity)
+			resAddresses1 = resAddresses.slice(startAddress, startAddress + quantity)
 			console.log('resAddresses1', resAddresses1.length)
 			if (startAddress + quantity > resAddresses.length)	{
 				resAddresses1 = resAddresses1.concat(resAddresses.slice(0, (startAddress + quantity - resAddresses.length )))
