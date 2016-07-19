@@ -247,7 +247,11 @@ app.get('/loads', function(req, res) {
 
 	console.log('filtered number of loads', res_loads.length)
 
-	res.json(res_loads)
+	var isOverLimit = res_loads.length > 200
+	res.json({
+		"loads": res_loads.slice(0, 199),
+		"isOverLimit": isOverLimit	
+	})
 })
 
 function processNewStops(load) {
