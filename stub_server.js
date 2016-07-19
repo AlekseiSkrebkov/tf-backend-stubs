@@ -402,33 +402,48 @@ app.get('/divisions/:id/drivers', function(req, res) {
 
 const addresses_collection = require(random_data_folder + 'addresses')
 app.get('/divisions/:id/addresses', function(req, res) {
-	var addresses = addresses_collection
+	var resAddresses = addresses_collection
+
+	console.log('addresses quantity', resAddresses.length)
 
 	var address_entry = req.query.address_entry
 	var lastId = req.query.lastid
 	var quantity = parseInt(req.query.quantity)
 
+
 	if (address_entry) {
-		addresses = addresses.filter(function(address) {
+		resAddresses = resAddresses.filter(function(address) {
 			var addressString = JSON.stringify(address)
 			return (addressString.toLowerCase().indexOf(address_entry.toLowerCase()) > -1)	
 		})		
 	}
 
+	console.log('number of addresses after filtering', resAddresses.length)
+
+
 	if (lastId && quantity) {
-		var startAddress = addresses.findIndex(function(address) {
+		var startAddress = resAddresses.findIndex(function(address) {
 				return address.id == parseInt(lastId ) + 1
 			})
-		var resAddresses
+		console.log('requested start address position', startAddress)
+		console.log('requested quantity', quantity)
+
 		if (startAddress > 0) {
-			resAddresses = addresses.slice(startAddress, 
-				startAddress + quantity > addresses.length ? (addresses.length - startAddress) : quantity)	
+			resAddresses1 = resAddresses.slice(startAddress, startAddress + quantity)
+			console.log('resAddresses1', resAddresses1.length)
+			if (startAddress + quantity > resAddresses.length)	{
+				resAddresses1 = resAddresses1.concat(resAddresses.slice(0, (startAddress + quantity - resAddresses.length )))
+				console.log('resAddresses1 after append', resAddresses1.length)
+
+			} 
 		} else {
-			resAddresses = addresses.slice(0, quantity)	
+			resAddresses1 = resAddresses.slice(0, quantity)	
 		}
 	}
 	
-	res.json(resAddresses)
+	console.log('returned number of addresses', resAddresses1.length)
+
+	res.json(resAddresses1)
 })
 
 app.get('/loadattributes', function(req, res) {
