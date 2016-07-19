@@ -420,7 +420,7 @@ app.get('/divisions/:id/addresses', function(req, res) {
 
 	console.log('number of addresses after filtering', resAddresses.length)
 
-	var resAddresses1 
+	var resAddresses1 = resAddresses 
 	if (lastId && quantity) {
 		var startAddress = resAddresses.findIndex(function(address) {
 				return address.id == parseInt(lastId ) + 1
