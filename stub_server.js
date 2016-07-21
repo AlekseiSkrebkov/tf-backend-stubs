@@ -4,7 +4,9 @@ const static_data_folder = './data/static/'
 const attributes = require(static_data_folder + 'attributes')
 
 var divisions = require(static_data_folder + 'divisions')
-divisions = divisions.carriers.concat(divisions.brokers)
+var carrierDivisions = divisions.carriers
+var brokerDivisions = divisions.brokers
+divisions = carrierDivisions.concat(brokerDivisions)
 
 var loadCollection = require(random_data_folder + 'loads')
 
@@ -59,16 +61,19 @@ app.post('/auth/signin', function (req, res) {
 })
 
 app.get('/auth', function(req, res) {
-	var security_token = req.get('X-Security-Token')
+	var user_profile = getUserProfile(req)
 
-	console.log('security_token', security_token)
-
-	var user_profile = R.find(R.propEq('securityToken', security_token), user_profiles)
 	if (user_profile)
 		res.json(user_profile)
 	else
 		res.status(404).send('User is not found')
 })
+
+function getUserProfile(req) {
+	var security_token = req.get('X-Security-Token')
+
+	return R.find(R.propEq('securityToken', security_token), user_profiles)
+}
 
 app.post('/auth/forgot', function(req, res) {
 	var email = req.body.email
@@ -449,6 +454,19 @@ app.get('/divisions/:id/addresses', function(req, res) {
 app.get('/loadattributes', function(req, res) {
 	res.json(attributes)
 })	
+
+app.get('/divisions/:id/brokers', function(req, res) {
+	var brokerDivisionSummary  = []
+	for (var i = 0; i < brokerDivisions.length; i++) {
+		brokerDivisionSummary.push(
+			{
+				"id": brokerDivisions[i].id,
+				"name": brokerDivisions[i].name
+			}
+		)
+	}
+	res.json(brokerDivisionSummary)
+})
 
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'))
