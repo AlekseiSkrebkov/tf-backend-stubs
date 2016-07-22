@@ -489,14 +489,14 @@ var loadNotificationSettings = []
 app.get('/loads/:id/notifications', function(req, res) {
 	var loadId = req.params.id
 	console.log('Notifications requested for load id=', loadId)
-	var settings = loadNotificationSettings.find(function(loadSettings) {
-		return loadId == loadSettings.id
+	var loadSettings = loadNotificationSettings.find(function(settings) {
+		return loadId == settings.id
 	})
 
-	console.log('settings for load', settings)
+	console.log('settings for load', loadSettings)
 
-	if (!settings) {
-		settings = []
+	if (!loadSettings) {
+		var settings = []
 		for (var i = 0; i < events.length; i ++) {
 			var eventSetting = {}
 			eventSetting.event = events[i]
@@ -504,9 +504,11 @@ app.get('/loads/:id/notifications', function(req, res) {
 			
 			settings.push(eventSetting)
 		}
+		res.json(settings)
+	} else {
+		res.json(loadSettings.settings)
 	}
 
-	res.json(settings)
 })
 
 app.put('/loads/:id/notifications', function(req, res) {
