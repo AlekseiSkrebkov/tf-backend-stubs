@@ -468,6 +468,45 @@ app.get('/divisions/:id/brokers', function(req, res) {
 	res.json(brokerDivisionSummary)
 })
 
+// Load Sharing
+app.get('/loads/:id/share', function(req, res) {
+	var loadId = req.params.id
+	res.json(
+		{
+			"link": '/loads/' + loadId
+		}
+	)
+})
+
+app.put ('/loads/:id/share', function(req, res) {
+	res.status(200).send('OK')
+})
+
+//Load Notification Settings
+const events = require(static_data_folder + 'events')
+var loadNotificationSettings = []
+
+app.get('/loads/:id/notifications', function(req, res) {
+	var loadId = req.params.id
+	console.log('Notifications requested for load id=', loadId)
+	var setting = loadNotificationSettings.find(function(load) {
+		return loadId == load.id
+	})
+
+	console.log('settings for load', setting)
+
+	if (!setting) {
+		setting = {}
+		setting.id = loadId
+		for (var i = 0; i < events.length; i ++) {
+			setting.event = events[i]
+			setting.subscribers = []
+		}
+	}
+
+	res.json(setting)
+})
+
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'))
 })
