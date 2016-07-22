@@ -473,13 +473,40 @@ app.get('/loads/:id/share', function(req, res) {
 	var loadId = req.params.id
 	res.json(
 		{
-			"link": '/loads/' + loadId
+			"link": '/share/' + btoa(loadId)
 		}
 	)
 })
 
 app.put ('/loads/:id/share', function(req, res) {
 	res.status(200).send('OK')
+})
+
+function atob(str) {
+  return new Buffer(str, 'base64').toString('binary');
+}
+
+function btoa(str) {
+    var buffer;
+
+    if (str instanceof Buffer) {
+      buffer = str;
+    } else {
+      buffer = new Buffer(str.toString(), 'binary');
+    }
+
+    return buffer.toString('base64');
+}
+
+app.get('/share/:id', function(req, res) {
+	var loadId = atob(req.params.id)
+
+	var load = R.find(R.propEq('id', parseInt(loadId)), loadCollection)
+	
+	if (load)
+		res.json(load)
+	else 
+		res.status(404).send("Load is not found")
 })
 
 /*
