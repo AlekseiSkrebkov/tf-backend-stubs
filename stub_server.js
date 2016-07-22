@@ -542,6 +542,16 @@ app.get('/loads/:id/messages', function(req, res) {
 	res.json(loadMessages)
 })
 
+/* 
+	Load Breadcrumbs
+*/
+const breadcrumbs = require(static_data_folder + 'breadcrumbs')
+
+app.get('/loads/:id/breadcrumbs', function(req, res) {
+	console.log('requested number of breadcrumbs', breadcrumbs.length)
+	res.json(breadcrumbs)
+})
+
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'))
 })
