@@ -489,22 +489,45 @@ var loadNotificationSettings = []
 app.get('/loads/:id/notifications', function(req, res) {
 	var loadId = req.params.id
 	console.log('Notifications requested for load id=', loadId)
-	var setting = loadNotificationSettings.find(function(load) {
-		return loadId == load.id
+	var settings = loadNotificationSettings.find(function(loadSettings) {
+		return loadId == loadSettings.id
 	})
 
-	console.log('settings for load', setting)
+	console.log('settings for load', settings)
 
-	if (!setting) {
-		setting = {}
-		setting.id = loadId
+	if (!settings) {
+		settings = []
 		for (var i = 0; i < events.length; i ++) {
-			setting.event = events[i]
-			setting.subscribers = []
+			var eventSetting = {}
+			eventSetting.event = events[i]
+			eventSetting.subscribers = []
+			
+			settings.push(eventSetting)
 		}
 	}
 
-	res.json(setting)
+	res.json(settings)
+})
+
+app.put('/loads/:id/notifications', function(req, res) {
+	var loadId = req.params.id
+	var settings = req.body
+	console.log('Updating notification settings for load id=', loadId)
+
+	var settingsIndex = loadNotificationSettings.findIndex(function(loadSettings) {
+		return loadId ==loadSettings.id
+	})
+
+	if (settingsIndex == -1) {
+		var newSettings = {}
+		newSettings.id = loadId
+		newSettings.settings = settings
+		loadNotificationSettings.push(newSettings)
+	} else {
+		loadNotificationSettings[settingsIndex].settings = settings
+	}
+
+	res.status(200).send('OK')
 })
 
 app.listen(app.get('port'), function() {
