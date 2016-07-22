@@ -482,7 +482,9 @@ app.put ('/loads/:id/share', function(req, res) {
 	res.status(200).send('OK')
 })
 
-//Load Notification Settings
+/*
+	Load Notification Settings
+*/
 const events = require(static_data_folder + 'events')
 var loadNotificationSettings = []
 
@@ -508,7 +510,6 @@ app.get('/loads/:id/notifications', function(req, res) {
 	} else {
 		res.json(loadSettings.settings)
 	}
-
 })
 
 app.put('/loads/:id/notifications', function(req, res) {
@@ -530,6 +531,15 @@ app.put('/loads/:id/notifications', function(req, res) {
 	}
 
 	res.status(200).send('OK')
+})
+
+/*
+	Load Messages
+*/
+const loadMessages = require(static_data_folder + 'loadMessages')
+
+app.get('/loads/:id/messages', function(req, res) {
+	res.json(loadMessages)
 })
 
 app.listen(app.get('port'), function() {
