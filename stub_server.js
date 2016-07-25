@@ -513,48 +513,46 @@ app.get('/share/:id', function(req, res) {
 	Load Notification Settings
 */
 const events = require(static_data_folder + 'events')
-var loadNotificationSettings = []
+var loadNotificationSubscribers = []
 
 app.get('/loads/:id/notifications', function(req, res) {
 	var loadId = req.params.id
 	console.log('Notifications requested for load id=', loadId)
-	var loadSettings = loadNotificationSettings.find(function(settings) {
+	var loadSettings = loadNotificationSubscribers.find(function(settings) {
 		return loadId == settings.id
 	})
 
 	console.log('settings for load', loadSettings)
 
 	if (!loadSettings) {
-		var settings = []
-		for (var i = 0; i < events.length; i ++) {
-			var eventSetting = {}
-			eventSetting.event = events[i]
-			eventSetting.subscribers = []
-			
-			settings.push(eventSetting)
-		}
-		res.json(settings)
+		res.json({
+			"events": events,
+			"subscribers": []
+		})
 	} else {
-		res.json(loadSettings.settings)
+		res.json({
+			"events": events,
+			"subscribers": loadSettings.subscribers
+		})
 	}
 })
 
 app.put('/loads/:id/notifications', function(req, res) {
 	var loadId = req.params.id
-	var settings = req.body
-	console.log('Updating notification settings for load id=', loadId)
+	var subscribers = req.body
+	console.log('Updating notification subscribers for load id=', loadId)
 
-	var settingsIndex = loadNotificationSettings.findIndex(function(loadSettings) {
+	var settingsIndex = loadNotificationSubscribers.findIndex(function(loadSettings) {
 		return loadId ==loadSettings.id
 	})
 
 	if (settingsIndex == -1) {
 		var newSettings = {}
 		newSettings.id = loadId
-		newSettings.settings = settings
-		loadNotificationSettings.push(newSettings)
+		newSettings.subscribers = subscribers
+		loadNotificationSubscribers.push(newSettings)
 	} else {
-		loadNotificationSettings[settingsIndex].settings = settings
+		loadNotificationSubscribers[settingsIndex].subscribers = subscribers
 	}
 
 	res.status(200).send('OK')
