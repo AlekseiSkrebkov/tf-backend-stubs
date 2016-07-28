@@ -88,13 +88,8 @@ app.get('/auth/signout', function(req, res) {
 	console.log('Signed Out')
 }) 
 
-app.get('/loads', function(req, res) {
-	var res_loads = []
-
-	for (var i = 0; i < loadCollection.length; i++) {
-		var load = loadCollection[i]
-		
-		res_loads[i] = {
+function getLoadSummary(load) {
+	return {
 			"id": load.id,
 			"brokerLoadNumber": load.brokerLoadNumber,
 			"carrierLoadNumber": load.carrierLoadNumber,
@@ -110,6 +105,15 @@ app.get('/loads', function(req, res) {
 			"carrierTenderingInfo": load.carrierTenderingInfo,
 			"createdDateTime": load.createdDateTime
 		}
+}
+
+app.get('/loads', function(req, res) {
+	var res_loads = []
+
+	for (var i = 0; i < loadCollection.length; i++) {
+		var load = loadCollection[i]
+		
+		res_loads[i] = getLoadSummary(load)
 	} 
 
 //filtering loads
@@ -326,6 +330,21 @@ app.put('/loads/:id', function(req, res) {
 	}
 })
 
+app.post('/loads/:id', function(req, res) {
+	var loadId = req.params.id
+	
+	var clonedLoad =  JSON.parse(JSON.stringify(R.find(R.propEq('id', parseInt(loadId)), loadCollection)))
+	clonedLoad.id = loadCollection[loadCollection.length - 1].id + 1
+	clonedLoad.status = 'Available'
+	clonedLoad.createdDateTime = moment()
+
+	clonedLoad.carrierTenderingInfo = []
+	clonedLoad.brokerTenderingInfo = []
+	loadCollection.push(clonedLoad)
+
+	res.json(clonedLoad)
+})
+
 app.delete('/loads/:id', function(req, res) {
 	var loadId = req.params.id
 	var loadNum = loadCollection.findIndex(function(load) {
@@ -340,7 +359,6 @@ app.delete('/loads/:id', function(req, res) {
 		res.status(404).send("Load ID=" + loadId + " is not found")
 	}
 })
-
 
 app.get('/loads/:id', function(req, res) {
 
@@ -362,6 +380,33 @@ app.get('/loads/:id', function(req, res) {
 		res.json(load)
 	else 
 		res.status(404).send("Load ID = " + req.params.id + " is not found")
+})
+
+app.get('/loads/:id/summary', function(req, res) {
+	var load = R.find(R.propEq('id', parseInt(req.params.id)), loadCollection)
+
+	if (load)
+		res.json(getLoadSummary(load))
+	else 
+		res.status(404).send("Load ID = " + req.params.id + " is not found")
+})
+
+app.put('/loads/:id/carriertendering', function(req, res) {
+	console.log('carrier tendering update for load id=', req.params.id)
+	var load = R.find(R.propEq('id', parseInt(req.params.id)), loadCollection)
+
+	console.log('updated tendering info', req.body)
+	load.carrierTenderingInfo = req.body
+
+	res.json(getLoadSummary(load))
+})
+
+app.put('/loads/:id/brokertendering', function(req, res) {
+	var load = R.find(R.propEq('id', parseInt(req.params.id)), loadCollection)
+
+	load.brokerTenderingInfo = req.body
+
+	res.json(getLoadSummary(load))
 })
 
 app.put('/loads/:id/changeownership', function(req, res) {	

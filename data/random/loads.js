@@ -245,8 +245,6 @@ function generateTenderingInfo(divisionId) {
 		var assignmentParty = subordinates[(startSubsetPosition + i) % numberOfSubordinates]
 		tenderingInfo.push({
 			"id": assignmentParty.id,
-			"name": assignmentParty.name,
-			"isNewMessage": assignmentParty.isNewMessage,
 			"assignmentStatus": assignmentStatus
 		})
 	}	
