@@ -330,8 +330,8 @@ app.put('/loads/:id', function(req, res) {
 	}
 })
 
-app.post('/loads/:id', function(req, res) {
-	var loadId = req.params.id
+app.post('/loads/clone', function(req, res) {
+	var loadId = req.body.load_id
 	
 	var clonedLoad =  JSON.parse(JSON.stringify(R.find(R.propEq('id', parseInt(loadId)), loadCollection)))
 	clonedLoad.id = loadCollection[loadCollection.length - 1].id + 1
