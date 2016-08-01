@@ -617,13 +617,14 @@ app.get('/loads/:id/messages', function(req, res) {
 	Load Breadcrumbs
 */
 app.get('/loads/:id/breadcrumbs', function(req, res) {
-	var loadId = req.params.id
+	/*var loadId = req.params.id
 	var load = loadCollection.find(function(load) {
 		return load.id == parseInt(loadId)
 	})
 	var breadcrumbsSubset = breadcrumbs.slice(load.stops[0].coordinatesIndex, load.stops[load.stops.length - 1].coordinatesIndex)
 	console.log('requested number of breadcrumbs', breadcrumbsSubset.length)
-	res.json(breadcrumbsSubset)
+	res.json(breadcrumbsSubset)*/
+	res.json(breadcrumbs)
 })
 
 app.listen(app.get('port'), function() {
