@@ -3,10 +3,9 @@ const R = require('ramda')
 var moment = require('moment')
 moment().format()
 
-
-
 const locations = require('../static/locations')
 const divisions = require('../static/divisions.js')
+const breadcrumbs = require('../static/breadcrumbs.js')
 
 const numberOfStops = 7
 const numberOfShipments = 10
@@ -166,6 +165,8 @@ function generateStops(loadId) {
 	if (stops_quantity < 2) stops_quantity = 2
 
 	var startLocationNumber	= common_tools.randomFrom(locations.length)
+
+	var coordinatesSubsetLength = Math.trunc(breadcrumbs.length / (stops_quantity))
 	for (var i = 0; i < stops_quantity; i++) {
 		var stopId = loadId * 10 + i
 
@@ -173,6 +174,7 @@ function generateStops(loadId) {
 		stop.stop_id = stopId
 		stop.date = moment().add(common_tools.randomFrom(25), 'd')
 		stop.time = common_tools.randomTime()
+
 		
 		stops_array.push(stop)
 	}
@@ -184,6 +186,9 @@ function generateStops(loadId) {
 	for (var i = 0; i < stops_array.length; i++) {
 		stops_array[i].date = stops_array[i].date.format('YYYY/MM/DD')
 		stops_array[i].stopNum = i
+
+		stops_array[i].coordinatesIndex = coordinatesSubsetLength * i + common_tools.randomFrom(coordinatesSubsetLength)
+		stops_array[i].coordinates = breadcrumbs[stop.coordinatesIndex]
 	}
 
 	return stops_array

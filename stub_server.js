@@ -9,6 +9,7 @@ var brokerDivisions = divisions.brokers
 divisions = carrierDivisions.concat(brokerDivisions)
 
 var loadCollection = require(random_data_folder + 'loads')
+const breadcrumbs = require(static_data_folder + 'breadcrumbs')
 
 const express = require('express')
 const bodyParser = require('body-parser')
@@ -615,11 +616,14 @@ app.get('/loads/:id/messages', function(req, res) {
 /* 
 	Load Breadcrumbs
 */
-const breadcrumbs = require(static_data_folder + 'breadcrumbs')
-
 app.get('/loads/:id/breadcrumbs', function(req, res) {
-	console.log('requested number of breadcrumbs', breadcrumbs.length)
-	res.json(breadcrumbs)
+	var loadId = req.params.id
+	var load = loadCollection.find(function(load) {
+		return load.id == parseInt(loadId)
+	})
+	var breadcrumbsSubset = breadcrumbs.slice(load.stops[0].coordinatesIndex, load.stops[load.stops.length - 1].coordinatesIndex)
+	console.log('requested number of breadcrumbs', breadcrumbsSubset.length)
+	res.json(breadcrumbsSubset)
 })
 
 app.listen(app.get('port'), function() {
