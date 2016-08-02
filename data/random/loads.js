@@ -30,7 +30,9 @@ function generateLoad(id) {
 		carrierDivision = getCarrierDivision()
 	}
 
-	return {
+	console.log('stop_id', stops[common_tools.randomFrom(stops.length - 1)].id)
+
+	var load = {
 		"id": idx,
 		"brokerLoadNumber": common_tools.guid(),
 		"carrierLoadNumber": common_tools.guid(),
@@ -51,8 +53,15 @@ function generateLoad(id) {
 			"	3. Receipts for lumpers or other accessorial charges.",
 		"loadAttributes": generateLoadAttributes(),
 		"stops": stops.slice(),
-		"shipments": generateShipments(idx, stops)
+		"shipments": generateShipments(idx, stops),
+		"showMap": true
 	}	
+
+	if (load.status == 'In Transit') {
+		load.nextStop = stops[common_tools.randomFrom(stops.length)].id
+	}
+
+	return load
 }
 
 function getBrokerDivision() {
@@ -171,6 +180,7 @@ function generateStops(loadId) {
 		var stopId = loadId * 10 + i
 
 		stop = locations[(startLocationNumber + i) % locations.length]
+		stop.id = stopId
 		stop.stop_id = stopId
 		stop.date = moment().add(common_tools.randomFrom(25), 'd')
 		stop.time = common_tools.randomTime()
@@ -261,7 +271,7 @@ function generateTenderingInfo(divisionId) {
 function randomStatus() {
 	const statuses = [
 		"Available",
-		"In Transite",
+		"In Transit",
 		"Offered",
 		"Assigned",
 		"Declined",
