@@ -58,7 +58,7 @@ function generateLoad(id) {
 	}	
 
 	if (load.status == 'In Transit') {
-		load.nextStop = stops[common_tools.randomFrom(stops.length)].id
+		load.nextStop = stops[common_tools.randomFrom(stops.length - 1) + 1].id
 	}
 
 	return load
