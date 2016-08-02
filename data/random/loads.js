@@ -198,7 +198,7 @@ function generateStops(loadId) {
 		stops_array[i].stopNum = i
 
 		stops_array[i].coordinatesIndex = coordinatesSubsetLength * i + common_tools.randomFrom(coordinatesSubsetLength)
-		stops_array[i].coordinates = breadcrumbs[stop.coordinatesIndex]
+		stops_array[i].coordinates = breadcrumbs[stops_array[i].coordinatesIndex].coordinates
 	}
 
 	return stops_array
