@@ -105,7 +105,29 @@ const brokerDivisions = [
 		}
 	]
 
+function getCarrierDivisionById(id) {
+	return carrierDivisions.find(function(division){
+			return division.id == parseInt(id)
+		})
+}
+
+function getBrokerDivisionById(id) {
+	return brokerDivisions.find(function(division){
+			return division.id == parseInt(id)
+		})
+}
+
+function getSubordinateById(division, id) {
+	console.log('looking for sub id = ' + id + ' from division id=' + division.id)
+	return division.subordinates.find(function(subordinate){
+			return subordinate.id == parseInt(id)
+		})
+}
+
 module.exports = {
 	carriers: carrierDivisions,
-	brokers: brokerDivisions
+	brokers: brokerDivisions,
+	getCarrierDivisionById: getCarrierDivisionById,
+	getBrokerDivisionById: getBrokerDivisionById,
+	getSubordinateById: getSubordinateById
 }

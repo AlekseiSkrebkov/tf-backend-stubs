@@ -3,9 +3,9 @@ const static_data_folder = './data/static/'
 
 const attributes = require(static_data_folder + 'attributes')
 
-var divisions = require(static_data_folder + 'divisions')
-var carrierDivisions = divisions.carriers
-var brokerDivisions = divisions.brokers
+var divisionsRepository = require(static_data_folder + 'divisions')
+var carrierDivisions = divisionsRepository.carriers
+var brokerDivisions = divisionsRepository.brokers
 divisions = carrierDivisions.concat(brokerDivisions)
 
 var loadCollection = require(random_data_folder + 'loads')
@@ -396,17 +396,107 @@ app.put('/loads/:id/carriertendering', function(req, res) {
 	console.log('carrier tendering update for load id=', req.params.id)
 	var load = R.find(R.propEq('id', parseInt(req.params.id)), loadCollection)
 
-	console.log('updated tendering info', req.body)
-	load.carrierTenderingInfo = req.body
+	if (!load) {
+		res.status(404).send("Load ID = " + req.params.id + " is not found")
+	} else {
+		var receivedTenderingUpdate = req.body
+		console.log('receivedTenderingUpdate', receivedTenderingUpdate)
+
+		for (var i =0; i < receivedTenderingUpdate.length; i++) {
+			if (!receivedTenderingUpdate[i].name) {
+				console.log('enriching name for id=', receivedTenderingUpdate[i].id )
+				var division = divisionsRepository.getCarrierDivisionById(load.carrierDivision.id)
+				var driver = divisionsRepository.getSubordinateById(division, receivedTenderingUpdate[i].id) 
+				receivedTenderingUpdate[i].name = driver.name
+			}
+		}
+
+		load.carrierTenderingInfo = receivedTenderingUpdate
+
+
+/*		var receivedTenderingUpdate = req.body
+		var loadTenderingInfo = load.carrierTenderingInfo
+
+		console.log('loadTenderingInfo', loadTenderingInfo)
+		var tenderingItem = loadTenderingInfo.find(function(loadTenderingItem) {
+			return loadTenderingItem.id == receivedTenderingUpdate.id
+		})
+
+		console.log('tenderingItem', tenderingItem)
+
+		if (tenderingItem) {
+			tenderingItem.status = receivedTenderingUpdate.assignmentStatus
+		} else {
+			var division = divisionsRepository.getCarrierDivisionById(load.carrierDivision.id)
+			console.log('division', division)
+
+			console.log('looking for driver id=', receivedTenderingUpdate.id)
+			var driver = divisionsRepository.getSubordinateById(division, receivedTenderingUpdate.id) 
+			console.log('driver', driver)
+
+			load.carrierTenderingInfo.push(
+				{
+					"id": receivedTenderingUpdate.id,
+					"name": driver.name,
+					"assignmentStatus": receivedTenderingUpdate.assignmentStatus
+				}
+			)
+		}
+*/
+	}
 
 	res.json(load.carrierTenderingInfo)
 })
 
 app.put('/loads/:id/brokertendering', function(req, res) {
+	console.log('broker tendering update for load id=', req.params.id)
 	var load = R.find(R.propEq('id', parseInt(req.params.id)), loadCollection)
 
-	console.log('updated tendering info', req.body)
-	load.brokerTenderingInfo = req.body
+	if (!load) {
+		res.status(404).send("Load ID = " + req.params.id + " is not found")
+	} else {
+		var receivedTenderingUpdate = req.body
+
+		for (var i =0; i < receivedTenderingUpdate.length; i++) {
+			if (!receivedTenderingUpdate[i].name) {
+				var division = divisionsRepository.getBrokerDivisionById(load.brokerDivision.id)
+				var carrier = divisionsRepository.getSubordinateById(division, receivedTenderingUpdate[i].id) 
+				receivedTenderingUpdate[i].name = carrier.name
+			}
+		}
+
+		load.brokerTenderingInfo = receivedTenderingUpdate
+
+/*
+		var loadTenderingInfo = load.brokerTenderingInfo
+
+		console.log('loadTenderingInfo', loadTenderingInfo)
+		var tenderingItem = loadTenderingInfo.find(function(loadTenderingItem) {
+			return loadTenderingItem.id == receivedTenderingUpdate.id
+		})
+
+		console.log('tenderingItem', tenderingItem)
+
+		if (tenderingItem) {
+			tenderingItem.status = receivedTenderingUpdate.assignmentStatus
+		} else {
+			var division = divisionsRepository.getBrokerDivisionById(load.carrierDivision.id)
+			console.log('division', division)
+
+			console.log('looking for driver id=', receivedTenderingUpdate.id)
+			var carrier = divisionsRepository.getSubordinateById(division, receivedTenderingUpdate.id) 
+			console.log('carrier', carrier)
+
+			load.brokerTenderingInfo.push(
+				{
+					"id": receivedTenderingUpdate.id,
+					"name": carrier.name,
+					"assignmentStatus": receivedTenderingUpdate.assignmentStatus
+				}
+			)
+		}
+*/		
+	}
 
 	res.json(load.brokerTenderingInfo)
 })
