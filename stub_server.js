@@ -399,15 +399,16 @@ app.put('/loads/:id/carriertendering', function(req, res) {
 	console.log('updated tendering info', req.body)
 	load.carrierTenderingInfo = req.body
 
-	res.json(getLoadSummary(load))
+	res.json(load.carrierTenderingInfo)
 })
 
 app.put('/loads/:id/brokertendering', function(req, res) {
 	var load = R.find(R.propEq('id', parseInt(req.params.id)), loadCollection)
 
+	console.log('updated tendering info', req.body)
 	load.brokerTenderingInfo = req.body
 
-	res.json(getLoadSummary(load))
+	res.json(load.brokerTenderingInfo)
 })
 
 app.put('/loads/:id/changeownership', function(req, res) {	

@@ -30,8 +30,6 @@ function generateLoad(id) {
 		carrierDivision = getCarrierDivision()
 	}
 
-	console.log('stop_id', stops[common_tools.randomFrom(stops.length - 1)].id)
-
 	var load = {
 		"id": idx,
 		"brokerLoadNumber": common_tools.guid(),
