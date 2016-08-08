@@ -462,9 +462,10 @@ app.put('/loads/:id/brokertendering', function(req, res) {
 	} else {
 		var receivedTenderingUpdate = req.body
 
-		for (var i =0; i < receivedTenderingUpdate.length; i++) {
+		for (var i = 0 ; i < receivedTenderingUpdate.length; i++) {
 			if (!receivedTenderingUpdate[i].name) {
 				var division = divisionsRepository.getBrokerDivisionById(load.brokerDivision.id)
+				console.log('tendering from division', division)
 				var carrier = divisionsRepository.getSubordinateById(division, receivedTenderingUpdate[i].id) 
 				receivedTenderingUpdate[i].name = carrier.name
 			}
@@ -545,6 +546,23 @@ app.get('/divisions/:id/drivers', function(req, res) {
 		res.json(division.subordinates)
 	else
 		res.status(403).send('Only Carrier Divisions are supported')
+})
+
+app.get('/divisions/:id/carriers', function(req, res) {
+	var divisionId = req.params.id
+	var division = divisions.find(function(division){
+			return division.id == parseInt(divisionId)
+		})	
+
+	if (division.type == 'broker') {
+		var carriers = division.subordinates
+		for (var i = 0; i < carriers.length; i++) {
+			carriers[i].subordinates = undefined
+		} 
+		res.json(carriers)
+	}
+	else
+		res.status(403).send('Only Broker Divisions are supported')
 })
 
 const addresses_collection = require(random_data_folder + 'addresses')
