@@ -558,7 +558,6 @@ app.get('/divisions/:id/carriers', function(req, res) {
 		var carriers = division.subordinates
 		for (var i = 0; i < carriers.length; i++) {
 			carriers[i].subordinates = undefined
-			carriers[i].isFavorite = true
 		} 
 		res.json(carriers)
 	}
