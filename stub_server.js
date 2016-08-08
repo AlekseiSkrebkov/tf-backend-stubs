@@ -556,6 +556,7 @@ app.get('/divisions/:id/carriers', function(req, res) {
 
 	if (division.type == 'broker') {
 		var carriers = division.subordinates
+		console.log('drivers', division.subordinates)
 		for (var i = 0; i < carriers.length; i++) {
 			carriers[i].subordinates = undefined
 		} 
