@@ -66,6 +66,7 @@ function generateLoad(id) {
 		var truckLocation = locations[common_tools.randomFrom(locations.length)]
 		truckLocation.latitude = breadcrumbsSubset[breadcrumbsSubset.length-1].coordinates[0]
 		truckLocation.longitude = breadcrumbsSubset[breadcrumbsSubset.length-1].coordinates[1]
+		truckLocation.timestamp = breadcrumbsSubset[breadcrumbsSubset.length-1].timestamp
 
 		load.truckLocation = truckLocation
 	}
