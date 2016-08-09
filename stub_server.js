@@ -156,27 +156,27 @@ app.get('/loads', function(req, res) {
 			if (brokers.indexOf(load.brokerDivision.id.toString()) == -1) return false
 		}
 		//filter by origin state
-		var origin_state = req.query.origin_state
+		var origin_state = req.query.originState
 		if (origin_state) {
 			if (load.firstStop.state != origin_state) return false
 		}
 		//filter by origin city
-		var origin_city = req.query.origin_city
+		var origin_city = req.query.originCity
 		if (origin_city) {
 			load.firstStop.city == origin_city
 		}
 		//filter by destination state
-		var destination_state = req.query.destination_state
+		var destination_state = req.query.destinationState
 		if (destination_state) {
 			if (load.lastStop.state != destination_state) return false
 		}
 		//filter by destination city
-		var destination_city = req.query.destination_city
+		var destination_city = req.query.destinationCity
 		if (destination_city) {
 			if (load.lastStop.city == destination_city) return false
 		}
 		//filter by shipping dates
-		var shipping_dates = req.query.shipping_dates
+		var shipping_dates = req.query.shippingDates
 		if (shipping_dates) {
 			var startDateInt = new Date(shipping_dates.slice(0, shipping_dates.indexOf('-'))).getTime()
 			var endDateInt = new Date(shipping_dates.slice(shipping_dates.indexOf('-') + 1, shipping_dates.length)).getTime()
@@ -184,7 +184,7 @@ app.get('/loads', function(req, res) {
 			if (!isDateInRange(loadDateInt, startDateInt, endDateInt)) return false
 		}
 		//filter by delivery dates
-		var delivery_dates = req.query.delivery_dates
+		var delivery_dates = req.query.deliveryDates
 		if (delivery_dates) {
 			var startDateInt = new Date(delivery_dates.slice(0, delivery_dates.indexOf('-'))).getTime()
 			var endDateInt = new Date(delivery_dates.slice(delivery_dates.indexOf('-') + 1, delivery_dates.length)).getTime()
@@ -192,7 +192,7 @@ app.get('/loads', function(req, res) {
 			if (!isDateInRange(loadDateInt, startDateInt, endDateInt)) return false
 		}
 		//filter by Offered To Driver
-		var driverOfferedQuery = req.query.driver_offered
+		var driverOfferedQuery = req.query.driverOffered
 		if (driverOfferedQuery) {
 			driversOffered = driverOfferedQuery.split(',')
 			var drivers = load.carrierTenderingInfo
@@ -203,7 +203,7 @@ app.get('/loads', function(req, res) {
 			if (i == drivers.length) return false
 		}
 		//filter by Assigned To Driver
-		var driverAssigneeQuery = req.query.driver_assignee
+		var driverAssigneeQuery = req.query.driverAssignee
 		if (driverAssigneeQuery) {
 			var driversAssigneed = driverAssigneeQuery.split(',')
 			var drivers = load.carrierTenderingInfo
@@ -214,7 +214,7 @@ app.get('/loads', function(req, res) {
 			if (i == drivers.length) return false
 		}
 		//filter by Assigned To Carrier
-		var carrierAssigneeQuery = req.query.carrier_assignee
+		var carrierAssigneeQuery = req.query.carrierAssignee
 		if (carrierAssigneeQuery) {
 			var carrierAssigned = carrierAssigneeQuery.split(',')
 			var carriers = load.brokerTenderingInfo
@@ -230,8 +230,8 @@ app.get('/loads', function(req, res) {
 	})
 
 //sort loads
-	var sort_by = req.query.sort_by
-	var sort_type = req.query.sort_type
+	var sort_by = req.query.sortBy
+	var sort_type = req.query.sortType
 
 	if (sort_by != 'shipping' && sort_by != 'delivery') 
 		sort_by = 'shipping';
@@ -402,7 +402,7 @@ app.put('/loads/:id/carriertendering', function(req, res) {
 		var receivedTenderingUpdate = req.body
 		console.log('receivedTenderingUpdate', receivedTenderingUpdate)
 
-		for (var i =0; i < receivedTenderingUpdate.length; i++) {
+		for (var i = 0; i < receivedTenderingUpdate.length; i++) {
 			if (!receivedTenderingUpdate[i].name) {
 				console.log('enriching name for id=', receivedTenderingUpdate[i].id )
 				var division = divisionsRepository.getCarrierDivisionById(load.carrierDivision.id)
@@ -548,7 +548,7 @@ app.get('/divisions/:id/addresses', function(req, res) {
 
 	console.log('addresses quantity', resAddresses.length)
 
-	var address_entry = req.query.address_entry
+	var address_entry = req.query.addressEntry
 	var lastId = req.query.lastid
 	var quantity = parseInt(req.query.quantity)
 

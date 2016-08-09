@@ -22,6 +22,9 @@ module.exports = {
 			"Evening between 7PM and 10PM"
 		]
 		return times[random(5)]
+	},
+	randomBoolean: function() {
+		return (Math.random() >= 0.5)
 	} 
 }
 		

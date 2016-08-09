@@ -16,15 +16,16 @@ module.exports = {
 	profiles: [
 		{
 			id: 1,
-			firstname: "Alex",
-			lastname: "Skrebkov",
+			firstName: "Alex",
+			lastName: "Skrebkov",
 			email: "alex.skrebkov@castle.co",
 			divisions: [
 				{
 					id: 1,
 					name: "Montgomery Logistics",
 					type: "carrier",
-					code: "MGYL"
+					code: "MGYL",
+					"permissions": []
 				},
 				{
 					id: 3,
@@ -44,13 +45,15 @@ module.exports = {
 					id: 7,
 					name: "Syfan Logistics",
 					type: "carrier",
-					code: "SYFNVQP"
+					code: "SYFNVQP",
+					"permissions": []
 				},
 				{
 					id: 9,
 					name: "First Choice OS & D",
 					type: "carrier",
-					code: "FCTICLM"
+					code: "FCTICLM",
+					"permissions": []
 				},
 				{
 					id: 4,
@@ -60,19 +63,42 @@ module.exports = {
 					"permissions": ['showDrivers']
 				}
 			], 
+			menu: [
+				{
+					"name": "User1 Menu Item #1",
+					"url": "/"
+				},
+				{
+					"name": "User1 Menu Item #2",
+					"url": "/"
+				},
+				{
+					"name": "User1 Menu Item #3",
+					"url": "/"
+				},
+				{
+					"name": "User1 Menu Item #4",
+					"url": "/"
+				},
+				{
+					"name": "User1 Menu Item #5",
+					"url": "/"
+				}
+			],
 			securityToken: common_tools.guid()
 		},
 		{
 			id: 2,
-			firstname: "Egor",
-			lastname: "Gorobetz",
+			firstName: "Egor",
+			lastName: "Gorobetz",
 			email: "egor.gorobotz@castle.co",
 			divisions: [
 				{
 					id: 2,
 					name: "JKC Mobile Test Fleet",
 					type: "carrier",
-					code: "JKCFM"
+					code: "JKCFM",
+					"permissions": []
 				},
 				{
 					id: 4,
@@ -92,13 +118,15 @@ module.exports = {
 					id: 8,
 					name: "Foodliner - Owner Operator Miscellaneous Document",
 					type: "carrier",
-					code: "FOLWMMIS"
+					code: "FOLWMMIS",
+					"permissions": []
 				},
 				{
 					id: 10,
 					name: "Division 10",
 					type: "carrier",
-					code: "dvscar10"
+					code: "dvscar10",
+					"permissions": []
 				},
 				{
 					id: 5,
@@ -106,6 +134,28 @@ module.exports = {
 					type: "broker",
 					code: "dvsbro5",
 					"permissions": []
+				}
+			], 
+			menu: [
+				{
+					"name": "User2 Menu Item #1",
+					"url": "/"
+				},
+				{
+					"name": "User2 Menu Item #2",
+					"url": "/"
+				},
+				{
+					"name": "User2 Menu Item #3",
+					"url": "/"
+				},
+				{
+					"name": "User2 Menu Item #4",
+					"url": "/"
+				},
+				{
+					"name": "User2 Menu Item #5",
+					"url": "/"
 				}
 			],
 			securityToken: common_tools.guid()

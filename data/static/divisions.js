@@ -1,4 +1,6 @@
 const tools = require('../common')
+const locations = require('../static/locations')
+
 
 function generateDrivers(divisionId) {
 	var numberOfDrivers = tools.randomFrom(20) + 10
@@ -8,7 +10,16 @@ function generateDrivers(divisionId) {
 			"id": divisionId * 100 + i,
 			"name": "DriverName#" + i + " DriverSurname#" + i,
 			"email": "driverFullName#" + i + "@gmail.com",
-			"isNewMessage": false
+			"isNewMessage": tools.randomBoolean(),
+			"isFavorite": tools.randomBoolean(),
+			"regFields": [
+				{
+					"key": "regField name " + i, 
+					"value": "regField value " + i
+				}
+			],
+			"lastKnownLocation": locations[tools.randomFrom(locations.length)],
+			"loads": []
 		}
 	}
 	return drivers;

@@ -1,6 +1,9 @@
 var addresses_collection = []
 
 const locations = require('../static/locations')
+const breadcrumbs = require(static_data_folder + 'breadcrumbs')
+const tools = require('../common')
+
 
 var i = 0
 for (; i < locations.length; i++) {
@@ -10,6 +13,7 @@ for (; i < locations.length; i++) {
 }
 
 for (; i < 500; i++) {
+	var randomCoordinateIndex = tools.randomFrom(breadcrumbs.length)
 	addresses_collection.push(
 		{
 			"id": i,
@@ -23,7 +27,10 @@ for (; i < 500; i++) {
 			],
 			"phoneNumber": "+19328483749",
 			"contactName": "Contact FullName " + i,
-			"company": "Company Name " + i
+			"company": "Company Name " + i,
+			"email": "email" + i + "@mail.com",
+			"latitude": breadcrumbs[randomCoordinateIndex].coordinates[0],
+			"longitude": breadcrumbs[randomCoordinateIndex].coordinates[1]
 		}
 	)
 }

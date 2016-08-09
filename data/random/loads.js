@@ -52,6 +52,7 @@ function generateLoad(id) {
 		"loadAttributes": generateLoadAttributes(),
 		"stops": stops.slice(),
 		"shipments": generateShipments(idx, stops),
+		"documentScans": "scans/" + idx,
 		"showMap": true
 	}	
 
@@ -229,6 +230,8 @@ function generatePackages(shipmentId) {
 			"type": "type " + i,
 			"volume": common_tools.randomFrom(10000) / 100,
 			"weight": common_tools.randomFrom(10000) / 100,
+			"sizeUnit": "ft",
+			"weightUnit" "lb",
 			"freightClass": "freightClass " + i
 		}
 	}
