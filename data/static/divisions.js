@@ -77,6 +77,9 @@ function randomCarriers() {
 	for (var i = 0; i < numberOfCarriers; i++) {
 		carriersSubset.push(carrierDivisions[(startOfSubset + i) % carrierDivisions.length])
 	}
+	for (var i = 0; i < carriersSubset.length; i++) {
+		carriersSubset[i].isFavorite = tools.randomBoolean()
+	}
 	return carriersSubset
 }
 
