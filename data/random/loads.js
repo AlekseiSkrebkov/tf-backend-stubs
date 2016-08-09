@@ -52,14 +52,23 @@ function generateLoad(id) {
 		"loadAttributes": generateLoadAttributes(),
 		"stops": stops.slice(),
 		"shipments": generateShipments(idx, stops),
-		"documentScans": "scans/" + idx,
+		"documentScans": "/scans/" + idx,
 		"showMap": true
 	}	
 
-	if (load.status == 'In Transit') {
-		load.nextStop = stops[common_tools.randomFrom(stops.length - 1) + 1].id
-	}
+	if (load.status == 'InTransit') {
+		var nextStop = stops[common_tools.randomFrom(stops.length - 1) + 1]
+		load.nextStop = nextStop.id
+		
+		var breadcrumbsSubset = breadcrumbs.slice(load.stops[0].coordinatesIndex, nextStop.coordinatesIndex - 100)
+		load.breadcrumbs = breadcrumbsSubset
 
+		var truckLocation = locations[common_tools.randomFrom(locations.length)]
+		truckLocation.latitude = breadcrumbsSubset[breadcrumbsSubset.length-1].coordinates[0]
+		truckLocation.longitude = breadcrumbsSubset[breadcrumbsSubset.length-1].coordinates[1]
+
+		load.truckLocation = truckLocation
+	}
 	return load
 }
 
@@ -244,7 +253,7 @@ function generateTenderingInfo(divisionId) {
 	var division = R.find(R.propEq('id', divisionId), divisions.brokers.concat(divisions.carriers))
 	var divisionType =  division.type
 
-	var subordinates = division.subordinates
+	var relations = division.relations
 	var assignmentStatus 
 
 	if (divisionType == 'carrier')
@@ -253,12 +262,12 @@ function generateTenderingInfo(divisionId) {
 		assignmentStatus = 'Assigned'
 
 	var tenderingInfo = []
-	// getting subset of subordinates
-	var numberOfSubordinates = subordinates.length
+	// getting subset of relations
+	var numberOfSubordinates = relations.length
 	var subsetLength = common_tools.randomFrom(numberOfSubordinates)
 	var startSubsetPosition = common_tools.randomFrom(numberOfSubordinates)
 	for (var i = 0; i < subsetLength; i++) {
-		var assignmentParty = subordinates[(startSubsetPosition + i) % numberOfSubordinates]
+		var assignmentParty = relations[(startSubsetPosition + i) % numberOfSubordinates]
 		tenderingInfo.push({
 			"id": assignmentParty.id,
 			"name": assignmentParty.name,
@@ -272,7 +281,7 @@ function generateTenderingInfo(divisionId) {
 function randomStatus() {
 	const statuses = [
 		"Available",
-		"In Transit",
+		"InTransit",
 		"Offered",
 		"Assigned",
 		"Declined",

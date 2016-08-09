@@ -31,42 +31,42 @@ var carrierDivisions = [
 		name: "Montgomery Logistics",
 		type: "carrier",
 		code: "MGYL",
-		subordinates: generateDrivers(1)
+		relations: generateDrivers(1)
 	},
 	{
 		id: 2,
 		name: "JKC Mobile Test Fleet",
 		type: "carrier",
 		code: "JKCFM",
-		subordinates: generateDrivers(2)
+		relations: generateDrivers(2)
 	},
 	{
 		id: 7,
 		name: "Syfan Logistics",
 		type: "carrier",
 		code: "SYFNVQP",
-		subordinates: generateDrivers(7)
+		relations: generateDrivers(7)
 	},
 	{
 		id: 8,
 		name: "Foodliner - Owner Operator Miscellaneous Document",
 		type: "carrier",
 		code: "FOLWMMIS",
-		subordinates: generateDrivers(8)
+		relations: generateDrivers(8)
 	},
 	{
 		id: 9,
 		name: "First Choice OS & D",
 		type: "carrier",
 		code: "FCTICLM",
-		subordinates: generateDrivers(9)
+		relations: generateDrivers(9)
 	},
 	{
 		id: 10,
 		name: "Division 10",
 		type: "carrier",
 		code: "dvscar10",
-		subordinates: generateDrivers(10)
+		relations: generateDrivers(10)
 	}
 ]
 
@@ -89,7 +89,7 @@ const brokerDivisions = [
 			name: "Division 3",
 			type: "broker",
 			code: "dvsbro3",
-			subordinates: randomCarriers(),
+			relations: randomCarriers(),
 			"permissions": []
 		},
 		{
@@ -97,7 +97,7 @@ const brokerDivisions = [
 			name: "Division 4",
 			type: "broker",
 			code: "dvsbro4",
-			subordinates: randomCarriers(),
+			relations: randomCarriers(),
 			"permissions": ['showDrivers']
 		},
 		{
@@ -105,7 +105,7 @@ const brokerDivisions = [
 			name: "Division 5",
 			type: "broker",
 			code: "dvsbro5",
-			subordinates: randomCarriers(),
+			relations: randomCarriers(),
 			"permissions": []
 
 		},
@@ -114,7 +114,7 @@ const brokerDivisions = [
 			name: "Division 6",
 			type: "broker",
 			code: "dvsbro6",
-			subordinates: randomCarriers(),
+			relations: randomCarriers(),
 			"permissions": ['showDrivers']
 		}
 	]
@@ -131,9 +131,16 @@ function getBrokerDivisionById(id) {
 		})
 }
 
+function getDivisionById(id) {
+	var allDivisions = carrierDivisions.concat(brokerDivisions)
+	return allDivisions.find(function(division){
+			return division.id == parseInt(id)
+		})
+}
+
 function getSubordinateById(division, id) {
 	console.log('looking for sub id = ' + id + ' from division id=' + division.id)
-	return division.subordinates.find(function(subordinate){
+	return division.relations.find(function(subordinate){
 			return subordinate.id == parseInt(id)
 		})
 }
@@ -143,5 +150,6 @@ module.exports = {
 	brokers: brokerDivisions,
 	getCarrierDivisionById: getCarrierDivisionById,
 	getBrokerDivisionById: getBrokerDivisionById,
-	getSubordinateById: getSubordinateById
+	getSubordinateById: getSubordinateById,
+	getDivisionById: getDivisionById
 }

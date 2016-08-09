@@ -319,17 +319,22 @@ app.post('/loads', function(req, res) {
 
 app.put('/loads/:id', function(req, res) {
 	var loadId = req.params.id
+	console.log('Updating load id=', loadId)
 	var loadNum = loadCollection.findIndex(function(load) {
 		return load.id == parseInt(loadId)
 	})
 
-	if (loadNum) {
+	console.log('Load num', loadNum)
+
+	if (loadNum >= 0) {
 		var updatedLoad = req.body
+		var targetLoad = loadCollection[loadNum]
 
 		processNewStops(updatedLoad)
 
-		loadCollection[loadNum] = updatedLoad		
-		res.json(updatedLoad)
+		for (var attrname in updatedLoad) { targetLoad[attrname] = updatedLoad[attrname]; }
+
+		res.json(targetLoad)
 	}
 	else {
 		res.status(404).send("Load ID=" + loadId + " is not found")
@@ -371,7 +376,7 @@ app.get('/loads/:id', function(req, res) {
 
 	//ToDo: this is WA for problem with unexpectedly generated stop.id
 	var load = R.find(R.propEq('id', parseInt(req.params.id)), loadCollection)
-	
+	//load.breadcrumbs = undefined
 	console.log('before WA', load.stops)
 
 	for (var i = 0; i < load.stops.length; i++) {
@@ -518,7 +523,7 @@ app.put('/loads/:id/changeownership', function(req, res) {
 		var newDivision = divisions.find(function(division) {
 			return division.id == parseInt(req.body.divisionId)
 		})
-		newDivision.subordinates = undefined
+		newDivision.relations = undefined
 		if (newDivision) {
 			if (newDivision.type == 'broker') {
 				load.brokerDivision = newDivision
@@ -537,13 +542,23 @@ app.put('/loads/:id/changeownership', function(req, res) {
 
 })
 
+
+/*
+	Division resources
+*/
+
+app.get('/divisions/:id', function(req, res) {
+	var division = divisionsRepository.getDivisionById(req.params.id)
+	res.json(division)
+})
+
 app.get('/divisions/:id/drivers', function(req, res) {
 	var divisionId = req.params.id
 	var division = divisions.find(function(division){
 			return division.id == parseInt(divisionId)
 		})	
 	if (division.type == 'carrier')
-		res.json(division.subordinates)
+		res.json(division.relations)
 	else
 		res.status(403).send('Only Carrier Divisions are supported')
 })
@@ -555,10 +570,10 @@ app.get('/divisions/:id/carriers', function(req, res) {
 		})	
 
 	if (division.type == 'broker') {
-		var carriers = division.subordinates
-		console.log('drivers', division.subordinates)
+		var carriers = division.relations
+		console.log('drivers', division.relations)
 		for (var i = 0; i < carriers.length; i++) {
-			carriers[i].subordinates = undefined
+			carriers[i].relations = undefined
 		} 
 		res.json(carriers)
 	}
@@ -627,6 +642,22 @@ app.get('/divisions/:id/brokers', function(req, res) {
 		)
 	}
 	res.json(brokerDivisionSummary)
+})
+
+app.put('/divisions/:id/favorites', function(req, res) {
+	var divisionRelations = divisionsRepository.getDivisionById(req.params.id).relations
+	console.log('updating division relations list', divisionRelations)
+	var updatedRelations = req.body
+
+	for (var i = 0; i < updatedRelations; i++) {
+		var relationIndex = divisionRelations.findIndex(function(relation) {
+			relation.id == updatedRelations[i].relationId
+		})
+		console.log('updating relation', divisionRelations[relationIndex])
+
+		divisionRelations[relationIndex].isFavorite = updatedRelations[i].isFavorite 	
+	}
+	res.status(200).send('OK')
 })
 
 // Load Sharing
@@ -736,7 +767,9 @@ app.get('/loads/:id/breadcrumbs', function(req, res) {
 	var load = loadCollection.find(function(load) {
 		return load.id == parseInt(loadId)
 	})
-	var nextStopIndex = load.stops.findIndex(function(stop) {
+	console.log(load)
+	/*
+	 nextStopIndex = load.stops.findIndex(function(stop) {
 		return stop.id == load.nextStop
 	})
 
@@ -744,8 +777,9 @@ app.get('/loads/:id/breadcrumbs', function(req, res) {
 
 	var breadcrumbsSubset = nextStopIndex >= 0 ? breadcrumbs.slice(load.stops[0].coordinatesIndex, load.stops[nextStopIndex].coordinatesIndex - 100) : []
 	console.log('requested number of breadcrumbs', breadcrumbsSubset.length)
-	res.json(breadcrumbsSubset)
-	//res.json(breadcrumbs)
+
+	res.json(breadcrumbsSubset)*/
+	res.json(load.breadcrumbs)
 })
 
 app.listen(app.get('port'), function() {
