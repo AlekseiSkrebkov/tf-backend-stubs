@@ -265,7 +265,7 @@ function generateTenderingInfo(divisionId) {
 	var tenderingInfo = []
 	// getting subset of relations
 	var numberOfSubordinates = relations.length
-	var subsetLength = common_tools.randomFrom(numberOfSubordinates)
+	var subsetLength = numberOfSubordinates > 4 ? 4 : common_tools.randomFrom(numberOfSubordinates)
 	var startSubsetPosition = common_tools.randomFrom(numberOfSubordinates)
 	for (var i = 0; i < subsetLength; i++) {
 		var assignmentParty = relations[(startSubsetPosition + i) % numberOfSubordinates]
