@@ -231,7 +231,7 @@ function generatePackages(shipmentId) {
 			"volume": common_tools.randomFrom(10000) / 100,
 			"weight": common_tools.randomFrom(10000) / 100,
 			"sizeUnit": "ft",
-			"weightUnit" "lb",
+			"weightUnit": "lb",
 			"freightClass": "freightClass " + i
 		}
 	}

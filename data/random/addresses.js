@@ -1,7 +1,7 @@
 var addresses_collection = []
 
 const locations = require('../static/locations')
-const breadcrumbs = require(static_data_folder + 'breadcrumbs')
+const breadcrumbs = require('../static/breadcrumbs')
 const tools = require('../common')
 
 
