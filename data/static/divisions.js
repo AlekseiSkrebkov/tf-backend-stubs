@@ -8,7 +8,7 @@ function generateDrivers(divisionId) {
 	for(var i = 0; i < numberOfDrivers; i++) {
 		drivers[i] = {
 			"id": divisionId * 100 + i,
-			"name": "DriverName#" + i + " DriverSurname#" + i,
+			"name": "Driver Full Name#" + i + ' | ' + 'driverID #' + i,
 			"email": "driverFullName#" + i + "@gmail.com",
 			"isNewMessage": tools.randomBoolean(),
 			"isFavorite": tools.randomBoolean(),
