@@ -38,11 +38,21 @@ function isBrokerDivision(divisionId) {
 	return division.type == 'broker'
 }
 
+function getDriverByDivisionAndDriverId(divisionId, driverId) {
+	var division = getDivisionById(divisionId)
+	var driver = division.relations.find(function(driver) {
+		return driver.id == driverId
+	})
+
+	return driver
+}
+
 module.exports = {
 	getCarrierDivisionById: getCarrierDivisionById,
 	getBrokerDivisionById: getBrokerDivisionById,
 	getSubordinateById: getSubordinateById,
 	getDivisionById: getDivisionById,
 	isCarrierDivision: isCarrierDivision,
-	isBrokerDivision: isBrokerDivision
+	isBrokerDivision: isBrokerDivision,
+	getDriver: getDriverByDivisionAndDriverId
 }

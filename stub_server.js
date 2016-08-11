@@ -12,6 +12,9 @@ var loadCollection = require(random_data_folder + 'loads')
 const breadcrumbs = require(static_data_folder + 'breadcrumbs')
 
 const loadsService = require('./services/loadsService')
+const divisionsService = require('./services/divisionsService')
+
+
 
 const express = require('express')
 const bodyParser = require('body-parser')
@@ -788,13 +791,18 @@ app.get('/mappoints', function(req, res) {
 	var shippingDates = req.query.shippingDatesRange
 	var deliveryDates = req.query.deliveryDatesRange
 
-	console.log('status', status)
-	console.log('shippingDates', shippingDates)
-	console.log('deliveryDates', deliveryDates)
-
 	var loads = loadsService.getLoadsByDivision(divisionId, status, shippingDates, deliveryDates)
 
 	res.json(loads)
+})
+
+app.get('/divisions/:divisionId/drivers/:driverId', function(req, res) {
+	var divisionId = req.params.divisionId
+	var driverId = req.params.driverId
+
+	var driver = divisionsService.getDriver(divisionId, driverId)
+
+	res.json(driver)
 })
 
 
