@@ -784,8 +784,15 @@ app.get('/statistics', function(req, res) {
 
 app.get('/mappoints', function(req, res) {
 	var divisionId = req.query.division
+	var status = req.query.status
+	var shippingDates = req.query.shippingDatesRange
+	var deliveryDates = req.query.deliveryDatesRange
 
-	var loads = loadsService.getLoadsByDivision(divisionId)
+	console.log('status', status)
+	console.log('shippingDates', shippingDates)
+	console.log('deliveryDates', deliveryDates)
+
+	var loads = loadsService.getLoadsByDivision(divisionId, status, shippingDates, deliveryDates)
 
 	res.json(loads)
 })
