@@ -11,6 +11,8 @@ divisions = carrierDivisions.concat(brokerDivisions)
 var loadCollection = require(random_data_folder + 'loads')
 const breadcrumbs = require(static_data_folder + 'breadcrumbs')
 
+const loadsService = require('./services/loadsService')
+
 const express = require('express')
 const bodyParser = require('body-parser')
 const R = require('ramda')
@@ -767,20 +769,27 @@ app.get('/loads/:id/breadcrumbs', function(req, res) {
 	var load = loadCollection.find(function(load) {
 		return load.id == parseInt(loadId)
 	})
-	console.log(load)
-	/*
-	 nextStopIndex = load.stops.findIndex(function(stop) {
-		return stop.id == load.nextStop
-	})
 
-	console.log('nextStopIndex', nextStopIndex)
-
-	var breadcrumbsSubset = nextStopIndex >= 0 ? breadcrumbs.slice(load.stops[0].coordinatesIndex, load.stops[nextStopIndex].coordinatesIndex - 100) : []
-	console.log('requested number of breadcrumbs', breadcrumbsSubset.length)
-
-	res.json(breadcrumbsSubset)*/
 	res.json(load.breadcrumbs)
 })
+
+/*
+	Home Page
+*/
+const statistics = require(static_data_folder + 'statistics')
+
+app.get('/statistics', function(req, res) {
+	res.json(statistics)
+})
+
+app.get('/mappoints', function(req, res) {
+	var divisionId = req.query.division
+
+	var loads = loadsService.getLoadsByDivision(divisionId)
+
+	res.json(loads)
+})
+
 
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'))
