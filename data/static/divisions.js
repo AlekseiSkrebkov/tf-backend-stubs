@@ -6,9 +6,11 @@ function generateDrivers(divisionId) {
 	var numberOfDrivers = tools.randomFrom(20) + 10
 	drivers = []
 	for(var i = 0; i < numberOfDrivers; i++) {
+		var id = divisionId * 100 + i
 		drivers[i] = {
-			"id": divisionId * 100 + i,
-			"name": "Driver Full Name#" + i + ' | ' + 'driverID #' + i,
+			"id": id,
+			"name": "Driver Full Name#" + i,
+			"driverId": 'driverID #' + i,
 			"email": "driverFullName#" + i + "@gmail.com",
 			"isNewMessage": tools.randomBoolean(),
 			"isFavorite": tools.randomBoolean(),
@@ -19,7 +21,30 @@ function generateDrivers(divisionId) {
 				}
 			],
 			"lastKnownLocation": locations[tools.randomFrom(locations.length)],
-			"loads": []
+			"statistics": [
+				{
+					"label": "Offered Loads",
+					"value": 8,
+					"type": "loads",
+					"filters": [
+						{
+							"param": "driverOffered",
+							"value": id
+						}
+					]
+				},
+				{
+					"label": "Assigned Loads",
+					"value": 3,
+					"type": "loads",
+					"filters": [
+						{
+							"param": "driverAssignee",
+							"value": id
+						}
+					]
+				}
+			]
 		}
 	}
 	return drivers;
