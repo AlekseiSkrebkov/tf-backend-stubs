@@ -6,6 +6,8 @@ moment().format()
 const locations = require('../static/locations')
 const divisions = require('../static/divisions.js')
 const breadcrumbs = require('../static/breadcrumbs.js')
+const divisionsService = require('../../services/divisionsService')
+
 
 const numberOfStops = 7
 const numberOfShipments = 10
@@ -253,23 +255,27 @@ function generatePackages(shipmentId) {
 function generateTenderingInfo(divisionId) {
 	const assignmentStatuses = ['Offered', 'Rejected', 'Assigned']
 
-	var division = R.find(R.propEq('id', divisionId), divisions.brokers.concat(divisions.carriers))
-	var divisionType =  division.type
+	var division = divisionsService.getDivisionById(divisionId)
 
 	var relations = division.relations
-	var assignmentStatus 
+	var numberOfSubordinates = relations.length
 
-	if (divisionType == 'carrier')
+	var assignmentStatus 
+	var numberOfAssignees
+
+	if (division.type == 'carrier') {
 		assignmentStatus = assignmentStatuses[common_tools.randomFrom(3)]
-	else
+		numberOfAssignees = numberOfSubordinates > 4 ? 4 : common_tools.randomFrom(numberOfSubordinates)
+	}
+	else {
 		assignmentStatus = 'Assigned'
+		numberOfAssignees = 1
+	}
 
 	var tenderingInfo = []
 	// getting subset of relations
-	var numberOfSubordinates = relations.length
-	var subsetLength = numberOfSubordinates > 4 ? 4 : common_tools.randomFrom(numberOfSubordinates)
 	var startSubsetPosition = common_tools.randomFrom(numberOfSubordinates)
-	for (var i = 0; i < subsetLength; i++) {
+	for (var i = 0; i < numberOfAssignees; i++) {
 		var assignmentParty = relations[(startSubsetPosition + i) % numberOfSubordinates]
 		tenderingInfo.push({
 			"id": assignmentParty.id,

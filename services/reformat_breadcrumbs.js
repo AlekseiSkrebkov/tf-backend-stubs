@@ -5,7 +5,7 @@ for (var i = 0; i < breadcrumbsSource.length; i++) {
 	var trackingPoint = {}
 	trackingPoint.coordinates = [breadcrumbsSource[i].Location.Latitude, breadcrumbsSource[i].Location.Longitude]
 	trackingPoint.timestamp = breadcrumbsSource[i].Timestamp
-	trackingPoint.speed = breadcrumbsSource[i].Speed
+	trackingPoint.speed = Math.round(breadcrumbsSource[i].Speed * 0.621371)
 
 	breadcrumbs.push(trackingPoint)
 }
