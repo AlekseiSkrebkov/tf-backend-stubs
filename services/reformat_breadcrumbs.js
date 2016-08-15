@@ -11,7 +11,7 @@ for (var i = 0; i < breadcrumbsSource.length; i++) {
 }
 
 var fs = require('fs');
-fs.writeFile("../data/static/breadcrumbs.js", JSON.stringify(breadcrumbs), function(err) {
+fs.writeFile("../data/static/breadcrumbs.json", JSON.stringify(breadcrumbs), function(err) {
     if(err) {
         return console.log(err);
     }

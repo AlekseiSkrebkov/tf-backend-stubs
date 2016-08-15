@@ -5,9 +5,9 @@ moment().format()
 
 const locations = require('../static/locations')
 const divisions = require('../static/divisions.js')
-const breadcrumbs = require('../static/breadcrumbs.js')
-const divisionsService = require('../../services/divisionsService')
+const breadcrumbs = require('../static/breadcrumbs.json')
 
+const divisionsService = require('../../services/divisionsService')
 
 const numberOfStops = 7
 const numberOfShipments = 10
@@ -54,7 +54,7 @@ function generateLoad(id) {
 		"loadAttributes": generateLoadAttributes(),
 		"stops": stops.slice(),
 		"shipments": generateShipments(idx, stops),
-		"documentScans": "/scans/" + idx,
+		"documentScans": generateDocScanLinks(idx),
 		"showMap": true
 	}	
 
@@ -73,6 +73,14 @@ function generateLoad(id) {
 		load.truckLocation = truckLocation
 	}
 	return load
+}
+
+function generateDocScanLinks(loadId) {
+	var links = []
+	for (var i = 0; i < 15; i++) {
+		links.push('/scans/' + loadId + '/' + i)	
+	}
+	return links
 }
 
 function getBrokerDivision() {
@@ -209,6 +217,7 @@ function generateStops(loadId) {
 		stops_array[i].stopNum = i
 
 		stops_array[i].coordinatesIndex = coordinatesSubsetLength * i + common_tools.randomFrom(coordinatesSubsetLength)
+		
 		stops_array[i].coordinates = breadcrumbs[stops_array[i].coordinatesIndex].coordinates
 		stops_array[i].latitude = breadcrumbs[stops_array[i].coordinatesIndex].coordinates[0]
 		stops_array[i].longitude = breadcrumbs[stops_array[i].coordinatesIndex].coordinates[1]
