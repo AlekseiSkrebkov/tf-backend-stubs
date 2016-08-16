@@ -1,6 +1,9 @@
 const random_data_folder = './data/random/'
 const static_data_folder = './data/static/'
 
+const tools = require('./data/common')
+
+
 const attributes = require(static_data_folder + 'attributes')
 
 var divisionsRepository = require(static_data_folder + 'divisions')
@@ -805,6 +808,105 @@ app.get('/divisions/:divisionId/drivers/:driverId', function(req, res) {
 	res.json(driver)
 })
 
+/*
+	Messaging
+*/
+var messagingService = require('./services/messagesService')
+
+app.get('/divisions/:divisionId/messages/summary', function(req, res) {
+	var divisionId = req.params.divisionId
+	var division = divisionsService.getDivisionById(divisionId)
+	var userProfile = getUserProfile(req)
+	var userId = userProfile ? userProfile.id : 1
+
+	var newMessagesSummary = []
+
+	for (var i = 0; i < division.relations.length; i++) {
+		var driver = division.relations[i]
+		var randomNewMessagesNumber = tools.randomFrom(3)
+		for (var j = 0; j < randomNewMessagesNumber; j++) {
+			driver.messages.push(messagingService.generateNewDriverMessage(driver.id, userId))
+		}
+		newMessagesSummary.push({
+			"driverId": driver.id,
+			"quantity": randomNewMessagesNumber
+		})
+	}
+	res.json(newMessagesSummary)
+})
+
+app.get('/divisions/:divisionId/messages/backward', function(req, res) {
+	var divisionId = req.params.divisionId
+	var receipientId = req.query.receipient
+
+	var driver = divisionsService.getDriver(divisionId, receipientId)
+
+	var messageId = req.query.messageId
+	var quantity = req.query.quantity
+	if (quantity == undefined) quantity = 10
+
+	var messages = messagingService.getMessagesBeforePartucular(driver.messages, messageId, quantity)
+
+	messagingService.markMessagesAsRead(messages)
+
+	res.json(messages)
+})
+
+app.get('/divisions/:divisionId/messages/forward', function(req, res) {
+	var divisionId = req.params.divisionId
+	var receipientId = req.query.receipient
+
+	var driver = divisionsService.getDriver(divisionId, receipientId)
+
+	var messageId = req.query.messageId
+	var quantity = req.query.quantity
+	if (quantity == undefined) quantity = 10
+
+	var messages = messagingService.getMessagesAfterPartucular(driver.messages, messageId, quantity)
+	
+	messagingService.markMessagesAsRead(messages)
+
+	res.json(messages)
+})
+
+app.post('/divisions/:divisionId/messages/', function(req, res) {
+	var userProfile = getUserProfile(req)
+	var userId = userProfile ? userProfile.id : 1
+
+	var divisionId = req.params.divisionId
+	var driverId = req.body.receipient
+
+	var driver = divisionsService.getDriver(divisionId, driverId)
+	var message = messagingService.createMessage(driverId, userId, req.body.message)
+
+	driver.messages.push(message)
+
+	res.json(message)
+})
+
+app.get('/divisions/:divisionId/drivers/:driverId/notifications', function(req, res) {
+	var divisionId = req.params.divisionId
+	var driverId = req.params.driverId
+
+	var driver = divisionsService.getDriver(divisionId, driverId)
+
+	res.json(driver.notifications)
+})
+
+app.post('/divisions/:divisionId/drivers/:driverId/notifications', function(req, res) {
+	var userProfile = getUserProfile(req)
+	var userId = userProfile ? userProfile.id : 1
+
+	var divisionId = req.params.divisionId
+	var driverId = req.params.driverId
+
+	var driver = divisionsService.getDriver(divisionId, driverId)
+	var notification = messagingService.createNotification(driverId, userId, req.body.message, req.body.title, req.body.type)
+
+	driver.notifications.push(notification)
+
+	res.json(notification)
+})
 
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'))

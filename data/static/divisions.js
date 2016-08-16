@@ -21,6 +21,8 @@ function generateDrivers(divisionId) {
 				}
 			],
 			"lastKnownLocation": locations[tools.randomFrom(locations.length)],
+			"messages": [],
+			"notifications": [],
 			"statistics": [
 				{
 					"label": "Offered Loads",
