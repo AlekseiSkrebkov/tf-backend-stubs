@@ -1,4 +1,4 @@
-const tools = require('../common')
+const tools = require('../../services/common')
 const locations = require('../static/locations')
 
 

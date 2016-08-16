@@ -1,4 +1,4 @@
-const common_tools = require('../common');
+const common_tools = require('../../services/common');
 
 module.exports = {
 	credentials: [

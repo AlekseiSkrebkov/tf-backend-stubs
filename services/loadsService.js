@@ -1,6 +1,57 @@
 var loadsCollection = require('../data/random/loads')
 const divisionsService = require('./divisionsService')
-const tools = require('../data/common')
+const tools = require('./common')
+
+function getLoadSummary(load) {
+	return {
+			"id": load.id,
+			"brokerLoadNumber": load.brokerLoadNumber,
+			"carrierLoadNumber": load.carrierLoadNumber,
+			"bolNumber": load.bolNumber,
+			"brokerDivision": load.brokerDivision,	
+			"carrierDivision": load.carrierDivision,
+			"firstStop": load.stops[0],
+			"lastStop": load.stops[load.stops.length - 1],
+			"status": load.status,
+			"loadAttributes": load.loadAttributes,
+			"numberOfStops": load.stops.length,
+			"brokerTenderingInfo": load.brokerTenderingInfo,
+			"carrierTenderingInfo": load.carrierTenderingInfo,
+			"createdDateTime": load.createdDateTime
+		}
+}
+
+function processNewStops(load) {
+	for (var i = 0; i < load.stops.length; i++) { 
+		var tempStopId = load.stops[i]._id
+		console.log('processing of temp stop id', tempStopId)
+		if (tempStopId) {
+			var newStopId = load.id * 10 + i
+			for (var j = 0; j < load.shipments.length; j++) {
+				if (load.shipments[j].pickup == tempStopId) {
+					load.shipments[j].pickup = newStopId
+				}
+				if (load.shipments[j].dropoff == tempStopId) {
+					load.shipments[j].dropoff = newStopId
+				}
+			}
+			load.stops[i].id = newStopId	
+		} else if (!load.stops[i].id) {
+			res.status(403).send('Stop id is missed')
+		} 
+	}
+
+	for (var i = 0; i < load.shipments.length; i++) {
+		load.shipments[i].id = load.id * 100 + i
+		console.log('shipment id', load.shipments[i].id)
+		for (var j = 0; j < load.shipments[i].packages.length; j++) {
+			load.shipments[i].packages[j].id = load.shipments[i].id * 1000 + j
+		}
+		for (var k = 0; k < load.shipments[i].orders.length; k++) {
+			load.shipments[i].orders[k].id = load.shipments[i].id * 100 + k
+		}
+	}
+}
 
 function getLoadsByDivision(divisionId, status, shippingDates, deliveryDates) {
 	var divisionLoads = loadsCollection.filter(function(load) {
@@ -78,5 +129,7 @@ function getLoadsByDivision(divisionId, status, shippingDates, deliveryDates) {
 }
 
 module.exports = {
+	getLoadSummary: getLoadSummary,
+	processNewStops: processNewStops,
 	getLoadsByDivision: getLoadsByDivision
 }

@@ -2,7 +2,7 @@ var addresses_collection = []
 
 const locations = require('../static/locations')
 const breadcrumbs = require('../static/breadcrumbs')
-const tools = require('../common')
+const tools = require('../../services/common')
 
 
 var i = 0

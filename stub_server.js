@@ -1,7 +1,7 @@
 const random_data_folder = './data/random/'
 const static_data_folder = './data/static/'
 
-const tools = require('./data/common')
+const tools = require('./services/common')
 
 
 const attributes = require(static_data_folder + 'attributes')
@@ -97,24 +97,6 @@ app.get('/auth/signout', function(req, res) {
 	console.log('Signed Out')
 }) 
 
-function getLoadSummary(load) {
-	return {
-			"id": load.id,
-			"brokerLoadNumber": load.brokerLoadNumber,
-			"carrierLoadNumber": load.carrierLoadNumber,
-			"bolNumber": load.bolNumber,
-			"brokerDivision": load.brokerDivision,	
-			"carrierDivision": load.carrierDivision,
-			"firstStop": load.stops[0],
-			"lastStop": load.stops[load.stops.length - 1],
-			"status": load.status,
-			"loadAttributes": load.loadAttributes,
-			"numberOfStops": load.stops.length,
-			"brokerTenderingInfo": load.brokerTenderingInfo,
-			"carrierTenderingInfo": load.carrierTenderingInfo,
-			"createdDateTime": load.createdDateTime
-		}
-}
 
 app.get('/loads', function(req, res) {
 	var res_loads = []
@@ -122,16 +104,14 @@ app.get('/loads', function(req, res) {
 	for (var i = 0; i < loadCollection.length; i++) {
 		var load = loadCollection[i]
 		
-		res_loads[i] = getLoadSummary(load)
+		res_loads[i] = loadsService.getLoadSummary(load)
 	} 
 
 //filtering loads
 	res_loads = res_loads.filter(function(load) {
 		//division
 		var divisionId = req.query.division
-		var division = divisions.find(function(division){
-			return division.id == parseInt(divisionId)
-		})
+		var division = divisionsService.getDivisionById(divisionId)
 		if (division) {
 			if (division.type == 'carrier')  {
 				if (!load.carrierDivision) 
@@ -194,7 +174,7 @@ app.get('/loads', function(req, res) {
 			var startDateInt = new Date(shipping_dates.slice(0, shipping_dates.indexOf('-'))).getTime()
 			var endDateInt = new Date(shipping_dates.slice(shipping_dates.indexOf('-') + 1, shipping_dates.length)).getTime()
 			var loadDateInt = new Date(load.firstStop.date).getTime()
-			if (!isDateInRange(loadDateInt, startDateInt, endDateInt)) return false
+			if (!tools.isDateInRange(loadDateInt, startDateInt, endDateInt)) return false
 		}
 		//filter by delivery dates
 		var delivery_dates = req.query.deliveryDates
@@ -202,7 +182,7 @@ app.get('/loads', function(req, res) {
 			var startDateInt = new Date(delivery_dates.slice(0, delivery_dates.indexOf('-'))).getTime()
 			var endDateInt = new Date(delivery_dates.slice(delivery_dates.indexOf('-') + 1, delivery_dates.length)).getTime()
 			var loadDateInt = new Date(load.lastStop.date).getTime()
-			if (!isDateInRange(loadDateInt, startDateInt, endDateInt)) return false
+			if (!tools.isDateInRange(loadDateInt, startDateInt, endDateInt)) return false
 		}
 		//filter by Offered To Driver
 		var driverOfferedQuery = req.query.driverOffered
@@ -277,51 +257,18 @@ app.get('/loads', function(req, res) {
 	})
 })
 
-function processNewStops(load) {
-	for (var i = 0; i < load.stops.length; i++) { 
-		var tempStopId = load.stops[i]._id
-		console.log('processing of temp stop id', tempStopId)
-		if (tempStopId) {
-			var newStopId = load.id * 10 + i
-			for (var j = 0; j < load.shipments.length; j++) {
-				if (load.shipments[j].pickup == tempStopId) {
-					load.shipments[j].pickup = newStopId
-				}
-				if (load.shipments[j].dropoff == tempStopId) {
-					load.shipments[j].dropoff = newStopId
-				}
-			}
-			load.stops[i].id = newStopId	
-		} else if (!load.stops[i].id) {
-			res.status(403).send('Stop id is missed')
-		} 
-	}
-
-	for (var i = 0; i < load.shipments.length; i++) {
-		load.shipments[i].id = load.id * 100 + i
-		console.log('shipment id', load.shipments[i].id)
-		for (var j = 0; j < load.shipments[i].packages.length; j++) {
-			load.shipments[i].packages[j].id = load.shipments[i].id * 1000 + j
-		}
-		for (var k = 0; k < load.shipments[i].orders.length; k++) {
-			load.shipments[i].orders[k].id = load.shipments[i].id * 100 + k
-		}
-	}
-}
-
 app.post('/loads', function(req, res) {
 	var load = req.body
 	load.id = loadCollection[loadCollection.length - 1].id + 1	
 	load.status = 'Available'
 	load.createdDateTime = moment()
 
-	processNewStops(load)
+	loadsService.processNewStops(load)
 
 	load.carrierTenderingInfo = []
 	load.brokerTenderingInfo = []
 	loadCollection.push(load)
-	console.log('new load id', load.id)
-	console.log('updated number of loads', loadCollection.length)
+
 	res.json(load)
 })
 
@@ -332,13 +279,11 @@ app.put('/loads/:id', function(req, res) {
 		return load.id == parseInt(loadId)
 	})
 
-	console.log('Load num', loadNum)
-
 	if (loadNum >= 0) {
 		var updatedLoad = req.body
 		var targetLoad = loadCollection[loadNum]
 
-		processNewStops(updatedLoad)
+		loadsService.processNewStops(updatedLoad)
 
 		for (var attrname in updatedLoad) { targetLoad[attrname] = updatedLoad[attrname]; }
 
@@ -369,7 +314,7 @@ app.delete('/loads/:id', function(req, res) {
 	var loadNum = loadCollection.findIndex(function(load) {
 		return load.id == parseInt(loadId)
 	})
-	console.log('loadnum', loadNum)
+
 	if (loadNum) {
 		loadCollection.splice(loadNum, 1)
 		res.status(204).send("Load ID=" + loadId + " was deleted")
@@ -405,7 +350,7 @@ app.get('/loads/:id/summary', function(req, res) {
 	var load = R.find(R.propEq('id', parseInt(req.params.id)), loadCollection)
 
 	if (load)
-		res.json(getLoadSummary(load))
+		res.json(loadsServices.getLoadSummary(load))
 	else 
 		res.status(404).send("Load ID = " + req.params.id + " is not found")
 })
@@ -418,11 +363,9 @@ app.put('/loads/:id/carriertendering', function(req, res) {
 		res.status(404).send("Load ID = " + req.params.id + " is not found")
 	} else {
 		var receivedTenderingUpdate = req.body
-		console.log('receivedTenderingUpdate', receivedTenderingUpdate)
 
 		for (var i = 0; i < receivedTenderingUpdate.length; i++) {
 			if (!receivedTenderingUpdate[i].name) {
-				console.log('enriching name for id=', receivedTenderingUpdate[i].id )
 				var division = divisionsRepository.getCarrierDivisionById(load.carrierDivision.id)
 				var driver = divisionsRepository.getSubordinateById(division, receivedTenderingUpdate[i].id) 
 				receivedTenderingUpdate[i].name = driver.name
@@ -430,37 +373,6 @@ app.put('/loads/:id/carriertendering', function(req, res) {
 		}
 
 		load.carrierTenderingInfo = receivedTenderingUpdate
-
-
-/*		var receivedTenderingUpdate = req.body
-		var loadTenderingInfo = load.carrierTenderingInfo
-
-		console.log('loadTenderingInfo', loadTenderingInfo)
-		var tenderingItem = loadTenderingInfo.find(function(loadTenderingItem) {
-			return loadTenderingItem.id == receivedTenderingUpdate.id
-		})
-
-		console.log('tenderingItem', tenderingItem)
-
-		if (tenderingItem) {
-			tenderingItem.status = receivedTenderingUpdate.assignmentStatus
-		} else {
-			var division = divisionsRepository.getCarrierDivisionById(load.carrierDivision.id)
-			console.log('division', division)
-
-			console.log('looking for driver id=', receivedTenderingUpdate.id)
-			var driver = divisionsRepository.getSubordinateById(division, receivedTenderingUpdate.id) 
-			console.log('driver', driver)
-
-			load.carrierTenderingInfo.push(
-				{
-					"id": receivedTenderingUpdate.id,
-					"name": driver.name,
-					"assignmentStatus": receivedTenderingUpdate.assignmentStatus
-				}
-			)
-		}
-*/
 	}
 
 	res.json(load.carrierTenderingInfo)
@@ -484,37 +396,7 @@ app.put('/loads/:id/brokertendering', function(req, res) {
 			}
 		}
 
-		load.brokerTenderingInfo = receivedTenderingUpdate
-
-/*
-		var loadTenderingInfo = load.brokerTenderingInfo
-
-		console.log('loadTenderingInfo', loadTenderingInfo)
-		var tenderingItem = loadTenderingInfo.find(function(loadTenderingItem) {
-			return loadTenderingItem.id == receivedTenderingUpdate.id
-		})
-
-		console.log('tenderingItem', tenderingItem)
-
-		if (tenderingItem) {
-			tenderingItem.status = receivedTenderingUpdate.assignmentStatus
-		} else {
-			var division = divisionsRepository.getBrokerDivisionById(load.carrierDivision.id)
-			console.log('division', division)
-
-			console.log('looking for driver id=', receivedTenderingUpdate.id)
-			var carrier = divisionsRepository.getSubordinateById(division, receivedTenderingUpdate.id) 
-			console.log('carrier', carrier)
-
-			load.brokerTenderingInfo.push(
-				{
-					"id": receivedTenderingUpdate.id,
-					"name": carrier.name,
-					"assignmentStatus": receivedTenderingUpdate.assignmentStatus
-				}
-			)
-		}
-*/		
+		load.brokerTenderingInfo = receivedTenderingUpdate		
 	}
 
 	res.json(load.brokerTenderingInfo)
@@ -547,7 +429,6 @@ app.put('/loads/:id/changeownership', function(req, res) {
 		else res.status(404).send("Target division ID = " + req.body.divisionId + " is not found")
 	}
 	else res.status(404).send("Load ID = " + req.params.id + " is not found")
-
 })
 
 
@@ -593,8 +474,6 @@ const addresses_collection = require(random_data_folder + 'addresses')
 app.get('/divisions/:id/addresses', function(req, res) {
 	var resAddresses = addresses_collection
 
-	console.log('addresses quantity', resAddresses.length)
-
 	var address_entry = req.query.addressEntry
 	var lastId = req.query.lastid
 	var quantity = parseInt(req.query.quantity)
@@ -607,22 +486,16 @@ app.get('/divisions/:id/addresses', function(req, res) {
 		})		
 	}
 
-	console.log('number of addresses after filtering', resAddresses.length)
-
 	var resAddresses1 = resAddresses 
 	if (lastId && quantity) {
 		var startAddress = resAddresses.findIndex(function(address) {
 				return address.id == parseInt(lastId ) + 1
 			})
-		console.log('requested start address position', startAddress)
-		console.log('requested quantity', quantity)
 
 		if (startAddress > 0) {
 			resAddresses1 = resAddresses.slice(startAddress, startAddress + quantity)
-			console.log('resAddresses1', resAddresses1.length)
 			if (startAddress + quantity > resAddresses.length)	{
 				resAddresses1 = resAddresses1.concat(resAddresses.slice(0, (startAddress + quantity - resAddresses.length )))
-				console.log('resAddresses1 after append', resAddresses1.length)
 
 			} 
 		} else {
@@ -630,8 +503,6 @@ app.get('/divisions/:id/addresses', function(req, res) {
 		}
 	}
 	
-	console.log('returned number of addresses', resAddresses1.length)
-
 	res.json(resAddresses1)
 })
 
@@ -673,7 +544,7 @@ app.get('/loads/:id/share', function(req, res) {
 	var loadId = req.params.id
 	res.json(
 		{
-			"link": '/share/' + btoa(loadId)
+			"link": '/share/' + tools.btoa(loadId)
 		}
 	)
 })
@@ -682,24 +553,8 @@ app.put ('/loads/:id/share', function(req, res) {
 	res.status(200).send('OK')
 })
 
-function atob(str) {
-  return new Buffer(str, 'base64').toString('binary');
-}
-
-function btoa(str) {
-    var buffer;
-
-    if (str instanceof Buffer) {
-      buffer = str;
-    } else {
-      buffer = new Buffer(str.toString(), 'binary');
-    }
-
-    return buffer.toString('base64');
-}
-
 app.get('/share/:id', function(req, res) {
-	var loadId = atob(req.params.id)
+	var loadId = tools.atob(req.params.id)
 
 	var load = R.find(R.propEq('id', parseInt(loadId)), loadCollection)
 	
@@ -837,9 +692,9 @@ app.get('/divisions/:divisionId/messages/summary', function(req, res) {
 
 app.get('/divisions/:divisionId/messages/backward', function(req, res) {
 	var divisionId = req.params.divisionId
-	var receipientId = req.query.receipient
+	var driverId = req.query.driver
 
-	var driver = divisionsService.getDriver(divisionId, receipientId)
+	var driver = divisionsService.getDriver(divisionId, driverId)
 
 	var messageId = req.query.messageId
 	var quantity = req.query.quantity
@@ -854,9 +709,9 @@ app.get('/divisions/:divisionId/messages/backward', function(req, res) {
 
 app.get('/divisions/:divisionId/messages/forward', function(req, res) {
 	var divisionId = req.params.divisionId
-	var receipientId = req.query.receipient
+	var driverId = req.query.driver
 
-	var driver = divisionsService.getDriver(divisionId, receipientId)
+	var driver = divisionsService.getDriver(divisionId, driverId)
 
 	var messageId = req.query.messageId
 	var quantity = req.query.quantity
@@ -874,7 +729,7 @@ app.post('/divisions/:divisionId/messages/', function(req, res) {
 	var userId = userProfile ? userProfile.id : 1
 
 	var divisionId = req.params.divisionId
-	var driverId = req.body.receipient
+	var driverId = req.body.toId
 
 	var driver = divisionsService.getDriver(divisionId, driverId)
 	var message = messagingService.createMessage(driverId, userId, req.body.message)
@@ -911,11 +766,3 @@ app.post('/divisions/:divisionId/drivers/:driverId/notifications', function(req,
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'))
 })
-
-function isDateInRange(targetDate, oneDate, secondDate) {
-	//console.log('isDateInRange ' + targetDate + ' ' + oneDate + ' ' + secondDate)
-	var startDate = oneDate < secondDate ? oneDate : secondDate
-	var endDate = oneDate > secondDate ? oneDate : secondDate
-	
-	return targetDate >= startDate && targetDate <= endDate
-}

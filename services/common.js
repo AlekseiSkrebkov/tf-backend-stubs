@@ -26,27 +26,14 @@ module.exports = {
 	randomBoolean: function() {
 		return (Math.random() >= 0.5)
 	},
+
 	isDateInRange: function (targetDate, oneDate, secondDate) {
 		//console.log('isDateInRange ' + targetDate + ' ' + oneDate + ' ' + secondDate)
 		var startDate = oneDate < secondDate ? oneDate : secondDate
 		var endDate = oneDate > secondDate ? oneDate : secondDate
 		
 		return targetDate >= startDate && targetDate <= endDate
-	},
-	atob: function (str) {
-	  return new Buffer(str, 'base64').toString('binary');
-	},
-	btoa: function (str) {
-	    var buffer;
-
-	    if (str instanceof Buffer) {
-	      buffer = str;
-	    } else {
-	      buffer = new Buffer(str.toString(), 'binary');
-	    }
-
-	    return buffer.toString('base64');
-	}
+	} 
 }
 		
 function random(x) {

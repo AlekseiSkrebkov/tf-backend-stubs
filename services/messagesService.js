@@ -49,7 +49,7 @@ function getMessagesAfterPartucular(messages, messageId, quantity) {
 		})
 		console.log('messageIndex', messageIndex)
 
-		var endPosition = messageIndex + quantity
+		var endPosition = messageIndex + parseInt(quantity) + 1
 		var startPosition = messageIndex + 1
 
 		if (endPosition >= messages.length) {
@@ -69,19 +69,19 @@ function markMessagesAsRead(messages) {
 	}
 }
 
-function createMessage(receipient, sender, message) {
+function createMessage(driverId, sender, message) {
 	var timestamp = moment()
 	return {
 		"id": Math.round(Math.random() * 100000),
 		"body": message,
 		"fromId": sender,
-		"toId": receipient,
+		"toId": driverId,
 		"unread": true,
 		"timestamp": timestamp	
 	}
 }
 
-function createNotification(receipient, sender, message, title, type) {
+function createNotification(driverId, sender, message, title, type) {
 	var timestamp = moment()
 	return {
 		"id": Math.round(Math.random() * 100000),
@@ -89,7 +89,7 @@ function createNotification(receipient, sender, message, title, type) {
 		"title": title,
 		"type": type,
 		"fromId": sender,
-		"toId": receipient,
+		"toId": driverId,
 		"timestamp": timestamp	
 	}
 }
