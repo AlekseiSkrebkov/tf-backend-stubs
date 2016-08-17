@@ -85,7 +85,7 @@ function getLoadsByDivision(divisionId, status, shippingDates, deliveryDates) {
 		if (deliveryDates) {
 			var startDateInt = new Date(deliveryDates.slice(0, deliveryDates.indexOf('-'))).getTime()
 			var endDateInt = new Date(deliveryDates.slice(deliveryDates.indexOf('-') + 1, deliveryDates.length)).getTime()
-			var loadDateInt = new Date(load.stops[length-1].date).getTime()
+			var loadDateInt = new Date(load.stops[load.stops.length-1].date).getTime()
 			if (!tools.isDateInRange(loadDateInt, startDateInt, endDateInt)) return false
 		}
 		return true
