@@ -37,12 +37,13 @@ module.exports = {
 }
 		
 function random(x) {
-	if (x == 100) 
+	return Math.floor(Math.random() * x)
+/*	if (x == 100) 
 		return Math.floor(Math.random() * 100)
 	else if (x > 10 && x < 100) 
 		return Math.floor(Math.random() * 100) % x
 	else if (x == 10) 
 		return Math.floor(Math.random() * 10)
-	else (x < 10) 
-		return Math.floor(Math.random() * 10) % x
+	else  (x < 10) 
+		return Math.floor(Math.random() * 10) % x*/
 }

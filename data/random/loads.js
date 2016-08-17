@@ -11,7 +11,7 @@ const divisionsService = require('../../services/divisionsService')
 
 const numberOfStops = 7
 const numberOfShipments = 10
-const loadsQuantity = 1000
+const loadsQuantity = 100
 
 var loads_collection = []
 
@@ -187,6 +187,9 @@ function generateShipments(loadId, stops) {
 }
 
 function generateStops(loadId) {
+	console.log('generateStops for loadId', loadId)
+	console.log("breadcrumbs length ", breadcrumbs.length)
+
 	var stop = {}
 	var stops_array = []
 	var stops_quantity = common_tools.randomFrom(numberOfStops)
@@ -194,7 +197,10 @@ function generateStops(loadId) {
 
 	var startLocationNumber	= common_tools.randomFrom(locations.length)
 
-	var coordinatesSubsetLength = Math.trunc(breadcrumbs.length / (stops_quantity))
+	var coordinatesSubsetLength = Math.floor(breadcrumbs.length / (stops_quantity))
+
+	console.log('coordinatesSubsetLength', coordinatesSubsetLength)
+
 	for (var i = 0; i < stops_quantity; i++) {
 		var stopId = loadId * 10 + i
 
@@ -218,7 +224,10 @@ function generateStops(loadId) {
 
 		stops_array[i].coordinatesIndex = coordinatesSubsetLength * i + common_tools.randomFrom(coordinatesSubsetLength)
 		
-		stops_array[i].coordinates = breadcrumbs[stops_array[i].coordinatesIndex].coordinates
+		console.log('coordinatesIndex', stops_array[i].coordinatesIndex)
+		console.log('common_tools.randomFrom(coordinatesSubsetLength)', common_tools.randomFrom(coordinatesSubsetLength))
+
+		//stops_array[i].coordinates = breadcrumbs[stops_array[i].coordinatesIndex].coordinates
 		stops_array[i].latitude = breadcrumbs[stops_array[i].coordinatesIndex].coordinates[0]
 		stops_array[i].longitude = breadcrumbs[stops_array[i].coordinatesIndex].coordinates[1]
 	}
