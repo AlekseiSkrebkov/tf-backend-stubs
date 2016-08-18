@@ -66,7 +66,7 @@ function getLoadsByDivision(divisionId, status, shippingDates, deliveryDates) {
 	console.log('divisions loads quantity', divisionLoads.length)
 
 // Apply filters
-	filteredLoads = divisionLoads.filter(function(load) {
+	var filteredLoads = divisionLoads.filter(function(load) {
 		//status
 		if (status) {
 			var statuses = status.split(',')
