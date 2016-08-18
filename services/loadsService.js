@@ -16,6 +16,7 @@ function getLoadSummary(load) {
 			"loadAttributes": load.loadAttributes,
 			"numberOfStops": load.stops.length,
 			"brokerTenderingInfo": load.brokerTenderingInfo,
+			"documentScans": load.documentScans,
 			"carrierTenderingInfo": load.carrierTenderingInfo,
 			"createdDateTime": load.createdDateTime
 		}
