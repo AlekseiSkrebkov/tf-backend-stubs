@@ -78,7 +78,10 @@ function generateLoad(id) {
 function generateDocScanLinks(loadId) {
 	var links = []
 	for (var i = 0; i < 15; i++) {
-		links.push('/scans/' + loadId + '/' + i)	
+		links.push({
+			"label": "Document scan #" + i + " | Confirmation ID | XX pages",
+			"url": "/scans/' + loadId + '/' + i"
+		})	
 	}
 	return links
 }
