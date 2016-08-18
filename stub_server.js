@@ -350,7 +350,7 @@ app.get('/loads/:id/summary', function(req, res) {
 	var load = R.find(R.propEq('id', parseInt(req.params.id)), loadCollection)
 
 	if (load)
-		res.json(loadsServices.getLoadSummary(load))
+		res.json(loadsService.getLoadSummary(load))
 	else 
 		res.status(404).send("Load ID = " + req.params.id + " is not found")
 })
