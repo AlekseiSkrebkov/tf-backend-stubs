@@ -11,7 +11,7 @@ const divisionsService = require('../../services/divisionsService')
 
 const numberOfStops = 7
 const numberOfShipments = 10
-const loadsQuantity = 100
+const loadsQuantity = 2000
 
 var loads_collection = []
 
