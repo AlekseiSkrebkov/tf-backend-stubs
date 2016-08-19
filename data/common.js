@@ -34,18 +34,18 @@ module.exports = {
 		return targetDate >= startDate && targetDate <= endDate
 	},
 	atob: function (str) {
-	  return new Buffer(str, 'base64').toString('binary');
+	  return new Buffer(str, 'base64').toString('binary')
 	},
 	btoa: function (str) {
 	    var buffer;
 
 	    if (str instanceof Buffer) {
-	      buffer = str;
+	      buffer = str
 	    } else {
-	      buffer = new Buffer(str.toString(), 'binary');
+	      buffer = new Buffer(str.toString(), 'binary')
 	    }
 
-	    return buffer.toString('base64');
+	    return buffer.toString('base64')
 	}
 }
 		
