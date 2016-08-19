@@ -62,8 +62,22 @@ function generateLoad(id) {
 		var nextStop = stops[common_tools.randomFrom(stops.length - 1) + 1]
 		load.nextStop = nextStop.id
 		
-		var breadcrumbsSubset = breadcrumbs.slice(load.stops[0].coordinatesIndex, nextStop.coordinatesIndex - 100)
+		var routeStart = load.stops[0].coordinatesIndex
+		var breadcrumbsBeforNextStop = nextStop.coordinatesIndex - routeStart
+		var breadcrumbsSubset = breadcrumbs.slice(routeStart, nextStop.coordinatesIndex - Math.floor(breadcrumbsBeforNextStop / 5))
 		load.breadcrumbs = breadcrumbsSubset
+
+		if (breadcrumbsSubset[breadcrumbsSubset.length-1] == undefined) {
+			console.log(breadcrumbsSubset.length)
+			console.log(breadcrumbs[breadcrumbsSubset.length-1])
+			console.log('first stop', load.stops[0].coordinatesIndex)
+			console.log('next stop', nextStop.coordinatesIndex - 100)
+			console.log('breadcrumbs.length', breadcrumbs.length)
+
+			for (var i = 0; i< load.stops.length; i++) {
+				console.log(load.stops[i].coordinatesIndex)
+			}
+		}
 
 		var truckLocation = locations[common_tools.randomFrom(locations.length)]
 		truckLocation.latitude = breadcrumbsSubset[breadcrumbsSubset.length-1].coordinates[0]
