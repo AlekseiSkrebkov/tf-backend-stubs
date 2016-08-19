@@ -1,12 +1,12 @@
 module.exports = [
 	{
-		"label": "Total loads count",
+		"label": "Total loads",
 		"value": 41,
 		"type": "loads",
 		"filters": []
 	},
 	{
-		"label": "Available loads count",
+		"label": "Available loads",
 		"value": 17,
 		"type": "loads",
 		"filters": [
@@ -17,7 +17,7 @@ module.exports = [
 		]
 	},
 	{
-		"label": "In transit loads count",
+		"label": "In transit loads",
 		"value": 8,
 		"type": "loads",
 		"filters": [
@@ -28,7 +28,7 @@ module.exports = [
 		]
 	},
 	{
-		"label": "Assigned loads count",
+		"label": "Assigned loads",
 		"value": 7,
 		"type": "loads",
 		"filters": [
@@ -39,7 +39,7 @@ module.exports = [
 		]
 	},
 	{
-		"label": "Offered loads count",
+		"label": "Offered loads",
 		"value": 13,
 		"type": "loads",
 		"filters": [
@@ -50,7 +50,7 @@ module.exports = [
 		]
 	},
 	{
-		"label": "Declined loads count",
+		"label": "Declined loads",
 		"value": 4,
 		"type": "loads",
 		"filters": [
@@ -61,25 +61,25 @@ module.exports = [
 		]
 	},
 	{
-		"label": "Total drivers count",
+		"label": "Total drivers",
 		"value": 48,
 		"type": "drivers",
 		"filters": []
 	},
 	{
-		"label": "Available drivers count",
+		"label": "Available drivers",
 		"value": 28,
 		"type": "drivers",
 		"filters": []
 	},
 	{
-		"label": "In transit drivers count",
+		"label": "In transit drivers",
 		"value": 16,
 		"type": "drivers",
 		"filters": []
 	},
 	{
-		"label": "Assigned drivers count",
+		"label": "Assigned drivers",
 		"value": 12,
 		"type": "drivers",
 		"filters": []
