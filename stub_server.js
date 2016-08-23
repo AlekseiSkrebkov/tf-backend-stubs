@@ -645,13 +645,18 @@ app.get('/statistics', function(req, res) {
 
 app.get('/mappoints', function(req, res) {
 	var divisionId = req.query.division
-	var status = req.query.status
-	var shippingDates = req.query.shippingDatesRange
-	var deliveryDates = req.query.deliveryDatesRange
 
-	var loads = loadsService.getLoadsByDivision(divisionId, status, shippingDates, deliveryDates)
+	if (parseInt(divisionId) == 4)
+		res.json([])
+	else {
+		var status = req.query.status
+		var shippingDates = req.query.shippingDatesRange
+		var deliveryDates = req.query.deliveryDatesRange
 
-	res.json(loads)
+		var loads = loadsService.getLoadsByDivision(divisionId, status, shippingDates, deliveryDates)
+
+		res.json(loads)
+	}
 })
 
 app.get('/divisions/:divisionId/drivers/:driverId', function(req, res) {
