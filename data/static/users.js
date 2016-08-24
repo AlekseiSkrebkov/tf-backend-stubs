@@ -65,24 +65,12 @@ module.exports = {
 			], 
 			menu: [
 				{
-					"name": "User1 Menu Item #1",
-					"url": "/"
+					"name": "Transflo ELD",
+					"url": "https://my.geotab.com/transflo/#dashboard"
 				},
 				{
-					"name": "User1 Menu Item #2",
-					"url": "/"
-				},
-				{
-					"name": "User1 Menu Item #3",
-					"url": "/"
-				},
-				{
-					"name": "User1 Menu Item #4",
-					"url": "/"
-				},
-				{
-					"name": "User1 Menu Item #5",
-					"url": "/"
+					"name": "Viewer",
+					"url": "https://viewer.transfloexpress.com"
 				}
 			],
 			securityToken: common_tools.guid()
@@ -138,24 +126,12 @@ module.exports = {
 			], 
 			menu: [
 				{
-					"name": "User2 Menu Item #1",
-					"url": "/"
+					"name": "Transflo ELD",
+					"url": "https://my.geotab.com/transflo/#dashboard"
 				},
 				{
-					"name": "User2 Menu Item #2",
-					"url": "/"
-				},
-				{
-					"name": "User2 Menu Item #3",
-					"url": "/"
-				},
-				{
-					"name": "User2 Menu Item #4",
-					"url": "/"
-				},
-				{
-					"name": "User2 Menu Item #5",
-					"url": "/"
+					"name": "Viewer",
+					"url": "https://viewer.transfloexpress.com"
 				}
 			],
 			securityToken: common_tools.guid()
