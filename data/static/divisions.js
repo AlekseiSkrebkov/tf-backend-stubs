@@ -1,6 +1,17 @@
 const tools = require('../../services/common')
 const locations = require('../static/locations')
+const messagesService = require('../../services/messagesService')
 
+function generateDriverMessages(id) {
+	var messages = []
+	var userId
+	for (var i = 0; i < 100; i++) {
+		userId = tools.randomFrom(2) +1
+		messages.push(messagesService.generateDriverMessage(id, userId))
+		messages.push(messagesService.generateDispatcherMessage(id, userId))
+	}
+	return messages
+}
 
 function generateDrivers(divisionId) {
 	var numberOfDrivers = tools.randomFrom(20) + 10
@@ -21,7 +32,7 @@ function generateDrivers(divisionId) {
 				}
 			],
 			"lastKnownLocation": locations[tools.randomFrom(locations.length)],
-			"messages": [],
+			"messages": generateDriverMessages(id),
 			"notifications": [],
 			"statistics": [
 				{

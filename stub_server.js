@@ -680,9 +680,9 @@ app.get('/divisions/:divisionId/messages/summary', function(req, res) {
 
 	for (var i = 0; i < division.relations.length; i++) {
 		var driver = division.relations[i]
-		var randomNewMessagesNumber = tools.randomFrom(3)
+		var randomNewMessagesNumber = tools.randomFrom(7)
 		for (var j = 0; j < randomNewMessagesNumber; j++) {
-			driver.messages.push(messagingService.generateNewDriverMessage(driver.id, userId))
+			driver.messages.push(messagingService.generateDriverMessage(driver.id, userId))
 		}
 		newMessagesSummary.push({
 			"driverId": driver.id,
@@ -704,9 +704,9 @@ app.get('/divisions/:divisionId/messages/backward', function(req, res) {
 
 	var messages = messagingService.getMessagesBeforePartucular(driver.messages, messageId, quantity)
 
-	messagingService.markMessagesAsRead(messages)
-
 	res.json(messages)
+
+	messagingService.markMessagesAsRead(messages)
 })
 
 app.get('/divisions/:divisionId/messages/forward', function(req, res) {
@@ -720,10 +720,10 @@ app.get('/divisions/:divisionId/messages/forward', function(req, res) {
 	if (quantity == undefined) quantity = 10
 
 	var messages = messagingService.getMessagesAfterPartucular(driver.messages, messageId, quantity)
-	
-	messagingService.markMessagesAsRead(messages)
 
 	res.json(messages)
+
+	messagingService.markMessagesAsRead(messages)
 })
 
 app.post('/divisions/:divisionId/messages/', function(req, res) {

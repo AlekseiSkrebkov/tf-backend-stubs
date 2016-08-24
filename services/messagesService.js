@@ -1,12 +1,24 @@
 var moment = require('moment')
 
-function generateNewDriverMessage(driverId, userId) {
+function generateDriverMessage(driverId, userId) {
 	var timestamp = moment()
 	return {
 		"id": Math.round(Math.random() * 100000),
-		"body": "Generated message " + timestamp,
+		"body": "Driver message " + timestamp,
 		"fromId": driverId,
 		"toId": userId,
+		"unread": true,
+		"timestamp": timestamp	
+	}
+}
+
+function generateDispatcherMessage(driverId, userId) {
+	var timestamp = moment()
+	return {
+		"id": Math.round(Math.random() * 100000),
+		"body": "Dispatcher message " + timestamp,
+		"fromId": userId,
+		"toId": driverId,
 		"unread": true,
 		"timestamp": timestamp	
 	}
@@ -96,7 +108,8 @@ function createNotification(driverId, sender, message, title, type) {
 
 
 module.exports = {
-	generateNewDriverMessage: generateNewDriverMessage,
+	generateDriverMessage: generateDriverMessage,
+	generateDispatcherMessage: generateDispatcherMessage,
 	getMessagesBeforePartucular: getMessagesBeforePartucular,
 	getMessagesAfterPartucular: getMessagesAfterPartucular,
 	markMessagesAsRead: markMessagesAsRead,
