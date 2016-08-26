@@ -7,8 +7,8 @@ function generateDriverMessages(id) {
 	var userId
 	for (var i = 0; i < 100; i++) {
 		userId = tools.randomFrom(2) +1
-		messages.push(messagesService.generateDriverMessage(id, userId))
-		messages.push(messagesService.generateDispatcherMessage(id, userId))
+		messages.push(messagesService.generateDriverMessage(id, userId, false))
+		messages.push(messagesService.generateDispatcherMessage(id, userId, false))
 	}
 	return messages
 }

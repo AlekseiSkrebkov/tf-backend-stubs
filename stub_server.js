@@ -446,8 +446,20 @@ app.get('/divisions/:id/drivers', function(req, res) {
 	var division = divisions.find(function(division){
 			return division.id == parseInt(divisionId)
 		})	
-	if (division.type == 'carrier')
-		res.json(division.relations)
+	if (division.type == 'carrier') {
+		var driversSummary = []
+		for (var i = 0; i < division.relations.length; i++) {
+			var driver = division.relations[i]
+			driversSummary.push({
+				"id": driver.id,
+				"name": driver.name,
+				"email": driver.email,
+				"driverId": driver.driverId,
+				"isFavorite": driver.isFavorite
+			})
+		}
+		res.json(driversSummary)
+	}
 	else
 		res.status(403).send('Only Carrier Divisions are supported')
 })
@@ -682,7 +694,7 @@ app.get('/divisions/:divisionId/messages/summary', function(req, res) {
 		var driver = division.relations[i]
 		var randomNewMessagesNumber = tools.randomFrom(7)
 		for (var j = 0; j < randomNewMessagesNumber; j++) {
-			driver.messages.push(messagingService.generateDriverMessage(driver.id, userId))
+			driver.messages.push(messagingService.generateDriverMessage(driver.id, userId, true))
 		}
 		newMessagesSummary.push({
 			"driverId": driver.id,

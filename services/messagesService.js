@@ -1,29 +1,28 @@
 var moment = require('moment')
 
-function generateDriverMessage(driverId, userId) {
-	var timestamp = moment()
+function generateDriverMessage(driverId, userId, unread) {
+	var timestamp = moment().format()
 	return {
 		"id": Math.round(Math.random() * 100000),
 		"body": "Driver message " + timestamp,
 		"fromId": driverId,
 		"toId": userId,
-		"unread": true,
+		"unread": unread,
 		"timestamp": timestamp	
 	}
 }
 
-function generateDispatcherMessage(driverId, userId) {
-	var timestamp = moment()
+function generateDispatcherMessage(driverId, userId, unread) {
+	var timestamp = moment().format()
 	return {
 		"id": Math.round(Math.random() * 100000),
 		"body": "Dispatcher message " + timestamp,
 		"fromId": userId,
 		"toId": driverId,
-		"unread": true,
+		"unread": unread,
 		"timestamp": timestamp	
 	}
 }
-
 
 function getMessagesBeforePartucular(messages, messageId, quantity) {
 	console.log('messageId', messageId)
@@ -38,11 +37,10 @@ function getMessagesBeforePartucular(messages, messageId, quantity) {
 		console.log('messageIndex', messageIndex)
 
 		var startPosition = messageIndex - parseInt(quantity)
-		var endPosition = startPosition + parseInt(quantity)
+		var endPosition = messageIndex
 
 		if (startPosition < 0) {
 			startPosition = 0
-			endPosition =  messageIndex
 		}
 		console.log('startPosition', startPosition)
 		console.log('endPosition', endPosition)
@@ -88,7 +86,7 @@ function createMessage(driverId, sender, message) {
 		"body": message,
 		"fromId": sender,
 		"toId": driverId,
-		"unread": true,
+		"unread": false,
 		"timestamp": timestamp	
 	}
 }
