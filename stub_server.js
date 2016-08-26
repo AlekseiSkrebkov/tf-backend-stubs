@@ -759,7 +759,7 @@ app.post('/divisions/:divisionId/messages/', function(req, res) {
 		var driver = divisionsService.getDriver(divisionId, driverIds[i])
 		driver.messages.push(messagingService.createMessage(driverIds[i], userId, req.body.message))
 	}
-	res.status(200).send("Ok")
+	res.status(201).send("Ok")
 })
 
 app.get('/divisions/:divisionId/notifications', function(req, res) {
@@ -785,7 +785,7 @@ app.post('/divisions/:divisionId/notifications', function(req, res) {
 
 	}
 
-	res.status(200).send("Ok")
+	res.status(201).send("Ok")
 })
 
 app.listen(app.get('port'), function() {
