@@ -751,38 +751,41 @@ app.post('/divisions/:divisionId/messages/', function(req, res) {
 	var userId = userProfile ? userProfile.id : 1
 
 	var divisionId = req.params.divisionId
-	var driverId = req.body.toId
+	var driverIds = req.body.toIds
 
-	var driver = divisionsService.getDriver(divisionId, driverId)
-	var message = messagingService.createMessage(driverId, userId, req.body.message)
-
-	driver.messages.push(message)
-
-	res.json(message)
+	for (var i = 0; i < driverIds.length; i++)
+	{
+		console.log('Driver Id', driverIds[i])
+		var driver = divisionsService.getDriver(divisionId, driverIds[i])
+		driver.messages.push(messagingService.createMessage(driverIds[i], userId, req.body.message))
+	}
+	res.status(200).send("Ok")
 })
 
-app.get('/divisions/:divisionId/drivers/:driverId/notifications', function(req, res) {
+app.get('/divisions/:divisionId/notifications', function(req, res) {
 	var divisionId = req.params.divisionId
-	var driverId = req.params.driverId
+	var driverId = req.query.driver
 
 	var driver = divisionsService.getDriver(divisionId, driverId)
 
 	res.json(driver.notifications)
 })
 
-app.post('/divisions/:divisionId/drivers/:driverId/notifications', function(req, res) {
+app.post('/divisions/:divisionId/notifications', function(req, res) {
 	var userProfile = getUserProfile(req)
 	var userId = userProfile ? userProfile.id : 1
 
 	var divisionId = req.params.divisionId
-	var driverId = req.params.driverId
+	var driverIds = req.body.toIds
 
-	var driver = divisionsService.getDriver(divisionId, driverId)
-	var notification = messagingService.createNotification(driverId, userId, req.body.message, req.body.title, req.body.type)
+	for (var i = 0; i < driverIds.length; i++) {
+		var driver = divisionsService.getDriver(divisionId, driverIds[i])
+		driver.notifications.push(
+			messagingService.createNotification(driverIds[i], userId, req.body.message, req.body.title, req.body.type)	)
 
-	driver.notifications.push(notification)
+	}
 
-	res.json(notification)
+	res.status(200).send("Ok")
 })
 
 app.listen(app.get('port'), function() {
