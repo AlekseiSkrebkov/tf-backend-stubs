@@ -13,6 +13,16 @@ function generateDriverMessages(id) {
 	return messages
 }
 
+function generateDriverNotifications(id) {
+	var notifications = []
+	var userId
+	for (var i = 0; i < 50; i++) {
+		userId = tools.randomFrom(2) +1
+		notifications.push(messagesService.generateNotification(id, userId, tools.randomFrom(2)))
+	}
+	return notifications	
+}
+
 function generateDrivers(divisionId) {
 	var numberOfDrivers = tools.randomFrom(20) + 10
 	drivers = []
@@ -33,7 +43,7 @@ function generateDrivers(divisionId) {
 			],
 			"lastKnownLocation": locations[tools.randomFrom(locations.length)],
 			"messages": generateDriverMessages(id),
-			"notifications": [],
+			"notifications": generateDriverNotifications(id),
 			"statistics": [
 				{
 					"label": "Offered Loads",
@@ -59,6 +69,7 @@ function generateDrivers(divisionId) {
 				}
 			]
 		}
+		//console.log(drivers[i].notifications)
 	}
 	return drivers;
 }

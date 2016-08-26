@@ -1,5 +1,18 @@
 var moment = require('moment')
 
+function generateNotification(driverId, userId, type) {
+	var timestamp = moment().format()
+	return {
+		"id": Math.round(Math.random() * 100000),
+		"title": "important notification",
+		"body": "Notification for Driver#" + driverId + ". Please pay attention to this notification. Doesn't matter that it's just test notification. It's still notification. Take care. Have a good day.",
+		"type": type == 1 ? "general" : "settlement",
+		"fromId": driverId,
+		"toId": userId,
+		"timestamp": timestamp	
+	}
+}
+
 function generateDriverMessage(driverId, userId, unread) {
 	var timestamp = moment().format()
 	return {
@@ -106,6 +119,7 @@ function createNotification(driverId, sender, message, title, type) {
 
 
 module.exports = {
+	generateNotification: generateNotification,
 	generateDriverMessage: generateDriverMessage,
 	generateDispatcherMessage: generateDispatcherMessage,
 	getMessagesBeforePartucular: getMessagesBeforePartucular,

@@ -767,6 +767,7 @@ app.get('/divisions/:divisionId/notifications', function(req, res) {
 	var driverId = req.query.driver
 
 	var driver = divisionsService.getDriver(divisionId, driverId)
+	console.log('driver', driver)
 
 	res.json(driver.notifications)
 })
