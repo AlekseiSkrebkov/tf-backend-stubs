@@ -692,13 +692,21 @@ app.get('/divisions/:divisionId/messages/summary', function(req, res) {
 
 	for (var i = 0; i < division.relations.length; i++) {
 		var driver = division.relations[i]
+
+		var unreadMessagesCount = 0
+		var j = driver.messages.length - 1
+		while (driver.messages[j].unread == true) {
+			unreadMessagesCount ++
+			j --
+		}
+		
 		var randomNewMessagesNumber = tools.randomFrom(7)
 		for (var j = 0; j < randomNewMessagesNumber; j++) {
 			driver.messages.push(messagingService.generateDriverMessage(driver.id, userId, true))
 		}
 		newMessagesSummary.push({
 			"driverId": driver.id,
-			"quantity": randomNewMessagesNumber
+			"quantity": unreadMessagesCount + randomNewMessagesNumber
 		})
 	}
 	res.json(newMessagesSummary)
