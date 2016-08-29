@@ -325,23 +325,23 @@ app.delete('/loads/:id', function(req, res) {
 })
 
 app.get('/loads/:id', function(req, res) {
-
-
 	//ToDo: this is WA for problem with unexpectedly generated stop.id
 	var load = R.find(R.propEq('id', parseInt(req.params.id)), loadCollection)
 	//load.breadcrumbs = undefined
-	console.log('before WA', load.stops)
+	
+	if (load) {
 
-	for (var i = 0; i < load.stops.length; i++) {
-			load.stops[i].id = load.stops[i].stop_id
-			//delete load.stops[i].stop_id
-	}
+		console.log('before WA', load.stops)
 
-	console.log('after WA', load.stops)
+		for (var i = 0; i < load.stops.length; i++) {
+				load.stops[i].id = load.stops[i].stop_id
+				//delete load.stops[i].stop_id
+		}
 
+		console.log('after WA', load.stops)
 
-	if (load)
 		res.json(load)
+	}	
 	else 
 		res.status(404).send("Load ID = " + req.params.id + " is not found")
 })
