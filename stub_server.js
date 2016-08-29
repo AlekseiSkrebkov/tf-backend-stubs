@@ -789,6 +789,10 @@ app.post('/divisions/:divisionId/notifications', function(req, res) {
 	res.status(201).send("Ok")
 })
 
+app.get('/error500', function(req, res){
+	res.status(500).send("Requested url doesn't exist")
+})
+
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'))
 })
