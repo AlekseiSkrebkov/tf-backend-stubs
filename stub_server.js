@@ -52,10 +52,13 @@ app.use(function(req, res, next) {
 app.use(function(req, res, next) {
 	var userProfile = getUserProfile(req)
 	var originalUrl = req.originalUrl
+	var method = req.method
+
+	console.log('method', method)
 
 	var noAuthURLs = ['/', '/auth/signin', '/auth/forgot']
 
-	if (noAuthURLs.indexOf(originalUrl) == -1 && userProfile == undefined)
+	if (method != 'OPTIONS' && noAuthURLs.indexOf(originalUrl) == -1 && userProfile == undefined)
 		res.status(401).send("Token is expired")
 	else
 		next()
