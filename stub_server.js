@@ -30,19 +30,19 @@ app.use(bodyParser.json()) // for parsing application/json
 
 app.set('port', (process.env.PORT || 5000))
 
-app.use(function(req, res, next) {
-	var userProfile = getUserProfile(req)
-	var originalUrl = req.originalUrl
+// app.use(function(req, res, next) {
+// 	var userProfile = getUserProfile(req)
+// 	var originalUrl = req.originalUrl
 
-	console.log('originalUrl', originalUrl)
+// 	console.log('originalUrl', originalUrl)
 
-	var noAuthURLs = ['/', '/auth/signin', '/auth/forgot']
+// 	var noAuthURLs = ['/', '/auth/signin', '/auth/forgot']
 
-	if (noAuthURLs.indexOf(originalUrl) == -1 && userProfile == undefined)
-		res.status(401).send("Token is expired")
-	else
-		next()
-})
+// 	if (noAuthURLs.indexOf(originalUrl) == -1 && userProfile == undefined)
+// 		res.status(401).send("Token is expired")
+// 	else
+// 		next()
+// })
 
 app.use(function(req, res, next) {
 	// Website you wish to allow to connect
