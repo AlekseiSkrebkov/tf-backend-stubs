@@ -36,7 +36,9 @@ app.use(function(req, res, next) {
 
 	console.log('originalUrl', originalUrl)
 
-	if (originalUrl != '/auth/signin' &&  originalUrl != '/auth/forgot' && userProfile == undefined)
+	var noAuthURLs = ['/', '/auth/signin', '/auth/forgot']
+
+	if (noAuthURLs.indexOf(originalUrl) == -1 && userProfile == undefined)
 		res.status(401).send("Token is expired")
 	else
 		next()
@@ -61,7 +63,7 @@ app.use(function(req, res, next) {
 }) 
 
 app.get('/', function (req, res) {
- 	res.redirect('/loads')
+ 	res.status(200).send("ok")
 })
 
 const users = require(static_data_folder + 'users.js')
