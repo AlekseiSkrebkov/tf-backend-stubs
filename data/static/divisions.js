@@ -7,10 +7,20 @@ function generateDriverMessages(id) {
 	var userId
 	for (var i = 0; i < 100; i++) {
 		userId = tools.randomFrom(2) +1
-		messages.push(messagesService.generateDriverMessage(id, userId))
-		messages.push(messagesService.generateDispatcherMessage(id, userId))
+		messages.push(messagesService.generateDriverMessage(id, userId, false))
+		messages.push(messagesService.generateDispatcherMessage(id, userId, false))
 	}
 	return messages
+}
+
+function generateDriverNotifications(id) {
+	var notifications = []
+	var userId
+	for (var i = 0; i < 50; i++) {
+		userId = tools.randomFrom(2) +1
+		notifications.push(messagesService.generateNotification(id, userId, tools.randomFrom(2)))
+	}
+	return notifications	
 }
 
 function generateDrivers(divisionId) {
@@ -33,7 +43,7 @@ function generateDrivers(divisionId) {
 			],
 			"lastKnownLocation": locations[tools.randomFrom(locations.length)],
 			"messages": generateDriverMessages(id),
-			"notifications": [],
+			"notifications": generateDriverNotifications(id),
 			"statistics": [
 				{
 					"label": "Offered Loads",
@@ -59,6 +69,7 @@ function generateDrivers(divisionId) {
 				}
 			]
 		}
+		//console.log(drivers[i].notifications)
 	}
 	return drivers;
 }

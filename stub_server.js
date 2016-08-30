@@ -325,23 +325,23 @@ app.delete('/loads/:id', function(req, res) {
 })
 
 app.get('/loads/:id', function(req, res) {
-
-
 	//ToDo: this is WA for problem with unexpectedly generated stop.id
 	var load = R.find(R.propEq('id', parseInt(req.params.id)), loadCollection)
 	//load.breadcrumbs = undefined
-	console.log('before WA', load.stops)
+	
+	if (load) {
 
-	for (var i = 0; i < load.stops.length; i++) {
-			load.stops[i].id = load.stops[i].stop_id
-			//delete load.stops[i].stop_id
-	}
+		console.log('before WA', load.stops)
 
-	console.log('after WA', load.stops)
+		for (var i = 0; i < load.stops.length; i++) {
+				load.stops[i].id = load.stops[i].stop_id
+				//delete load.stops[i].stop_id
+		}
 
+		console.log('after WA', load.stops)
 
-	if (load)
 		res.json(load)
+	}	
 	else 
 		res.status(404).send("Load ID = " + req.params.id + " is not found")
 })
@@ -446,8 +446,20 @@ app.get('/divisions/:id/drivers', function(req, res) {
 	var division = divisions.find(function(division){
 			return division.id == parseInt(divisionId)
 		})	
-	if (division.type == 'carrier')
-		res.json(division.relations)
+	if (division.type == 'carrier') {
+		var driversSummary = []
+		for (var i = 0; i < division.relations.length; i++) {
+			var driver = division.relations[i]
+			driversSummary.push({
+				"id": driver.id,
+				"name": driver.name,
+				"email": driver.email,
+				"driverId": driver.driverId,
+				"isFavorite": driver.isFavorite
+			})
+		}
+		res.json(driversSummary)
+	}
 	else
 		res.status(403).send('Only Carrier Divisions are supported')
 })
@@ -680,13 +692,21 @@ app.get('/divisions/:divisionId/messages/summary', function(req, res) {
 
 	for (var i = 0; i < division.relations.length; i++) {
 		var driver = division.relations[i]
+
+		var unreadMessagesCount = 0
+		var j = driver.messages.length - 1
+		while (driver.messages[j].unread == true) {
+			unreadMessagesCount ++
+			j --
+		}
+		
 		var randomNewMessagesNumber = tools.randomFrom(7)
 		for (var j = 0; j < randomNewMessagesNumber; j++) {
-			driver.messages.push(messagingService.generateDriverMessage(driver.id, userId))
+			driver.messages.push(messagingService.generateDriverMessage(driver.id, userId, true))
 		}
 		newMessagesSummary.push({
 			"driverId": driver.id,
-			"quantity": randomNewMessagesNumber
+			"quantity": unreadMessagesCount + randomNewMessagesNumber
 		})
 	}
 	res.json(newMessagesSummary)
@@ -731,38 +751,46 @@ app.post('/divisions/:divisionId/messages/', function(req, res) {
 	var userId = userProfile ? userProfile.id : 1
 
 	var divisionId = req.params.divisionId
-	var driverId = req.body.toId
+	var driverIds = req.body.toIds
 
-	var driver = divisionsService.getDriver(divisionId, driverId)
-	var message = messagingService.createMessage(driverId, userId, req.body.message)
-
-	driver.messages.push(message)
-
-	res.json(message)
+	for (var i = 0; i < driverIds.length; i++)
+	{
+		console.log('Driver Id', driverIds[i])
+		var driver = divisionsService.getDriver(divisionId, driverIds[i])
+		driver.messages.push(messagingService.createMessage(driverIds[i], userId, req.body.message))
+	}
+	res.status(201).send("Ok")
 })
 
-app.get('/divisions/:divisionId/drivers/:driverId/notifications', function(req, res) {
+app.get('/divisions/:divisionId/notifications', function(req, res) {
 	var divisionId = req.params.divisionId
-	var driverId = req.params.driverId
+	var driverId = req.query.driver
 
 	var driver = divisionsService.getDriver(divisionId, driverId)
+	console.log('driver', driver)
 
 	res.json(driver.notifications)
 })
 
-app.post('/divisions/:divisionId/drivers/:driverId/notifications', function(req, res) {
+app.post('/divisions/:divisionId/notifications', function(req, res) {
 	var userProfile = getUserProfile(req)
 	var userId = userProfile ? userProfile.id : 1
 
 	var divisionId = req.params.divisionId
-	var driverId = req.params.driverId
+	var driverIds = req.body.toIds
 
-	var driver = divisionsService.getDriver(divisionId, driverId)
-	var notification = messagingService.createNotification(driverId, userId, req.body.message, req.body.title, req.body.type)
+	for (var i = 0; i < driverIds.length; i++) {
+		var driver = divisionsService.getDriver(divisionId, driverIds[i])
+		driver.notifications.push(
+			messagingService.createNotification(driverIds[i], userId, req.body.message, req.body.title, req.body.type)	)
 
-	driver.notifications.push(notification)
+	}
 
-	res.json(notification)
+	res.status(201).send("Ok")
+})
+
+app.get('/error500', function(req, res){
+	res.status(500).send("Requested url doesn't exist")
 })
 
 app.listen(app.get('port'), function() {
