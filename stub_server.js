@@ -30,17 +30,6 @@ app.use(bodyParser.json()) // for parsing application/json
 
 app.set('port', (process.env.PORT || 5000))
 
-app.use(function(req, res, next) {
-	var userProfile = getUserProfile(req)
-	var originalUrl = req.originalUrl
-
-	var noAuthURLs = ['/', '/auth/signin', '/auth/forgot']
-
-	if (noAuthURLs.indexOf(originalUrl) == -1 && userProfile == undefined)
-		res.status(401).send("Token is expired")
-	else
-		next()
-})
 
 app.use(function(req, res, next) {
 	// Website you wish to allow to connect
@@ -59,6 +48,18 @@ app.use(function(req, res, next) {
 	// Pass to next layer of middleware
 	next()	
 }) 
+
+app.use(function(req, res, next) {
+	var userProfile = getUserProfile(req)
+	var originalUrl = req.originalUrl
+
+	var noAuthURLs = ['/', '/auth/signin', '/auth/forgot']
+
+	if (noAuthURLs.indexOf(originalUrl) == -1 && userProfile == undefined)
+		res.status(401).send("Token is expired")
+	else
+		next()
+})
 
 app.get('/', function (req, res) {
  	res.status(200).send("ok")
