@@ -117,12 +117,16 @@ function getLoadsByDivision(divisionId, status, shippingDates, deliveryDates) {
 		var drivers = division.relations
 		for (var i = 0; i < drivers.length; i++) {
 			var driver = drivers[i]
-			mapPoints.push({
+			var driverPoint = {
 				"id": driver.id,
 				"latitude": driver.lastKnownLocation.latitude,
 				"longitude": driver.lastKnownLocation.longitude,
 				"type": Math.random() > 0.5 ? "availableDriver" : "intransitDriver"
-			})	
+			}
+			if (driverPoint.type == 'intransitDriver') {
+				driverPoint.associatedPoint = filteredLoads[tools.randomFrom(filteredLoads.length)].id
+			}
+			mapPoints.push(driverPoint)	
 		}
 	}
 
