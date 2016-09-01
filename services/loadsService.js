@@ -124,7 +124,13 @@ function getLoadsByDivision(divisionId, status, shippingDates, deliveryDates) {
 				"type": Math.random() > 0.5 ? "availableDriver" : "intransitDriver"
 			}
 			if (driverPoint.type == 'intransitDriver') {
-				driverPoint.associatedPoint = filteredLoads[tools.randomFrom(filteredLoads.length)].id
+				var randomLoad = filteredLoads[tools.randomFrom(filteredLoads.length)]
+				driverPoint.associatedPoint = {
+					"id": randomLoad.id,
+					"latitude": randomLoad.stops[randomLoad.stops.length - 1].latitude,
+					"longitude": randomLoad.stops[randomLoad.stops.length - 1].longitude,
+					"type": "deliveryLoc"
+				}
 			}
 			mapPoints.push(driverPoint)	
 		}
