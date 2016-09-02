@@ -143,14 +143,36 @@ function validateLoadParameters(load) {
 	var errors = []
 	if (!load.bolNumber) 
 		errors.push({
+			objectId: load.id,
 			parameter: "bolNumber",
-			error: "BOL Number should be specified for load"
+			error: "BOL should be specified for load"
 		})
 	if (!load.freightTerms)
 		errors.push({
+			objectId: load.id,
 			parameter: "freightTerms",
 			error: "Freight Terms should be specified for load"
 		})
+
+	for (var i = 0; i < load.shipments.length; i++) {
+		var shipment = load.shipments[i]
+		if (!shipment.bolNumber)
+			errors.push({
+				objectId: shipment.id,
+				parameter: "bolNumber",
+				error: "BOL should be specified for shipment"		
+			})
+	}
+
+	for (var i = 0; i < load.stops.length; i++) {
+		var stop = load.stops[i]
+		if (!stop.addressLines[0])
+			errors.push({
+				objectId: stop.id,
+				parameter: "addressLine",
+				error: "Address can't be empty on stop"		
+			})
+	}
 	return errors
 }
 
