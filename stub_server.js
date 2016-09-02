@@ -275,6 +275,13 @@ app.get('/loads', function(req, res) {
 
 app.post('/loads', function(req, res) {
 	var load = req.body
+
+	var errors = loadsService.validateLoad(load)
+	if (errors.length > 0) {
+		res.status(400).send(composeValidationError("Validation of load parameters failed", errors))
+		return
+	}
+	
 	load.id = loadCollection[loadCollection.length - 1].id + 1	
 	load.status = 'Available'
 	load.createdDateTime = moment()
@@ -300,7 +307,7 @@ app.put('/loads/:id', function(req, res) {
 		
 		var errors = loadsService.validateLoad(updatedLoad)
 		if (errors.length > 0) {
-			res.status(400).send(composeValidationError(errors))
+			res.status(400).send(composeValidationError("Validation of load parameters failed", errors))
 			return
 		}
 
