@@ -158,7 +158,7 @@ function validateLoadParameters(load) {
 		var shipment = load.shipments[i]
 		if (!shipment.bolNumber)
 			errors.push({
-				objectId: shipment.id,
+				objectId: shipment.id == null ? shipment._id : shipment.id,
 				parameter: "bolNumber",
 				error: "BOL should be specified for shipment"		
 			})
@@ -168,7 +168,7 @@ function validateLoadParameters(load) {
 		var stop = load.stops[i]
 		if (!stop.addressLines[0])
 			errors.push({
-				objectId: stop.id,
+				objectId: stop.id == null ? stop._id : stop.id, 
 				parameter: "addressLine",
 				error: "Address can't be empty on stop"		
 			})
