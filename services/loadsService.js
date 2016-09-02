@@ -139,8 +139,24 @@ function getLoadsByDivision(divisionId, status, shippingDates, deliveryDates) {
 	return mapPoints
 }
 
+function validateLoadParameters(load) {
+	var errors = []
+	if (!load.bolNumber) 
+		errors.push({
+			parameter: "bolNumber",
+			error: "BOL Number should be specified for load"
+		})
+	if (!load.freightTerms)
+		errors.push({
+			parameter: "freightTerms",
+			error: "Freight Terms should be specified for load"
+		})
+	return errors
+}
+
 module.exports = {
 	getLoadSummary: getLoadSummary,
 	processNewStops: processNewStops,
-	getLoadsByDivision: getLoadsByDivision
+	getLoadsByDivision: getLoadsByDivision,
+	validateLoad: validateLoadParameters
 }

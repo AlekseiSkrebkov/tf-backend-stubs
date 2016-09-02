@@ -294,12 +294,17 @@ app.put('/loads/:id', function(req, res) {
 
 	if (loadNum >= 0) {
 		var updatedLoad = req.body
-		var targetLoad = loadCollection[loadNum]
+		
+		var errors = loadsService.validateLoad(updatedLoad)
+		if (errors.length > 0) {
+			res.status(400).send(composeValidationError(errors))
+			return
+		}
 
 		loadsService.processNewStops(updatedLoad)
 
+		var targetLoad = loadCollection[loadNum]
 		for (var attrname in updatedLoad) { targetLoad[attrname] = updatedLoad[attrname]; }
-
 		res.json(targetLoad)
 	}
 	else {
@@ -795,12 +800,20 @@ app.post('/divisions/:divisionId/notifications', function(req, res) {
 	for (var i = 0; i < driverIds.length; i++) {
 		var driver = divisionsService.getDriver(divisionId, driverIds[i])
 		driver.notifications.push(
-			messagingService.createNotification(driverIds[i], userId, req.body.message, req.body.title, req.body.type)	)
-
+			messagingService.createNotification(driverIds[i], userId, req.body.message, req.body.title, req.body.type)	
+		)
 	}
 
 	res.status(201).send("Ok")
 })
+
+function composeValidationError(message, errors) {
+	return {
+		errorType: "ValidationError",
+		errorMessage: message,
+		details: errors
+	}
+}
 
 app.get('/error500', function(req, res){
 	res.status(500).send("Requested url doesn't exist")
