@@ -54,8 +54,6 @@ app.use(function(req, res, next) {
 	var originalUrl = req.originalUrl
 	var method = req.method
 
-	console.log('method', method)
-
 	var noAuthURLs = ['/', '/auth/signin', '/auth/forgot']
 
 	if (method != 'OPTIONS' && noAuthURLs.indexOf(originalUrl) == -1 && userProfile == undefined)
@@ -126,6 +124,11 @@ app.get('/loads', function(req, res) {
 	res_loads = res_loads.filter(function(load) {
 		//division
 		var divisionId = req.query.division
+		if (!divisionId) {
+			res.status(400).send(composeBadRequestError("Division ID is  required parameter for List Loads request"))
+			return
+		}
+
 		var division = divisionsService.getDivisionById(divisionId)
 		if (division) {
 			if (division.type == 'carrier')  {
@@ -159,7 +162,6 @@ app.get('/loads', function(req, res) {
 		var brokerIdsStr = req.query.broker
 		if (brokerIdsStr) {
 			var brokers = brokerIdsStr.split(',')
-			console.log('brokers', brokers)
 			if (load.brokerDivision == undefined || load.brokerDivision == null) return false
 			if (brokers.indexOf(load.brokerDivision.id.toString()) == -1) return false
 		}
@@ -243,7 +245,6 @@ app.get('/loads', function(req, res) {
 
 	if (sort_by != 'shipping' && sort_by != 'delivery') 
 		sort_by = 'shipping';
-	console.log("sort_by and sort_type", sort_by + ' ' + sort_type)
 	res_loads = res_loads.sort(function(load1, load2) {
 		var date1
 		var date2
@@ -410,7 +411,6 @@ app.put('/loads/:id/brokertendering', function(req, res) {
 		for (var i = 0 ; i < receivedTenderingUpdate.length; i++) {
 			if (!receivedTenderingUpdate[i].name) {
 				var division = divisionsRepository.getBrokerDivisionById(load.brokerDivision.id)
-				console.log('tendering from division', division)
 				var carrier = divisionsRepository.getSubordinateById(division, receivedTenderingUpdate[i].id) 
 				receivedTenderingUpdate[i].name = carrier.name
 			}
@@ -492,7 +492,6 @@ app.get('/divisions/:id/carriers', function(req, res) {
 
 	if (division.type == 'broker') {
 		var carriers = division.relations
-		console.log('drivers', division.relations)
 		for (var i = 0; i < carriers.length; i++) {
 			carriers[i].relations = undefined
 		} 
@@ -775,7 +774,6 @@ app.post('/divisions/:divisionId/messages/', function(req, res) {
 
 	for (var i = 0; i < driverIds.length; i++)
 	{
-		console.log('Driver Id', driverIds[i])
 		var driver = divisionsService.getDriver(divisionId, driverIds[i])
 		driver.messages.push(messagingService.createMessage(driverIds[i], userId, req.body.message))
 	}
@@ -787,7 +785,6 @@ app.get('/divisions/:divisionId/notifications', function(req, res) {
 	var driverId = req.query.driver
 
 	var driver = divisionsService.getDriver(divisionId, driverId)
-	console.log('driver', driver)
 
 	res.json(driver.notifications)
 })
@@ -814,6 +811,14 @@ function composeValidationError(message, errors) {
 		errorType: "ValidationError",
 		errorMessage: message,
 		details: errors
+	}
+}
+
+function composeBadRequestError(message) {
+	return {
+		errorType: "BadRequest",
+		errorMessage: message,
+		details: []
 	}
 }
 
