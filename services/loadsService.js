@@ -18,7 +18,17 @@ function getLoadSummary(load) {
 			"brokerTenderingInfo": load.brokerTenderingInfo,
 			"documentScans": load.documentScans,
 			"carrierTenderingInfo": load.carrierTenderingInfo,
-			"createdDateTime": load.createdDateTime
+			"createdDateTime": load.createdDateTime,
+			"menu": [
+				{
+					"name": "Transflo ELD",
+					"url": "https://my.geotab.com/transflo/#dashboard"
+				},
+				{
+					"name": "Viewer",
+					"url": "https://viewer.transfloexpress.com"
+				}
+			]
 		}
 }
 
