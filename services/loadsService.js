@@ -117,20 +117,68 @@ function getLoadsByDivision(divisionId, status, shippingDates, deliveryDates) {
 		var drivers = division.relations
 		for (var i = 0; i < drivers.length; i++) {
 			var driver = drivers[i]
-			mapPoints.push({
+			var driverPoint = {
 				"id": driver.id,
 				"latitude": driver.lastKnownLocation.latitude,
 				"longitude": driver.lastKnownLocation.longitude,
 				"type": Math.random() > 0.5 ? "availableDriver" : "intransitDriver"
-			})	
+			}
+			if (driverPoint.type == 'intransitDriver') {
+				var randomLoad = filteredLoads[tools.randomFrom(filteredLoads.length)]
+				driverPoint.associatedPoint = {
+					"id": randomLoad.id,
+					"latitude": randomLoad.stops[randomLoad.stops.length - 1].latitude,
+					"longitude": randomLoad.stops[randomLoad.stops.length - 1].longitude,
+					"type": "deliveryLoc"
+				}
+			}
+			mapPoints.push(driverPoint)	
 		}
 	}
 
 	return mapPoints
 }
 
+function validateLoadParameters(load) {
+	var errors = []
+	if (!load.bolNumber) 
+		errors.push({
+			objectId: load.id,
+			parameter: "bolNumber",
+			error: "BOL should be specified for load"
+		})
+	if (!load.freightTerms)
+		errors.push({
+			objectId: load.id,
+			parameter: "freightTerms",
+			error: "Freight Terms should be specified for load"
+		})
+
+	for (var i = 0; i < load.shipments.length; i++) {
+		var shipment = load.shipments[i]
+		if (!shipment.bolNumber)
+			errors.push({
+				objectId: shipment.id == null ? shipment._id : shipment.id,
+				parameter: "bolNumber",
+				error: "BOL should be specified for shipment"		
+			})
+	}
+
+	for (var i = 0; i < load.stops.length; i++) {
+		var stop = load.stops[i]
+		if (!stop.addressLines[0])
+			errors.push({
+				objectId: stop.id == null ? stop._id : stop.id, 
+				parameter: "addressLine",
+				error: "Address can't be empty on stop"		
+			})
+	}
+	return errors
+}
+
 module.exports = {
 	getLoadSummary: getLoadSummary,
 	processNewStops: processNewStops,
-	getLoadsByDivision: getLoadsByDivision
+	getLoadsByDivision: getLoadsByDivision,
+	validateLoad: validateLoadParameters
 }
