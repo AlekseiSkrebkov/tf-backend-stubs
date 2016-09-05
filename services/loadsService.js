@@ -154,12 +154,14 @@ function validateLoadParameters(load) {
 	if (!load.bolNumber) 
 		errors.push({
 			objectId: load.id,
+			entityType: "load",
 			parameter: "bolNumber",
 			error: "BOL should be specified for load"
 		})
 	if (!load.freightTerms)
 		errors.push({
 			objectId: load.id,
+			entityType: "load",
 			parameter: "freightTerms",
 			error: "Freight Terms should be specified for load"
 		})
@@ -169,6 +171,7 @@ function validateLoadParameters(load) {
 		if (!shipment.bolNumber)
 			errors.push({
 				objectId: shipment.id == null ? shipment._id : shipment.id,
+				entityType: "shipment",
 				parameter: "bolNumber",
 				error: "BOL should be specified for shipment"		
 			})
@@ -179,6 +182,7 @@ function validateLoadParameters(load) {
 		if (!stop.addressLines[0])
 			errors.push({
 				objectId: stop.id == null ? stop._id : stop.id, 
+				entityType: "stop",
 				parameter: "addressLine",
 				error: "Address can't be empty on stop"		
 			})
