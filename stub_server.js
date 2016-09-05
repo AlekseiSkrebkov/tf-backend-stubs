@@ -688,7 +688,7 @@ app.get('/mappoints', function(req, res) {
 	var shippingDates = req.query.shippingDatesRange
 	var deliveryDates = req.query.deliveryDatesRange
 
-	var loads = loadsService.getLoadsByDivision(divisionId, status, shippingDates, deliveryDates)
+	var loads = loadsService.getMappointsByDivision(divisionId, status, shippingDates, deliveryDates)
 
 	res.json(loads)
 
