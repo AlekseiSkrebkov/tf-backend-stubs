@@ -674,7 +674,10 @@ app.get('/loads/:id/breadcrumbs', function(req, res) {
 		return load.id == parseInt(loadId)
 	})
 
-	res.json(load.breadcrumbs)
+	if (load)
+		res.json(load.breadcrumbs)
+	else 
+		res.status(404).send("Load is not found")
 })
 
 /*
