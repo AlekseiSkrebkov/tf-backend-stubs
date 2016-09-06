@@ -101,17 +101,21 @@ function getUserProfile(req) {
 	return R.find(R.propEq('securityToken', security_token), user_profiles)
 }
 
+const mailService = require('./services/mailService')
+
 app.post('/auth/resetpassword', function(req, res) {
 	var email = req.body.email
 
 	var userIndex = user_profiles.findIndex(function(userProfile) {
 		return userProfile.email == email
 	})
+	var passToken = tools.guid()
+	user_profiles[userIndex].passToken = passToken
 
-	user_profiles[userIndex].passToken = tools.guid()
+	mailService.sendPasswordRestoreLink(email, req.baseUrl + '//auth/resetpassword?passToken=' + passToken)
 
 	if (userIndex >= 0)
-		res.status(200).send("Restore password instructions sent to " + req.body.email)
+		res.status(200).send("Restore password instructions sent to " + email)
 	else
 		res.status(400).send(composeBadRequestError("User with specified email is not found"))
 })
