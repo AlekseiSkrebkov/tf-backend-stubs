@@ -356,6 +356,7 @@ app.get('/loads/:id', function(req, res) {
 	var id = req.params.id
 	if (id == 13) {
 		res.status(500).send("Server is killed by URL ending with 13")
+		return
 	}
 	//ToDo: this is WA for problem with unexpectedly generated stop.id
 	var load = R.find(R.propEq('id', parseInt(id)), loadCollection)
