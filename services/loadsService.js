@@ -168,7 +168,7 @@ function validateLoadParameters(load) {
 
 	for (var i = 0; i < load.shipments.length; i++) {
 		var shipment = load.shipments[i]
-		if (!shipment.bolNumber)
+		if (!shipment.shipmentBOL)
 			errors.push({
 				objectId: shipment.id == null ? shipment._id : shipment.id,
 				entityType: "shipment",
