@@ -55,7 +55,17 @@ function generateLoad(id) {
 		"stops": stops.slice(),
 		"shipments": generateShipments(idx, stops),
 		"documentScans": generateDocScanLinks(idx),
-		"showMap": true
+		"showMap": true,
+		"menu": [
+			{
+				"name": "Transflo ELD",
+				"url": "https://my.geotab.com/transflo/#dashboard"
+			},
+			{
+				"name": "Viewer",
+				"url": "https://viewer.transfloexpress.com"
+			}
+		]
 	}	
 
 	if (load.status == 'InTransit') {
