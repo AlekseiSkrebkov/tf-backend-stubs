@@ -132,7 +132,7 @@ app.put('/auth/resetpassword', function(req, res) {
 		var newPassword = req.body.password
 		user_credentials[userIndex].password = newPassword
 
-		res.status(200).send("Password updated")
+		res.json(user_profiles[userIndex])
 	}
 	else {
 		res.status(401).send("Password restore token is expired")
