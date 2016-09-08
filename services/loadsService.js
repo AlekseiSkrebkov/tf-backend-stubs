@@ -64,7 +64,7 @@ function processNewStops(load) {
 	}
 }
 
-function getLoadsByDivision(divisionId, status, shippingDates, deliveryDates) {
+function getMappointsByDivision(divisionId, status, shippingDates, deliveryDates) {
 	var divisionLoads = loadsCollection.filter(function(load) {
 		if (divisionsService.isCarrierDivision(divisionId)) {
 			return (load.carrierDivision != null && load.carrierDivision.id == divisionId)
@@ -105,16 +105,16 @@ function getLoadsByDivision(divisionId, status, shippingDates, deliveryDates) {
 	console.log('filtered Loads quantity', filteredLoads.length)
 
 // Get Map points
-	var mapPoints = []
+	var loadPoints = []
 	for (var i = 0; i < filteredLoads.length; i++) {
 		var load = filteredLoads[i]
-		mapPoints.push({
+		loadPoints.push({
 			"id": load.id,
 			"latitude": load.stops[0].latitude,
 			"longitude": load.stops[0].longitude,
 			"type": "shippingLoc"
 		})
-		mapPoints.push({
+		loadPoints.push({
 			"id": load.id,
 			"latitude": load.stops[load.stops.length - 1].latitude,
 			"longitude": load.stops[load.stops.length - 1].longitude,
@@ -122,31 +122,49 @@ function getLoadsByDivision(divisionId, status, shippingDates, deliveryDates) {
 		})
 	}
 
+	var driverPoints = []
+	var drivers = []
+	var division = divisionsService.getDivisionById(divisionId)
+	
 	if (divisionsService.isCarrierDivision(divisionId)) {
-		var division = divisionsService.getDivisionById(divisionId)
-		var drivers = division.relations
-		for (var i = 0; i < drivers.length; i++) {
-			var driver = drivers[i]
-			var driverPoint = {
-				"id": driver.id,
-				"latitude": driver.lastKnownLocation.latitude,
-				"longitude": driver.lastKnownLocation.longitude,
-				"type": Math.random() > 0.5 ? "availableDriver" : "intransitDriver"
-			}
-			if (driverPoint.type == 'intransitDriver') {
-				var randomLoad = filteredLoads[tools.randomFrom(filteredLoads.length)]
-				driverPoint.associatedPoint = {
-					"id": randomLoad.id,
-					"latitude": randomLoad.stops[randomLoad.stops.length - 1].latitude,
-					"longitude": randomLoad.stops[randomLoad.stops.length - 1].longitude,
-					"type": "deliveryLoc"
-				}
-			}
-			mapPoints.push(driverPoint)	
+		drivers = division.relations
+	}
+	else {//broker division 
+		var carriers = division.relations
+		console.log('number of carriers', carriers)
+		for (var i = 0; i < carriers.length; i++) {
+			drivers.concat(carriers[i].relations)
+			console.log('number of carrier drivers', drivers)
+
 		}
+	}	
+
+	console.log('driver number', drivers.length)
+	for (var i = 0; i < drivers.length; i++) {
+		var driver = drivers[i]
+		var driverPoint = {
+			"id": driver.id,
+			"latitude": driver.lastKnownLocation.latitude,
+			"longitude": driver.lastKnownLocation.longitude,
+			"type": Math.random() > 0.5 ? "availableDriver" : "intransitDriver",
+			"carrier": division.name
+		}
+		if (driverPoint.type == 'intransitDriver') {
+			var randomLoad = filteredLoads[tools.randomFrom(filteredLoads.length)]
+			driverPoint.associatedLoad = {
+				"id": randomLoad.id,
+				"latitude": randomLoad.stops[randomLoad.stops.length - 1].latitude,
+				"longitude": randomLoad.stops[randomLoad.stops.length - 1].longitude,
+				"type": "deliveryLoc"
+			}
+		}
+		driverPoints.push(driverPoint)	
 	}
 
-	return mapPoints
+	return {
+		"loadPoints": loadPoints,
+		"driverPoint": driverPoints
+	}
 }
 
 function validateLoadParameters(load) {
@@ -193,6 +211,6 @@ function validateLoadParameters(load) {
 module.exports = {
 	getLoadSummary: getLoadSummary,
 	processNewStops: processNewStops,
-	getLoadsByDivision: getLoadsByDivision,
+	getMappointsByDivision: getMappointsByDivision,
 	validateLoad: validateLoadParameters
 }

@@ -13,7 +13,8 @@
     "body-parser": "1.15.1",
     "ramda": "0.21.0", 
     "moment": "2.14.1",
-    "btoa": "1.1.2"
+    "btoa": "1.1.2",
+    "nodemailer": "2.6.0"
   },
   "engines": {
     "node": "4.4.2"

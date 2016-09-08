@@ -52,9 +52,13 @@ app.use(function(req, res, next) {
 app.use(function(req, res, next) {
 	var userProfile = getUserProfile(req)
 	var originalUrl = req.originalUrl
+	if (originalUrl.indexOf('?') >=0)
+		originalUrl = req.originalUrl.substring(0, originalUrl.indexOf('?'))
 	var method = req.method
 
-	var noAuthURLs = ['/', '/auth/signin', '/auth/forgot']
+	var noAuthURLs = ['/', '/auth/signin', '/auth/resetpassword']
+
+	console.log('test URL', originalUrl)
 
 	if (method != 'OPTIONS' && noAuthURLs.indexOf(originalUrl) == -1 && userProfile == undefined)
 		res.status(401).send("Token is expired")
@@ -97,12 +101,42 @@ function getUserProfile(req) {
 	return R.find(R.propEq('securityToken', security_token), user_profiles)
 }
 
-app.post('/auth/forgot', function(req, res) {
+const mailService = require('./services/mailService')
+
+app.post('/auth/resetpassword', function(req, res) {
 	var email = req.body.email
-	if (email)
-		res.status(200).send("Restore password instructions sent to " + req.body.email)
+
+	var userIndex = user_profiles.findIndex(function(userProfile) {
+		return userProfile.email == email
+	})
+	var passToken = tools.guid()
+	user_profiles[userIndex].passToken = passToken
+
+	mailService.sendPasswordRestoreLink(email, req.baseUrl + '//auth/resetpassword?passToken=' + passToken)
+
+	if (userIndex >= 0)
+		res.status(200).send("Restore password instructions sent to " + email)
 	else
-		res.status(403).send("Email for restore password instructions wasn't specified")
+		res.status(400).send(composeBadRequestError("User with specified email is not found"))
+})
+
+
+app.put('/auth/resetpassword', function(req, res) {
+	var token = req.query.passToken
+
+	var userIndex = user_profiles.findIndex(function(userProfile) {
+		return userProfile.passToken == token
+	})
+
+	if (userIndex >=0) {
+		var newPassword = req.body.password
+		user_credentials[userIndex].password = newPassword
+
+		res.status(200).send("Password updated")
+	}
+	else {
+		res.status(401).send("Password restore token is expired")
+	}
 })
 
 app.get('/auth/signout', function(req, res) {
@@ -696,7 +730,7 @@ app.get('/mappoints', function(req, res) {
 	var shippingDates = req.query.shippingDatesRange
 	var deliveryDates = req.query.deliveryDatesRange
 
-	var loads = loadsService.getLoadsByDivision(divisionId, status, shippingDates, deliveryDates)
+	var loads = loadsService.getMappointsByDivision(divisionId, status, shippingDates, deliveryDates)
 
 	res.json(loads)
 
