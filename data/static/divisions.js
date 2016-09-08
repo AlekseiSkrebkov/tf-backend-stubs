@@ -44,6 +44,7 @@ function generateDrivers(divisionId) {
 			"lastKnownLocation": locations[tools.randomFrom(locations.length)],
 			"messages": generateDriverMessages(id),
 			"notifications": generateDriverNotifications(id),
+			"carrierId": divisionId,
 			"statistics": [
 				{
 					"label": "Offered Loads",

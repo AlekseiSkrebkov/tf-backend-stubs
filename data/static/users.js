@@ -18,7 +18,7 @@ module.exports = {
 			id: 1,
 			firstName: "Alex",
 			lastName: "Skrebkov",
-			email: "egor.g@castle.co",
+			email: "alex.skrebkov@castle.co",
 			divisions: [
 				{
 					id: 1,
@@ -79,7 +79,7 @@ module.exports = {
 			id: 2,
 			firstName: "Egor",
 			lastName: "Gorobetz",
-			email: "alex.skrebkov@castle.co",
+			email: "egor.g@castle.co",
 			divisions: [
 				{
 					id: 2,

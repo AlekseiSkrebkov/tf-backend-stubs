@@ -141,14 +141,15 @@ function getMappointsByDivision(divisionId, status, shippingDates, deliveryDates
 	console.log('driver number', drivers.length)
 	for (var i = 0; i < drivers.length; i++) {
 		var driver = drivers[i]
+		var carrier = divisionsService.getDivisionById(driver.carrierId)
 		var driverPoint = {
 			"id": driver.id,
 			"latitude": driver.lastKnownLocation.latitude,
 			"longitude": driver.lastKnownLocation.longitude,
 			"type": Math.random() > 0.5 ? "availableDriver" : "intransitDriver",
 			"carrier": {
-				"name": division.name,
-				"code": division.code
+				"name": carrier.name,
+				"code": carrier.code
 			}
 		}
 		if (driverPoint.type == 'intransitDriver') {
