@@ -131,11 +131,10 @@ function getMappointsByDivision(divisionId, status, shippingDates, deliveryDates
 	}
 	else {//broker division 
 		var carriers = division.relations
-		console.log('number of carriers', carriers)
+		console.log('carriers associated with broker', carriers)
 		for (var i = 0; i < carriers.length; i++) {
-			drivers.concat(carriers[i].relations)
-			console.log('number of carrier drivers', drivers)
-
+			drivers = drivers.concat(carriers[i].relations)
+			console.log('relations number', carriers[i].relations.length)
 		}
 	}	
 
@@ -147,7 +146,10 @@ function getMappointsByDivision(divisionId, status, shippingDates, deliveryDates
 			"latitude": driver.lastKnownLocation.latitude,
 			"longitude": driver.lastKnownLocation.longitude,
 			"type": Math.random() > 0.5 ? "availableDriver" : "intransitDriver",
-			"carrier": division.name
+			"carrier": {
+				"name": division.name,
+				"code": division.code
+			}
 		}
 		if (driverPoint.type == 'intransitDriver') {
 			var randomLoad = filteredLoads[tools.randomFrom(filteredLoads.length)]
@@ -163,7 +165,7 @@ function getMappointsByDivision(divisionId, status, shippingDates, deliveryDates
 
 	return {
 		"loadPoints": loadPoints,
-		"driverPoint": driverPoints
+		"driverPoints": driverPoints
 	}
 }
 
