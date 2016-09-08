@@ -134,7 +134,6 @@ function getMappointsByDivision(divisionId, status, shippingDates, deliveryDates
 		console.log('carriers associated with broker', carriers)
 		for (var i = 0; i < carriers.length; i++) {
 			drivers = drivers.concat(carriers[i].relations)
-			console.log('relations number', carriers[i].relations.length)
 		}
 	}	
 
