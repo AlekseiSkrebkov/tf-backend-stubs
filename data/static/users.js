@@ -73,7 +73,8 @@ module.exports = {
 					"url": "https://viewer.transfloexpress.com"
 				}
 			],
-			securityToken: common_tools.guid()
+			securityToken: common_tools.guid(),
+			isVelocity: true
 		},
 		{
 			id: 2,
@@ -134,7 +135,8 @@ module.exports = {
 					"url": "https://viewer.transfloexpress.com"
 				}
 			],
-			securityToken: common_tools.guid()
+			securityToken: common_tools.guid(),
+			isVelocity: false
 		}
 	]
 }

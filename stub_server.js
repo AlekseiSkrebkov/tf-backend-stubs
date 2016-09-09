@@ -122,7 +122,7 @@ app.post('/auth/resetpassword', function(req, res) {
 
 
 app.put('/auth/resetpassword', function(req, res) {
-	var token = req.query.passToken
+	var token = req.body.passToken
 
 	var userIndex = user_profiles.findIndex(function(userProfile) {
 		return userProfile.passToken == token
