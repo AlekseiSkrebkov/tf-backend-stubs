@@ -109,15 +109,16 @@ app.post('/auth/resetpassword', function(req, res) {
 	var userIndex = user_profiles.findIndex(function(userProfile) {
 		return userProfile.email == email
 	})
-	var passToken = tools.guid()
-	user_profiles[userIndex].passToken = passToken
+	if (userIndex >= 0) {
+		var passToken = tools.guid()
+		user_profiles[userIndex].passToken = passToken
 
-	mailService.sendPasswordRestoreLink(email, req.baseUrl + '//auth/resetpassword?passToken=' + passToken)
+		mailService.sendPasswordRestoreLink(email, req.baseUrl + '//auth/resetpassword?passToken=' + passToken)
 
-	if (userIndex >= 0)
-		res.status(200).send("Restore password instructions sent to " + email)
+		res.status(200).send("Restore password instructions sent to " + email + ". Pass token=" + passToken)
+	}
 	else
-		res.status(400).send(composeBadRequestError("User with specified email is not found"))
+		res.status(403).send("User with specified email is not found")
 })
 
 
