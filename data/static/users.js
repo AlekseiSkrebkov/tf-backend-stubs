@@ -1,7 +1,6 @@
 const common_tools = require('../../services/common');
 
-module.exports = {
-	credentials: [
+var credentials = [
 		{
 			id: 1,
 			login: "user1",
@@ -12,8 +11,9 @@ module.exports = {
 			login: "user2",
 			password: "password2"
 		}
-	],
-	profiles: [
+	]
+
+var profiles = [
 		{
 			id: 1,
 			firstName: "Alex",
@@ -62,7 +62,8 @@ module.exports = {
 					code: "dvsbro4",
 					"permissions": ['showDrivers']
 				}
-			], 
+			],
+			securityToken: common_tools.guid(),
 			menu: [
 				{
 					"name": "Transflo ELD",
@@ -73,7 +74,6 @@ module.exports = {
 					"url": "https://viewer.transfloexpress.com"
 				}
 			],
-			securityToken: common_tools.guid(),
 			isVelocity: false
 		},
 		{
@@ -125,6 +125,7 @@ module.exports = {
 					"permissions": []
 				}
 			], 
+			securityToken: common_tools.guid(),
 			menu: [
 				{
 					"name": "Transflo ELD",
@@ -135,8 +136,27 @@ module.exports = {
 					"url": "https://viewer.transfloexpress.com"
 				}
 			],
-			securityToken: common_tools.guid(),
 			isVelocity: true
 		}
 	]
+
+
+for (var i = 0; i < profiles.length; i++) {
+	for (var j = 0; j < profiles[i].divisions.length; j++) {
+		profiles[i].divisions[j].menu = [
+				{
+					"name": "Transflo ELD",
+					"url": "https://my.geotab.com/transflo/#dashboard"
+				},
+				{
+					"name": "Viewer",
+					"url": "https://viewer.transfloexpress.com"
+				}
+			]
+	}
+}
+
+module.exports = {
+	credentials: credentials,
+	profiles: profiles
 }
