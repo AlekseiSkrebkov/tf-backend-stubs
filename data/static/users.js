@@ -74,7 +74,7 @@ module.exports = {
 				}
 			],
 			securityToken: common_tools.guid(),
-			isVelocity: true
+			isVelocity: false
 		},
 		{
 			id: 2,
@@ -136,7 +136,7 @@ module.exports = {
 				}
 			],
 			securityToken: common_tools.guid(),
-			isVelocity: false
+			isVelocity: true
 		}
 	]
 }
