@@ -145,11 +145,11 @@ for (var i = 0; i < profiles.length; i++) {
 	for (var j = 0; j < profiles[i].divisions.length; j++) {
 		profiles[i].divisions[j].menu = [
 				{
-					"name": "Transflo ELD",
+					"name": "Transflo ELD" + i + j,
 					"url": "https://my.geotab.com/transflo/#dashboard"
 				},
 				{
-					"name": "Viewer",
+					"name": "Viewer" + i + j,
 					"url": "https://viewer.transfloexpress.com"
 				}
 			]
