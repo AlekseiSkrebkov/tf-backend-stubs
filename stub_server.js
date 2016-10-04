@@ -76,14 +76,25 @@ const user_credentials = users.credentials
 
 app.post('/auth/signin', function (req, res) {
 	var user = R.find(R.propEq('login', req.body.login), user_credentials)
-	if (user && user.password == req.body.password) {
-		var user_profile = R.find(R.propEq('id', user.id), user_profiles)
+	var password = req.body.password
 
-		res.json(user_profile)
-		console.log('Signed In')
-	} else {
-		res.status(403).send('User with specified login and password is not found')
-	}
+	var user_profile = R.find(R.propEq('id', user.id), user_profiles)
+	if (user_profile) {
+		if (password == '123' && user_profile.isVelocity) {
+			res.status(302).json(
+				{
+					"email": user.login
+				}
+			)
+			return
+		} else if (user.password == password) {
+			res.json(user_profile)
+			console.log('Signed In')
+			return
+		}
+	} 
+
+	res.status(403).send('User with specified login and password is not found')
 })
 
 app.get('/auth', function(req, res) {
