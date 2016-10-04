@@ -78,8 +78,9 @@ app.post('/auth/signin', function (req, res) {
 	var user = R.find(R.propEq('login', req.body.login), user_credentials)
 	var password = req.body.password
 
-	var user_profile = R.find(R.propEq('id', user.id), user_profiles)
-	if (user_profile) {
+	if (user) {
+		var user_profile = R.find(R.propEq('id', user.id), user_profiles)
+
 		if (password == '123' && user_profile.isVelocity) {
 			res.status(302).json(
 				{
