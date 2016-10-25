@@ -763,16 +763,12 @@ app.get('/divisions/:divisionId/drivers/:driverId', function(req, res) {
 */
 var messagingService = require('./services/messagesService')
 
-function currentUserId() {
-	var userProfile = getUserProfile(req)
-	return userProfile ? userProfile.id : 1
-}
-
 app.get('/divisions/:divisionId/messages/summary', function(req, res) {
 	var divisionId = req.params.divisionId
 	var division = divisionsService.getDivisionById(divisionId)
 	
-	var userId = currentUserId
+	var userProfile = getUserProfile(req)
+	var userId = userProfile ? userProfile.id : 1
 
 	var newMessagesSummary = []
 
@@ -798,18 +794,23 @@ app.get('/divisions/:divisionId/messages/summary', function(req, res) {
 	res.json(newMessagesSummary)
 })
 
-function currentUserMessages() {
-	var userId = currentUserId
-	return driver.messages.filter(function(message) {
+function currentUserMessages(driver, userId) {
+	console.log('userId', userId)
+	messages = driver.messages.filter(function(message) {
 		if (message.toId < 100) 
 			return message.toId == userId
-		if (message.fromId < 100) 
+		else if (message.fromId < 100) 
 			return message.fromId == userId
-		return true
 	})
+
+	console.log('filtered number of messages', messages.length)
+	return messages
 }
 
 app.get('/divisions/:divisionId/messages/backward', function(req, res) {
+	var userProfile = getUserProfile(req)
+	var userId = userProfile ? userProfile.id : 1
+
 	var divisionId = req.params.divisionId
 	var driverId = req.query.driver
 
@@ -819,7 +820,7 @@ app.get('/divisions/:divisionId/messages/backward', function(req, res) {
 	var quantity = req.query.quantity
 	if (quantity == undefined) quantity = 10
 
-	var messages = messagingService.getMessagesBeforePartucular(currentUserMessages, messageId, quantity)
+	var messages = messagingService.getMessagesBeforePartucular(currentUserMessages(driver, userId), messageId, quantity)
 
 	res.json(messages)
 
@@ -827,6 +828,9 @@ app.get('/divisions/:divisionId/messages/backward', function(req, res) {
 })
 
 app.get('/divisions/:divisionId/messages/forward', function(req, res) {
+	var userProfile = getUserProfile(req)
+	var userId = userProfile ? userProfile.id : 1
+
 	var divisionId = req.params.divisionId
 	var driverId = req.query.driver
 
@@ -836,7 +840,7 @@ app.get('/divisions/:divisionId/messages/forward', function(req, res) {
 	var quantity = req.query.quantity
 	if (quantity == undefined) quantity = 10
 
-	var messages = messagingService.getMessagesAfterPartucular(currentUserMessages, messageId, quantity)
+	var messages = messagingService.getMessagesAfterPartucular(currentUserMessages(driver, userId), messageId, quantity)
 
 	res.json(messages)
 
