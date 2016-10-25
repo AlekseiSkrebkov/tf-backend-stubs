@@ -801,8 +801,11 @@ app.get('/divisions/:divisionId/messages/summary', function(req, res) {
 function currentUserMessages() {
 	var userId = currentUserId
 	return driver.messages.filter(function(message) {
-		if (message.toId < 100) message.toId == userId
-		if (message.fromId < 100) message.fromId == userId
+		if (message.toId < 100) 
+			return message.toId == userId
+		if (message.fromId < 100) 
+			return message.fromId == userId
+		return true
 	})
 }
 
