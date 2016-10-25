@@ -104,7 +104,7 @@ app.get('/auth', function(req, res) {
 	if (user_profile)
 		res.json(user_profile)
 	else
-		res.status(404).send('User is not found')
+		res.status(401).send('Couldn\'t find user with corresponding token')
 })
 
 function getUserProfile(req) {
@@ -763,11 +763,16 @@ app.get('/divisions/:divisionId/drivers/:driverId', function(req, res) {
 */
 var messagingService = require('./services/messagesService')
 
+function currentUserId() {
+	var userProfile = getUserProfile(req)
+	return userProfile ? userProfile.id : 1
+}
+
 app.get('/divisions/:divisionId/messages/summary', function(req, res) {
 	var divisionId = req.params.divisionId
 	var division = divisionsService.getDivisionById(divisionId)
-	var userProfile = getUserProfile(req)
-	var userId = userProfile ? userProfile.id : 1
+	
+	var userId = currentUserId
 
 	var newMessagesSummary = []
 
@@ -793,6 +798,14 @@ app.get('/divisions/:divisionId/messages/summary', function(req, res) {
 	res.json(newMessagesSummary)
 })
 
+function currentUserMessages() {
+	var userId = currentUserId
+	return driver.messages.filter(function(message) {
+		if (message.toId < 100) message.toId == userId
+		if (message.fromId < 100) message.fromId == userId
+	})
+}
+
 app.get('/divisions/:divisionId/messages/backward', function(req, res) {
 	var divisionId = req.params.divisionId
 	var driverId = req.query.driver
@@ -803,7 +816,7 @@ app.get('/divisions/:divisionId/messages/backward', function(req, res) {
 	var quantity = req.query.quantity
 	if (quantity == undefined) quantity = 10
 
-	var messages = messagingService.getMessagesBeforePartucular(driver.messages, messageId, quantity)
+	var messages = messagingService.getMessagesBeforePartucular(currentUserMessages, messageId, quantity)
 
 	res.json(messages)
 
@@ -820,7 +833,7 @@ app.get('/divisions/:divisionId/messages/forward', function(req, res) {
 	var quantity = req.query.quantity
 	if (quantity == undefined) quantity = 10
 
-	var messages = messagingService.getMessagesAfterPartucular(driver.messages, messageId, quantity)
+	var messages = messagingService.getMessagesAfterPartucular(currentUserMessages, messageId, quantity)
 
 	res.json(messages)
 
