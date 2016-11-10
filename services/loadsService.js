@@ -34,15 +34,15 @@ function getLoadSummary(load) {
 
 function processNewStops(load) {
 	for (var i = 0; i < load.stops.length; i++) { 
-		var tempStopId = load.stops[i]._id
-		console.log('processing of temp stop id', tempStopId)
-		if (tempStopId) {
+		var stopId = load.stops[i]._id
+		console.log('processing of temp stop id', stopId)
+		if (stopId < 0) {
 			var newStopId = load.id * 10 + i
 			for (var j = 0; j < load.shipments.length; j++) {
-				if (load.shipments[j].pickup == tempStopId) {
+				if (load.shipments[j].pickup == stopId) {
 					load.shipments[j].pickup = newStopId
 				}
-				if (load.shipments[j].dropoff == tempStopId) {
+				if (load.shipments[j].dropoff == stopId) {
 					load.shipments[j].dropoff = newStopId
 				}
 			}
@@ -62,6 +62,7 @@ function processNewStops(load) {
 			load.shipments[i].orders[k].id = load.shipments[i].id * 100 + k
 		}
 	}
+	console.log('processed load', load)
 }
 
 function getMappointsByDivision(divisionId, status, shippingDates, deliveryDates) {
