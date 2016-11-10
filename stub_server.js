@@ -362,6 +362,8 @@ app.put('/loads/:id', function(req, res) {
 
 		var targetLoad = loadCollection[loadNum]
 		for (var attrname in updatedLoad) { targetLoad[attrname] = updatedLoad[attrname]; }
+		loadCollection[loadNum] = targetLoad
+	
 		res.json(targetLoad)
 	}
 	else {
@@ -411,14 +413,14 @@ app.get('/loads/:id', function(req, res) {
 	
 	if (load) {
 
-		console.log('before WA', load.stops)
+		// console.log('before WA', load.stops)
 
-		for (var i = 0; i < load.stops.length; i++) {
-				load.stops[i].id = load.stops[i].stop_id
-				//delete load.stops[i].stop_id
-		}
+		// for (var i = 0; i < load.stops.length; i++) {
+		// 		load.stops[i].id = load.stops[i].stop_id
+		// 		//delete load.stops[i].stop_id
+		// }
 
-		console.log('after WA', load.stops)
+		// console.log('after WA', load.stops)
 
 		res.json(load)
 	}	
